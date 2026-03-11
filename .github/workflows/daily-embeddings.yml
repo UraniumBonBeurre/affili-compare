@@ -1,0 +1,78 @@
+# ══════════════════════════════════════════════════════════════════════════════
+# daily-embeddings.yml — Cron quotidien : génère les embeddings des nouveaux
+# produits ajoutés via import-awin-feed.py.
+#
+# Fréquence : tous les jours à 3h UTC (4h Paris heure d'hiver / 5h été)
+# Coût       : 0 € — GitHub Actions free tier (2000 min/mois)
+#
+# Secrets à configurer dans GitHub → Settings → Secrets & Variables → Actions :
+#   NEXT_PUBLIC_SUPABASE_URL        (ex: https://xxxx.supabase.co)
+#   SUPABASE_SERVICE_ROLE_KEY       (clé service Supabase — jamais exposée client)
+#
+# Usage manuel : GitHub → Actions → "Daily Embeddings" → Run workflow
+# ══════════════════════════════════════════════════════════════════════════════
+
+name: Daily Embeddings
+
+on:
+  schedule:
+    - cron: "0 3 * * *"   # 03:00 UTC chaque jour
+  workflow_dispatch:       # Déclenchement manuel possible
+
+jobs:
+  generate-embeddings:
+    name: Generate product embeddings
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    env:
+      NEXT_PUBLIC_SUPABASE_URL:  ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+
+    steps:
+      # ── 1. Checkout ──────────────────────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ── 2. Python setup ──────────────────────────────────────────────────────
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # ── 3. Cache des dépendances pip ─────────────────────────────────────────
+      - name: Cache pip packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-embeddings-${{ hashFiles('**/requirements-embeddings.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-embeddings-
+
+      # ── 4. Cache du modèle HuggingFace (~118 Mo, évite re-téléchargement) ────
+      - name: Cache HuggingFace model
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: ${{ runner.os }}-hf-multilingual-e5-small
+          restore-keys: |
+            ${{ runner.os }}-hf-multilingual-e5-small
+
+      # ── 5. Installation des dépendances ──────────────────────────────────────
+      - name: Install Python dependencies
+        run: |
+          pip install --upgrade pip
+          pip install sentence-transformers requests python-dotenv supabase
+
+      # ── 6. Générer les embeddings (seulement les produits sans embedding) ────
+      - name: Run embedding script
+        working-directory: affili-compare
+        run: |
+          echo "🧠 Génération des embeddings pour les nouveaux produits…"
+          python3 scripts/generate-embeddings.py
+          echo "✅ Embeddings à jour"
+
+      # ── 7. Log du résultat ───────────────────────────────────────────────────
+      - name: Summary
+        if: always()
+        run: echo "### Embeddings mis à jour — $(date '+%Y-%m-%d %H:%M UTC')" >> $GITHUB_STEP_SUMMARY

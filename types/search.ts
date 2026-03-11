@@ -1,0 +1,34 @@
+/**
+ * Types partagés pour la recherche LLM — utilisés par l'API route ET les composants client.
+ */
+
+export interface SearchAffiliateLink {
+  id: string;
+  partner: string;
+  price: number | null;
+  currency: string;
+  url: string;
+  in_stock: boolean;
+}
+
+export interface SearchResultItem {
+  id: string;
+  name: string;
+  brand: string | null;
+  image_url: string | null;
+  rating: number | null;
+  review_count: number;
+  links: SearchAffiliateLink[];
+  comparison_slug?: string | null;
+  category_slug?: string | null;
+  /** Explication générée par le LLM */
+  explanation?: string;
+}
+
+export interface SearchApiResponse {
+  results: SearchResultItem[];
+  fromLLM: boolean;
+  message?: string;
+  /** Tri automatique détecté par le LLM selon l'intention prix de la requête */
+  autoSort?: "price_asc" | "price_desc" | "relevance";
+}

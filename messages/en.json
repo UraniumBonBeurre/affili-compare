@@ -1,0 +1,45 @@
+{
+  "site": {
+    "name": "MyGoodPick",
+    "tagline": "Compare before you buy",
+    "affiliateDisclosure": "This site contains affiliate links. We may earn a commission if you purchase through our links, at no extra cost to you."
+  },
+  "nav": {
+    "home": "Home",
+    "categories": "Categories",
+    "about": "About"
+  },
+  "comparison": {
+    "product": "Product",
+    "price": "Price",
+    "rating": "Rating",
+    "pros": "Pros",
+    "cons": "Cons",
+    "buy": "View deal",
+    "bestValue": "Best value",
+    "premium": "Premium pick",
+    "budget": "Budget pick",
+    "outOfStock": "Out of stock",
+    "lastUpdated": "Updated",
+    "reviewCount": "reviews",
+    "buyingGuide": "Buying guide",
+    "faq": "FAQ",
+    "compare": "Compare",
+    "fromPrice": "From"
+  },
+  "category": {
+    "comparisons": "comparisons",
+    "viewAll": "View all"
+  },
+  "home": {
+    "hero": "Compare the best products, find the best price",
+    "subtitle": "Independent comparisons, real-time prices, honest reviews.",
+    "popularCategories": "Popular categories",
+    "latestComparisons": "Latest comparisons"
+  },
+  "footer": {
+    "affiliate": "Affiliate links",
+    "privacy": "Privacy",
+    "legal": "Legal"
+  }
+}

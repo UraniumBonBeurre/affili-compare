@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+@layer base {
+  :root {
+    --brand: 22 163 74;      /* green-600 */
+    --brand-light: 240 253 244;
+    --radius: 16px;
+  }
+
+  body {
+    @apply bg-[#F8F9FA] text-gray-900 antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  h1,h2,h3 { @apply tracking-tight; }
+
+  /* Scrollbar fine */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { @apply bg-gray-100; }
+  ::-webkit-scrollbar-thumb { @apply bg-gray-300 rounded-full; }
+}
+
+@layer components {
+  /* Carte produit neumorphique légère */
+  .card {
+    @apply bg-white rounded-2xl border border-gray-100 shadow-sm transition-all duration-200;
+  }
+  .card:hover { box-shadow: 0 4px 24px -2px rgba(0,0,0,0.10); }
+
+  /* Badge "Notre sélection" */
+  .badge-pick {
+    @apply inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest;
+  }
+
+  /* Bouton marchand */
+  .btn-merchant {
+    @apply flex items-center justify-between gap-3 px-4 py-3 rounded-xl text-white font-bold text-sm
+           transition-all duration-150 active:scale-[0.97] hover:brightness-110 shadow-sm;
+  }
+  .btn-merchant:focus-visible { @apply outline-none ring-2 ring-offset-2 ring-brand-600; }
+
+  /* Étoiles */
+  .stars span { @apply text-amber-400; }
+
+  /* Prose guide d'achat */
+  .buying-guide h2 { @apply text-xl font-bold text-gray-900 mt-10 mb-3 pb-2 border-b border-gray-200; }
+  .buying-guide h3 { @apply text-lg font-semibold text-gray-800 mt-6 mb-2; }
+  .buying-guide p  { @apply text-gray-600 leading-relaxed mb-4; }
+  .buying-guide ul { @apply list-disc pl-6 space-y-1.5 mb-4 text-gray-600; }
+  .buying-guide strong { @apply text-gray-900 font-semibold; }
+
+  /* Disclosure légal */
+  .disclosure-bar {
+    @apply w-full bg-amber-50 border-b border-amber-200 px-4 py-2.5;
+  }
+}

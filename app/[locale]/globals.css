@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-brand: 34 197 94; /* green-500 */
+  }
+  body {
+    @apply bg-gray-50;
+  }
+  h1, h2, h3 { @apply tracking-tight; }
+}
+
+@layer components {
+  .prose-comparison h2 { @apply text-xl font-bold text-gray-900 mt-8 mb-3 border-b pb-2; }
+  .prose-comparison h3 { @apply text-lg font-semibold text-gray-800 mt-5 mb-2; }
+  .prose-comparison p  { @apply text-gray-700 leading-relaxed mb-4; }
+  .prose-comparison ul { @apply list-disc pl-5 space-y-1 mb-4 text-gray-700; }
+}

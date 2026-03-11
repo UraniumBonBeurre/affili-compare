@@ -1,0 +1,29 @@
+{
+  "_doc": {
+    "sort_by": "'popularity' (reviews×rating) | 'recency' (last_updated DESC) | 'price' (search_price DESC)",
+    "first_import_limit": "Nombre de produits à importer lors du premier import (classés par sort_by)",
+    "update_fields": "Champs mis à jour lors du mode --update (parmi: price, rating, review_count, in_stock, image_url, name, brand)",
+    "delete_removed": "Supprimer les produits de ce marchand absents du flux lors du mode --update",
+    "category_filter": "Respecte toujours config/merchant-categories.json (false = exclu)"
+  },
+  "rue-du-commerce": {
+    "first_import_limit": 1000,
+    "sort_by": "price",
+    "min_price": 20,
+    "max_price": 3000,
+    "update_fields": ["price", "rating", "review_count", "in_stock", "image_url"],
+    "delete_removed": true
+  },
+  "imou_fr": {
+    "first_import_limit": 1000,
+    "sort_by": "popularity",
+    "update_fields": ["price", "rating", "review_count", "in_stock", "image_url"],
+    "delete_removed": true
+  },
+  "floraqueen_fr": {
+    "first_import_limit": 1000,
+    "sort_by": "price",
+    "update_fields": ["price", "in_stock", "image_url", "name"],
+    "delete_removed": true
+  }
+}

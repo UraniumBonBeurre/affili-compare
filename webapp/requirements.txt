@@ -1,0 +1,43 @@
+# ═══════════════════════════════════════════════════════════════════
+#  AffiliCompare — Python dependencies
+# ═══════════════════════════════════════════════════════════════════
+
+# Database
+supabase==2.10.0
+
+# HTTP
+requests==2.32.3
+aiohttp==3.10.10
+httpx==0.27.2
+
+# HTML parsing (scraping)
+beautifulsoup4==4.12.3
+lxml==5.3.0
+
+# User agent rotation
+fake-useragent==1.5.1
+
+# Environment
+python-dotenv==1.0.1
+
+# Image generation / processing
+Pillow==11.0.0
+
+# AWS S3 / Cloudflare R2
+boto3==1.35.71
+botocore==1.35.71
+
+# CLI utilities
+rich==13.9.4          # Optional: better terminal output
+
+# Amazon PA-API v5 (activé après 3 ventes)
+# Décommenter quand PA-API est activée :
+# paapi5-python-sdk==1.0.0
+
+# AI / LLM (génération de contenu)
+# Ollama local → pas de dépendance Python (appel HTTP)
+# HF Inference API → déjà inclus via `requests`
+
+# Development only
+# pytest==8.3.3
+# pytest-asyncio==0.24.0

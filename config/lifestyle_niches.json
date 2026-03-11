@@ -1,0 +1,543 @@
+{
+  "_comment": "Niches lifestyle pour generate-lifestyle-article.py — sélection pondérée + cross-tendances Pinterest.",
+  "_version": "1.0",
+  "niches": [
+    "bedroom_essentials",
+    "living_room_storage",
+    "kitchen_organization",
+    "desk_organization",
+    "cable_management",
+    "bathroom_storage",
+    "small_space_solutions",
+    "entryway_decor",
+    "outdoor_living",
+    "cozy_lighting",
+    "closet_organization",
+    "home_office_setup",
+    "kids_room",
+    "eco_home",
+    "smart_home",
+    "gaming_setup",
+    "audio_hi_fi",
+    "mobile_nomade"
+  ],
+  "_niche_config": {
+    "bedroom_essentials": {
+      "label_fr": "votre chambre",
+      "title_template": "Top {n} incontournables pour {label} en {month} {year}",
+      "page_slug_prefix": "incontournables-chambre",
+      "search_queries": [
+        "enceinte bluetooth chambre",
+        "réveil connecté lumière",
+        "chargeur sans fil nuit",
+        "lampe chevet LED",
+        "casque audio sommeil nuit"
+      ],
+      "trend_keywords": [
+        "bedroom",
+        "chambre",
+        "cozy bedroom",
+        "aesthetic room",
+        "chambre adulte",
+        "sleep"
+      ],
+      "image_style": "Aesthetic cozy bedroom, warm ambient lighting, white and beige tones, minimal decor, morning light, Scandinavian design, no people, no text",
+      "pinterest_description_fr": "Transformez votre chambre avec ces {n} produits tendance de {month} {year}",
+      "category_hints": [
+        "tv-hifi",
+        "divers"
+      ]
+    },
+    "living_room_storage": {
+      "label_fr": "votre salon",
+      "title_template": "Top {n} essentiels tech pour {label} en {month} {year}",
+      "page_slug_prefix": "essentiels-salon",
+      "search_queries": [
+        "téléviseur OLED QLED salon",
+        "barre de son home cinéma",
+        "enceinte connectée salon",
+        "multiprise design salon",
+        "prise connectée domotique"
+      ],
+      "trend_keywords": [
+        "salon",
+        "living room",
+        "home cinema",
+        "tv setup",
+        "cozy living"
+      ],
+      "image_style": "Modern cozy living room, designer TV setup, warm ambient lighting, minimal Scandinavian decor, no people, no text",
+      "pinterest_description_fr": "Équipez votre salon avec ces {n} produits high-tech de {month} {year}",
+      "category_hints": [
+        "tv-hifi",
+        "divers"
+      ]
+    },
+    "kitchen_organization": {
+      "label_fr": "votre cuisine",
+      "title_template": "Top {n} gadgets tech pour {label} en {month} {year}",
+      "page_slug_prefix": "tech-cuisine",
+      "search_queries": [
+        "enceinte bluetooth cuisine",
+        "multiprise cuisine comptoir",
+        "chargeur USB cuisine",
+        "caméra surveillance cuisine",
+        "tablette recette cuisine"
+      ],
+      "trend_keywords": [
+        "cuisine",
+        "kitchen",
+        "kitchen gadget",
+        "organisation cuisine",
+        "smart kitchen"
+      ],
+      "image_style": "Modern kitchen interior, clean countertop, natural lighting, minimal design, no people, no text",
+      "pinterest_description_fr": "Les {n} gadgets indispensables pour votre cuisine en {month} {year}",
+      "category_hints": [
+        "divers"
+      ]
+    },
+    "desk_organization": {
+      "label_fr": "votre espace bureau",
+      "title_template": "Top {n} accessoires pour {label} en {month} {year}",
+      "page_slug_prefix": "setup-bureau",
+      "search_queries": [
+        "souris gaming bureau",
+        "clavier mécanique compact",
+        "moniteur 27 pouces",
+        "hub USB-C bureau",
+        "lampe bureau LED"
+      ],
+      "trend_keywords": [
+        "desk setup",
+        "bureau",
+        "workspace",
+        "battlestation",
+        "home office aesthetic"
+      ],
+      "image_style": "Clean modern desk setup, minimalist workspace, dual monitor, soft side lighting, no people, no text",
+      "pinterest_description_fr": "Optimisez votre setup bureau avec ces {n} produits en {month} {year}",
+      "category_hints": [
+        "informatique",
+        "gaming"
+      ]
+    },
+    "cable_management": {
+      "label_fr": "votre gestion des câbles",
+      "title_template": "Top {n} solutions anti-câbles pour {label} en {month} {year}",
+      "page_slug_prefix": "gestion-cables",
+      "search_queries": [
+        "multiprise câble USB",
+        "hub USB chargeur",
+        "câble organisation rangement",
+        "chargeur station multi",
+        "gaine câble bureau"
+      ],
+      "trend_keywords": [
+        "cable management",
+        "desk cable",
+        "organisation câbles",
+        "clean setup"
+      ],
+      "image_style": "Clean desk without cables, minimal workspace, organized interior, no text",
+      "pinterest_description_fr": "{n} solutions pour un bureau sans câbles apparents — {month} {year}",
+      "category_hints": [
+        "informatique",
+        "divers"
+      ]
+    },
+    "bathroom_storage": {
+      "label_fr": "votre salle de bain",
+      "title_template": "Top {n} produits tech pour {label} en {month} {year}",
+      "page_slug_prefix": "tech-salle-de-bain",
+      "search_queries": [
+        "enceinte waterproof salle de bain",
+        "chargeur sans fil salle de bain",
+        "multiprise humide",
+        "radio salle de bain",
+        "brosse à dent connectée"
+      ],
+      "trend_keywords": [
+        "salle de bain",
+        "bathroom",
+        "bathroom aesthetic",
+        "douche",
+        "wellness"
+      ],
+      "image_style": "Bright modern bathroom, white tiles, organized minimal products, spa atmosphere, no people, no text",
+      "pinterest_description_fr": "{n} produits tech indispensables pour votre salle de bain — {month} {year}",
+      "category_hints": [
+        "divers"
+      ]
+    },
+    "small_space_solutions": {
+      "label_fr": "votre petit espace",
+      "title_template": "Top {n} gadgets malins pour {label} en {month} {year}",
+      "page_slug_prefix": "solutions-petit-espace",
+      "search_queries": [
+        "compact multifonction portable",
+        "mini enceinte bluetooth",
+        "chargeur pliable voyage",
+        "hub compact USB",
+        "clé WiFi streaming"
+      ],
+      "trend_keywords": [
+        "small space",
+        "studio",
+        "petit appartement",
+        "space saving",
+        "tiny home"
+      ],
+      "image_style": "Compact modern studio apartment, smart organization, small minimal living, no text",
+      "pinterest_description_fr": "{n} gadgets malins pour optimiser votre espace — {month} {year}",
+      "category_hints": [
+        "informatique",
+        "divers"
+      ]
+    },
+    "entryway_decor": {
+      "label_fr": "votre entrée",
+      "title_template": "Top {n} indispensables tech pour {label} en {month} {year}",
+      "page_slug_prefix": "tech-entree",
+      "search_queries": [
+        "surveillance smart camera wifi",
+        "security camera outdoor indoor",
+        "doorbell sonnette wifi video",
+        "motion detection sensor capteur",
+        "alarm securite connectee"
+      ],
+      "trend_keywords": [
+        "entrée",
+        "entryway",
+        "home security",
+        "sonnette",
+        "caméra entrée"
+      ],
+      "image_style": "Modern home entryway, clean minimal design, warm neutral tones, no people, no text",
+      "pinterest_description_fr": "Équipez votre entrée avec ces {n} produits tech — {month} {year}",
+      "category_hints": [
+        "photo-video"
+      ]
+    },
+    "outdoor_living": {
+      "label_fr": "votre extérieur",
+      "title_template": "Top {n} incontournables pour {label} en {month} {year}",
+      "page_slug_prefix": "tech-exterieur",
+      "search_queries": [
+        "enceinte bluetooth extérieur waterproof",
+        "caméra surveillance extérieur",
+        "lampe solaire connectée",
+        "chargeur solaire",
+        "thermomètre connecté extérieur"
+      ],
+      "trend_keywords": [
+        "outdoor",
+        "terrasse",
+        "jardin",
+        "extérieur",
+        "garden tech"
+      ],
+      "image_style": "Cozy modern terrace, outdoor living space, warm evening lights, plants, no people, no text",
+      "pinterest_description_fr": "{n} produits tech pour profiter de votre extérieur — {month} {year}",
+      "category_hints": [
+        "divers",
+        "photo-video"
+      ]
+    },
+    "cozy_lighting": {
+      "label_fr": "l'ambiance lumineuse",
+      "title_template": "Top {n} solutions d'éclairage pour {label} en {month} {year}",
+      "page_slug_prefix": "eclairage-ambiance",
+      "search_queries": [
+        "ampoule LED connectée couleur",
+        "lampe bureau LED",
+        "guirlande lumineuse LED",
+        "veilleuse lampe chevet",
+        "ruban LED connecté"
+      ],
+      "trend_keywords": [
+        "cozy lighting",
+        "ambiance lumière",
+        "LED",
+        "smart light",
+        "lampe design"
+      ],
+      "image_style": "Warm cozy interior with beautiful ambient lighting, golden hour aesthetic, no people, no text",
+      "pinterest_description_fr": "{n} solutions d'éclairage pour créer l'ambiance parfaite — {month} {year}",
+      "category_hints": [
+        "divers",
+        "tv-hifi"
+      ]
+    },
+    "closet_organization": {
+      "label_fr": "votre dressing",
+      "title_template": "Top {n} essentiels pour {label} en {month} {year}",
+      "page_slug_prefix": "organisation-dressing",
+      "search_queries": [
+        "lampe LED placard dressing",
+        "détecteur lumineux armoire",
+        "chargeur dressing",
+        "enceinte portable chambre",
+        "caméra sécurité chambre"
+      ],
+      "trend_keywords": [
+        "closet",
+        "dressing",
+        "organisation",
+        "wardrobe",
+        "aesthetic closet"
+      ],
+      "image_style": "Organized modern walk-in closet, clean white shelves, warm lighting, minimal aesthetic, no text",
+      "pinterest_description_fr": "{n} produits pour un dressing organisé et connecté — {month} {year}",
+      "category_hints": [
+        "divers"
+      ]
+    },
+    "home_office_setup": {
+      "label_fr": "votre bureau à domicile",
+      "title_template": "Top {n} incontournables pour {label} en {month} {year}",
+      "page_slug_prefix": "home-office",
+      "search_queries": [
+        "pc portable home office",
+        "écran moniteur bureau",
+        "clavier souris sans fil",
+        "webcam réunion visio",
+        "casque micro bureau"
+      ],
+      "trend_keywords": [
+        "home office",
+        "télétravail",
+        "work from home",
+        "bureau domicile",
+        "productivity"
+      ],
+      "image_style": "Productive home office, clean desk, dual screen setup, plants, natural light, no people, no text",
+      "pinterest_description_fr": "{n} produits pour un bureau à domicile efficace — {month} {year}",
+      "category_hints": [
+        "informatique",
+        "divers"
+      ]
+    },
+    "kids_room": {
+      "label_fr": "la chambre de votre enfant",
+      "title_template": "Top {n} incontournables pour {label} en {month} {year}",
+      "page_slug_prefix": "chambre-enfant",
+      "search_queries": [
+        "tablette enfant éducatif",
+        "casque audio enfant",
+        "veilleuse lumineuse enfant",
+        "enceinte bluetooth enfant",
+        "caméra bébé surveillance"
+      ],
+      "trend_keywords": [
+        "kids room",
+        "chambre enfant",
+        "enfant",
+        "bébé",
+        "jouet éducatif"
+      ],
+      "image_style": "Bright colorful kids bedroom, playful minimal decor, warm lighting, toys organized, no people, no text",
+      "pinterest_description_fr": "{n} produits tech pour la chambre de votre enfant — {month} {year}",
+      "category_hints": [
+        "divers",
+        "informatique"
+      ]
+    },
+    "eco_home": {
+      "label_fr": "une maison éco-responsable",
+      "title_template": "Top {n} produits éco-tech pour {label} en {month} {year}",
+      "page_slug_prefix": "maison-eco",
+      "search_queries": [
+        "aspirateur robot programmable",
+        "thermostat connecté éco",
+        "prise connectée consommation",
+        "ampoule LED basse consommation",
+        "chargeur solaire portable"
+      ],
+      "trend_keywords": [
+        "eco",
+        "durable",
+        "green home",
+        "économie énergie",
+        "sustainable"
+      ],
+      "image_style": "Modern eco-friendly home interior, natural materials, plants, soft light, no text",
+      "pinterest_description_fr": "{n} produits tech pour une maison plus éco-responsable — {month} {year}",
+      "category_hints": [
+        "divers"
+      ]
+    },
+    "smart_home": {
+      "label_fr": "votre maison connectée",
+      "title_template": "Top {n} gadgets pour {label} en {month} {year}",
+      "page_slug_prefix": "maison-connectee",
+      "search_queries": [
+        "caméra IP surveillance connectée",
+        "prise intelligente WiFi",
+        "ampoule connectée couleur",
+        "capteur détecteur alarme",
+        "sonnette vidéo WiFi"
+      ],
+      "trend_keywords": [
+        "smart home",
+        "domotique",
+        "maison connectée",
+        "IoT",
+        "connected home"
+      ],
+      "image_style": "Modern smart home living room, tech gadgets, minimal design, no people, no text",
+      "pinterest_description_fr": "{n} gadgets pour transformer votre maison en home domotique — {month} {year}",
+      "category_hints": [
+        "photo-video",
+        "divers"
+      ]
+    },
+    "gaming_setup": {
+      "label_fr": "votre setup gaming",
+      "title_template": "Top {n} essentiels pour {label} en {month} {year}",
+      "page_slug_prefix": "setup-gaming",
+      "search_queries": [
+        "souris gaming RGB",
+        "casque gaming son",
+        "clavier mécanique gaming",
+        "tapis souris gaming XXL",
+        "écran moniteur 144Hz"
+      ],
+      "trend_keywords": [
+        "gaming setup",
+        "battlestation",
+        "gaming room",
+        "rgb gaming",
+        "setup gamer"
+      ],
+      "image_style": "Epic dark RGB gaming setup, multiple screens, mechanical keyboard, no people, no text",
+      "pinterest_description_fr": "{n} produits gaming incontournables pour votre setup — {month} {year}",
+      "category_hints": [
+        "gaming",
+        "informatique"
+      ]
+    },
+    "audio_hi_fi": {
+      "label_fr": "votre expérience audio",
+      "title_template": "Top {n} produits audio pour {label} en {month} {year}",
+      "page_slug_prefix": "audio-hifi",
+      "search_queries": [
+        "enceinte bluetooth nomade",
+        "casque audio sans fil",
+        "barre de son TV",
+        "écouteurs true wireless",
+        "amplificateur enceinte HiFi"
+      ],
+      "trend_keywords": [
+        "audio",
+        "hifi",
+        "casque",
+        "enceinte",
+        "music setup"
+      ],
+      "image_style": "High-end audio setup, premium speakers, minimal room, ambient warm lighting, no text",
+      "pinterest_description_fr": "{n} produits audio pour une expérience sonore supreme — {month} {year}",
+      "category_hints": [
+        "tv-hifi"
+      ]
+    },
+    "mobile_nomade": {
+      "label_fr": "votre vie nomade",
+      "title_template": "Top {n} essentiels tech pour {label} en {month} {year}",
+      "page_slug_prefix": "tech-nomade",
+      "search_queries": [
+        "smartphone 5G performant",
+        "chargeur rapide portable",
+        "coque protection robuste",
+        "écouteurs true wireless sport",
+        "powerbank batterie externe"
+      ],
+      "trend_keywords": [
+        "nomade",
+        "travel tech",
+        "smartphone",
+        "on the go",
+        "accessories"
+      ],
+      "image_style": "Travel lifestyle flat lay, minimal tech accessories, coffee cup, modern aesthetic, no text",
+      "pinterest_description_fr": "{n} produits tech indispensables pour votre vie nomade — {month} {year}",
+      "category_hints": [
+        "smartphone",
+        "informatique",
+        "divers"
+      ]
+    }
+  },
+  "seasonal_boost": {
+    "12-01": [
+      "smart_home",
+      "cozy_lighting",
+      "home_office_setup",
+      "gaming_setup",
+      "audio_hi_fi",
+      "bedroom_essentials"
+    ],
+    "02-02": [
+      "bedroom_essentials",
+      "cozy_lighting",
+      "home_office_setup",
+      "eco_home",
+      "cable_management"
+    ],
+    "03-04": [
+      "outdoor_living",
+      "eco_home",
+      "entryway_decor",
+      "bathroom_storage",
+      "kids_room"
+    ],
+    "05-05": [
+      "outdoor_living",
+      "mobile_nomade",
+      "eco_home",
+      "small_space_solutions"
+    ],
+    "06-08": [
+      "outdoor_living",
+      "mobile_nomade",
+      "audio_hi_fi",
+      "smart_home"
+    ],
+    "09-09": [
+      "home_office_setup",
+      "desk_organization",
+      "gaming_setup",
+      "kids_room",
+      "cable_management"
+    ],
+    "10-11": [
+      "cozy_lighting",
+      "living_room_storage",
+      "audio_hi_fi",
+      "smart_home",
+      "gaming_setup"
+    ]
+  },
+  "_weights": {
+    "_comment": "Popularité relative sur Pinterest FR. Multiplicateur de base avant boost saisonnier.",
+    "bedroom_essentials": 1.3,
+    "living_room_storage": 1.4,
+    "kitchen_organization": 1.3,
+    "desk_organization": 1.4,
+    "cable_management": 1.1,
+    "bathroom_storage": 1.2,
+    "small_space_solutions": 1.3,
+    "entryway_decor": 1.2,
+    "outdoor_living": 1.3,
+    "cozy_lighting": 1.3,
+    "closet_organization": 1.2,
+    "home_office_setup": 1.5,
+    "kids_room": 1.1,
+    "eco_home": 1.0,
+    "smart_home": 1.4,
+    "gaming_setup": 1.5,
+    "audio_hi_fi": 1.3,
+    "mobile_nomade": 1.2
+  },
+  "last_used": {}
+}
