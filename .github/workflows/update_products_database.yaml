@@ -79,9 +79,7 @@ jobs:
           path: ~/.cache/huggingface
           key: ${{ runner.os }}-hf-bge-m3
 
-      - name: Install dependencies
-        shell: bash
-        run: pip install requests python-dotenv sentence-transformers tenacity
+        run: pip install -r requirements.txt
 
       # ── 1. Import flux Awin ──────────────────────────────────────────────
       - name: Import Awin feeds (incremental)
