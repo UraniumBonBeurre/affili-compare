@@ -87,10 +87,12 @@ jobs:
           restore-keys: ${{ runner.os }}-pip-
 
       - name: Install dependencies
+        shell: bash
         run: pip install requests python-dotenv Pillow boto3
 
       # ── Génération articles ──────────────────────────────────────────────
       - name: Generate Top Articles
+        shell: bash
         run: |
           ARGS=""
           # nb_articles (prioritaire sur count)
@@ -122,11 +124,13 @@ jobs:
       # ── Pins pour les articles sans pin ──────────────────────────────────
       - name: Create & Publish Pins
         if: ${{ github.event.inputs.dry_run != 'true' }}
+        shell: bash
         run: python3 create_and_post_pins.py
 
       # ── Commit taxonomy (last_used update) ──────────────────────────────
       - name: Commit taxonomy updates
         if: ${{ github.event.inputs.dry_run != 'true' }}
+        shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -137,6 +141,7 @@ jobs:
       # ── Résumé ──────────────────────────────────────────────────────────
       - name: Summary
         if: always()
+        shell: bash
         run: |
           echo "### Top Articles — $(date '+%Y-%m-%d %H:%M UTC')" >> $GITHUB_STEP_SUMMARY
           echo "- Count    : ${{ github.event.inputs.nb_articles || github.event.inputs.count || 'default' }}" >> $GITHUB_STEP_SUMMARY

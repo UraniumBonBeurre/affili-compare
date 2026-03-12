@@ -80,11 +80,13 @@ jobs:
           key: ${{ runner.os }}-hf-bge-m3
 
       - name: Install dependencies
+        shell: bash
         run: pip install requests python-dotenv sentence-transformers
 
       # ── 1. Import flux Awin ──────────────────────────────────────────────
       - name: Import Awin feeds (incremental)
         if: ${{ github.event.inputs.skip_import != 'true' }}
+        shell: bash
         env:
           IMPORT_MODE:        ${{ github.event.inputs.mode || 'update' }}
           MAX_PER_MERCHANT:   ${{ github.event.inputs.max_per_merchant || '1000' }}
@@ -93,15 +95,18 @@ jobs:
       # ── 2. Classification LLM ───────────────────────────────────────────
       - name: Classify new products (LLM)
         if: ${{ github.event.inputs.skip_classification != 'true' }}
+        shell: bash
         run: python3 classification.py
 
       # ── 3. Embeddings ───────────────────────────────────────────────────
       - name: Generate embeddings (new products)
         if: ${{ github.event.inputs.skip_embeddings != 'true' }}
+        shell: bash
         run: python3 create_embeddings.py
       # ── 4. Publication Pinterest (optionnelle) ─────────────────────────
       - name: Generate & post Top Articles to Pinterest
         if: ${{ github.event.inputs.publish_pinterest == 'true' }}
+        shell: bash
         env:
           OLLAMA_CLOUD_API_KEY:   ${{ secrets.OLLAMA_CLOUD_API_KEY }}
           OLLAMA_CLOUD_HOST:      ${{ secrets.OLLAMA_CLOUD_HOST }}
@@ -119,6 +124,7 @@ jobs:
       # ── Résumé ──────────────────────────────────────────────────────────
       - name: Summary
         if: always()
+        shell: bash
         run: |
           echo "### Update Products — $(date '+%Y-%m-%d %H:%M UTC')" >> $GITHUB_STEP_SUMMARY
           echo "- Mode    : ${{ github.event.inputs.mode || 'update' }}" >> $GITHUB_STEP_SUMMARY
