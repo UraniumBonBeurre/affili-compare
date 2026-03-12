@@ -58,8 +58,6 @@ jobs:
       NEXT_PUBLIC_SUPABASE_URL:  ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
       SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
       OLLAMA_CLOUD_API_KEY:      ${{ secrets.OLLAMA_CLOUD_API_KEY }}
-      OLLAMA_CLOUD_HOST:         ${{ secrets.OLLAMA_CLOUD_HOST }}
-      OLLAMA_CLOUD_MODEL:        ${{ secrets.OLLAMA_CLOUD_MODEL }}
       HF_API_TOKEN:              ${{ secrets.HF_API_TOKEN }}
       PINTEREST_ACCESS_TOKEN:    ${{ secrets.PINTEREST_ACCESS_TOKEN }}
       PINTEREST_BOARD_ID:        ${{ secrets.PINTEREST_BOARD_ID }}

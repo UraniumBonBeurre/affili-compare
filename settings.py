@@ -48,12 +48,12 @@ AWIN_FEED_ID_RDC: str = os.environ.get("AWIN_FEED_ID_RDC", "")
 
 # Google AI (classification)
 GOOGLE_AI_API_KEY: str = os.environ.get("GOOGLE_AI_API_KEY", "")
-GOOGLE_AI_MODEL: str = os.environ.get("GOOGLE_AI_MODEL", CLASSIFICATION_LLM)
+GOOGLE_AI_MODEL: str = CLASSIFICATION_LLM
 
 # Ollama Cloud (articles + pins text)
 OLLAMA_CLOUD_API_KEY: str = os.environ.get("OLLAMA_CLOUD_API_KEY", "")
-OLLAMA_CLOUD_HOST: str = os.environ.get("OLLAMA_CLOUD_HOST", "https://api.ollama.com").rstrip("/")
-OLLAMA_CLOUD_MODEL: str = os.environ.get("OLLAMA_CLOUD_MODEL", ARTICLES_WRITING_LLM)
+OLLAMA_CLOUD_HOST: str = "https://api.ollama.com"
+OLLAMA_CLOUD_MODEL: str = ARTICLES_WRITING_LLM
 OLLAMA_CLOUD_PINS_MODEL: str = os.environ.get("OLLAMA_CLOUD_PINS_MODEL", PINS_WRITING_LLM)
 
 # HuggingFace (image generation)
