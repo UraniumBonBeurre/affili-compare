@@ -42,7 +42,7 @@ export function getCategoryMeta(category: Category, locale: Locale): SeoMeta {
 /** Schema.org ItemList pour un comparatif */
 export function buildItemListSchema(
   comparison: Comparison,
-  products: { name: string; url: string; price: number | null; currency: string; rating: number | null }[],
+  products: { name: string; url: string; price: number | null; currency: string }[],
   locale: Locale
 ) {
   const titles: Record<Locale, string | null> = { fr: comparison.title_fr, en: comparison.title_en, de: comparison.title_de };
@@ -61,14 +61,6 @@ export function buildItemListSchema(
           price:           p.price,
           priceCurrency:   p.currency,
           availability:    "https://schema.org/InStock",
-        },
-      }),
-      ...(p.rating && {
-        aggregateRating: {
-          "@type":       "AggregateRating",
-          ratingValue:   p.rating,
-          bestRating:    5,
-          worstRating:   1,
         },
       }),
     })),

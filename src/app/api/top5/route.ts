@@ -15,6 +15,7 @@ interface TopArticleRow {
   slug: string;
   title: string;
   content: string | Record<string, unknown>;
+  pin_images: string | string[] | null;
   created_at: string;
 }
 
@@ -34,7 +35,7 @@ export async function GET(req: Request) {
 
   let query = supabase
     .from("top_articles")
-    .select("id, slug, title, content, created_at")
+    .select("id, slug, title, content, pin_images, created_at")
     .gte("created_at", `${month}-01`)
     .lte("created_at", `${month}-31`)
     .order("created_at", { ascending: false })
@@ -48,7 +49,12 @@ export async function GET(req: Request) {
 
   const articles = (data as TopArticleRow[] ?? []).map((row) => {
     const c = parseContent(row.content);
-    const isEn = locale === "en";
+    // Normalise pin_images to a string array
+    let pinImages: string[] = [];
+    if (Array.isArray(row.pin_images)) pinImages = row.pin_images as string[];
+    else if (typeof row.pin_images === "string") {
+      try { pinImages = JSON.parse(row.pin_images); } catch { /* ignore */ }
+    }
     return {
       id:            row.id,
       slug:          row.slug,
@@ -60,6 +66,7 @@ export async function GET(req: Request) {
       intro_en:      (c.intro_en as string) ?? null,
       products:      (c.products as unknown[]) ?? [],
       month:         (c.month as string) ?? month,
+      pin_images:    pinImages,
     };
   }).filter((a) => !category || a.category_slug === category);
 

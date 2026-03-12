@@ -138,7 +138,7 @@ export function Top5Section({ locale = "fr" }: Props) {
               setFilter(e.target.value as ThemeKey);
               setSelected(null);
             }}
-            className="appearance-none pl-3 pr-8 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-sm font-medium text-gray-800 dark:text-gray-200 cursor-pointer focus:ring-2 focus:ring-emerald-500 focus:outline-none shadow-sm"
+            className="appearance-none pl-3 pr-8 py-2 rounded-xl border border-stone-200 bg-white/70 backdrop-blur-sm text-sm font-medium text-stone-700 cursor-pointer focus:ring-2 focus:ring-stone-400 focus:outline-none shadow-sm"
           >
             {availableThemes.map((t) => (
               <option key={t.key} value={t.key}>
@@ -166,8 +166,8 @@ export function Top5Section({ locale = "fr" }: Props) {
               className={cn(
                 "flex items-center gap-3 p-4 rounded-xl bg-white dark:bg-gray-900 border shadow-sm text-left transition-all",
                 isActive
-                  ? "border-emerald-500 dark:border-emerald-500 ring-2 ring-emerald-200 dark:ring-emerald-800"
-                  : "border-gray-100 dark:border-gray-800 hover:border-emerald-300 dark:hover:border-emerald-700 hover:shadow"
+                  ? "border-stone-500 ring-2 ring-stone-200"
+                  : "border-stone-100 hover:border-stone-300 hover:shadow"
               )}
             >
               <span className="text-xl shrink-0">{icon}</span>
@@ -180,7 +180,7 @@ export function Top5Section({ locale = "fr" }: Props) {
                 </p>
               </div>
               {isActive && (
-                <span className="shrink-0 w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center">
+                <span className="shrink-0 w-5 h-5 rounded-full bg-stone-700 text-white flex items-center justify-center">
                   <X size={11} />
                 </span>
               )}
@@ -193,12 +193,12 @@ export function Top5Section({ locale = "fr" }: Props) {
       {selected && (
         <div
           ref={detailRef}
-          className="mt-8 rounded-2xl bg-white dark:bg-gray-900 border-2 border-emerald-300 dark:border-emerald-700 shadow-xl overflow-hidden scroll-mt-8"
+          className="mt-8 rounded-2xl bg-white/80 backdrop-blur-sm border-2 border-stone-300 shadow-xl overflow-hidden scroll-mt-8"
         >
           {/* Header du panneau */}
-          <div className="flex items-start justify-between gap-4 px-6 py-5 border-b border-gray-100 dark:border-gray-800 bg-emerald-50/50 dark:bg-emerald-950/20">
+          <div className="flex items-start justify-between gap-4 px-6 py-5 border-b border-stone-100 bg-stone-50/50">
             <div>
-              <p className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wide mb-1">
+              <p className="text-xs font-semibold text-stone-500 uppercase tracking-wide mb-1">
                 {selected.subcategory}
               </p>
               <h3 className="text-lg font-extrabold text-gray-900 dark:text-white leading-tight">
@@ -211,7 +211,7 @@ export function Top5Section({ locale = "fr" }: Props) {
               )}
               <a
                 href={`/${locale}/top/${selected.slug}`}
-                className="inline-block mt-3 text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:underline"
+                className="inline-block mt-3 text-xs font-semibold text-stone-600 hover:underline"
               >
                 Lire l&apos;article complet →
               </a>
@@ -230,7 +230,7 @@ export function Top5Section({ locale = "fr" }: Props) {
             {selected.products.map((product, idx) => (
               <li key={product.id} className="flex gap-4 items-start px-6 py-5">
                 {/* Rang */}
-                <span className="shrink-0 w-7 h-7 mt-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 text-sm font-bold flex items-center justify-center">
+                <span className="shrink-0 w-7 h-7 mt-0.5 rounded-full bg-stone-100 text-stone-700 text-sm font-bold flex items-center justify-center">
                   {idx + 1}
                 </span>
 
@@ -266,7 +266,7 @@ export function Top5Section({ locale = "fr" }: Props) {
                       </span>
                     )}
                     {product.price != null && (
-                      <span className="text-sm font-extrabold text-emerald-600 dark:text-emerald-400">
+                      <span className="text-sm font-extrabold text-stone-700">
                         {product.price}€
                       </span>
                     )}
@@ -275,7 +275,7 @@ export function Top5Section({ locale = "fr" }: Props) {
                         href={product.url}
                         target="_blank"
                         rel="noopener noreferrer sponsored"
-                        className="ml-auto flex items-center gap-1 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 px-3 py-1.5 rounded-lg transition-colors shrink-0"
+                        className="ml-auto flex items-center gap-1 text-xs font-semibold text-white bg-stone-700 hover:bg-stone-600 px-3 py-1.5 rounded-lg transition-colors shrink-0"
                       >
                         Voir l&apos;offre <ExternalLink size={11} />
                       </a>

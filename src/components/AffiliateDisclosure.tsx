@@ -1,14 +1,21 @@
-import { Info } from "lucide-react";
-import { useTranslations } from "next-intl";
+"use client";
+import { useState } from "react";
 
 export function AffiliateDisclosure() {
-  const t = useTranslations("site");
+  const [closed, setClosed] = useState(false);
+  if (closed) return null;
   return (
-    <div className="w-full bg-amber-50 border-b border-amber-200 px-4 py-2">
-      <p className="max-w-5xl mx-auto flex items-start gap-2 text-xs text-amber-800">
-        <Info className="w-4 h-4 shrink-0 mt-0.5" />
-        {t("affiliateDisclosure")}
+    <div className="w-full bg-white/60 backdrop-blur-sm border-b border-stone-200/40 px-4 py-2 flex items-center justify-between gap-4">
+      <p className="text-[11px] text-stone-400 max-w-3xl">
+        Ce site contient des liens affiliés. Commission sans surcoût pour vous.
       </p>
+      <button
+        onClick={() => setClosed(true)}
+        className="text-stone-400 hover:text-stone-600 transition-colors text-xs shrink-0"
+        aria-label="Fermer"
+      >
+        ✕
+      </button>
     </div>
   );
 }

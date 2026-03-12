@@ -2,59 +2,94 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-
 @layer base {
   :root {
-    --brand: 22 163 74;      /* green-600 */
-    --brand-light: 240 253 244;
+    --brand: 120 113 108;   /* stone-500 */
     --radius: 16px;
   }
 
-  body {
-    @apply bg-[#F8F9FA] text-gray-900 antialiased;
-    font-family: 'Inter', system-ui, sans-serif;
+  html {
+    color-scheme: light;
   }
 
-  h1,h2,h3 { @apply tracking-tight; }
+  body {
+    @apply text-stone-800 antialiased;
+    font-family: var(--font-dm-sans), system-ui, sans-serif;
+    background: transparent;
+  }
+
+  h1, h2, h3 { @apply tracking-tight; }
 
   /* Scrollbar fine */
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { @apply bg-gray-100; }
-  ::-webkit-scrollbar-thumb { @apply bg-gray-300 rounded-full; }
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { @apply bg-stone-400/50 rounded-full; }
 }
 
 @layer components {
-  /* Carte produit neumorphique légère */
+  /* Carte surface translucide */
   .card {
-    @apply bg-white rounded-2xl border border-gray-100 shadow-sm transition-all duration-200;
+    @apply bg-white/70 backdrop-blur-md rounded-2xl border border-stone-200/60 shadow-sm transition-all duration-200;
   }
-  .card:hover { box-shadow: 0 4px 24px -2px rgba(0,0,0,0.10); }
-
-  /* Badge "Notre sélection" */
-  .badge-pick {
-    @apply inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest;
-  }
+  .card:hover { @apply border-stone-300 shadow-lg; }
 
   /* Bouton marchand */
   .btn-merchant {
     @apply flex items-center justify-between gap-3 px-4 py-3 rounded-xl text-white font-bold text-sm
            transition-all duration-150 active:scale-[0.97] hover:brightness-110 shadow-sm;
   }
-  .btn-merchant:focus-visible { @apply outline-none ring-2 ring-offset-2 ring-brand-600; }
+  .btn-merchant:focus-visible { @apply outline-none ring-2 ring-offset-2 ring-stone-500; }
 
   /* Étoiles */
-  .stars span { @apply text-amber-400; }
+  .stars span { @apply text-amber-500; }
 
   /* Prose guide d'achat */
-  .buying-guide h2 { @apply text-xl font-bold text-gray-900 mt-10 mb-3 pb-2 border-b border-gray-200; }
-  .buying-guide h3 { @apply text-lg font-semibold text-gray-800 mt-6 mb-2; }
-  .buying-guide p  { @apply text-gray-600 leading-relaxed mb-4; }
-  .buying-guide ul { @apply list-disc pl-6 space-y-1.5 mb-4 text-gray-600; }
-  .buying-guide strong { @apply text-gray-900 font-semibold; }
+  .buying-guide h2 { @apply text-xl font-bold text-stone-800 mt-10 mb-3 pb-2 border-b border-stone-200; }
+  .buying-guide h3 { @apply text-lg font-semibold text-stone-700 mt-6 mb-2; }
+  .buying-guide p  { @apply text-stone-600 leading-relaxed mb-4; }
+  .buying-guide ul { @apply list-disc pl-6 space-y-1.5 mb-4 text-stone-600; }
+  .buying-guide strong { @apply text-stone-800 font-semibold; }
+
+  /* Article body (rich HTML with affiliate links + product images) */
+  .article-body p { @apply mb-4 leading-relaxed; }
+  .article-body h3 { @apply text-lg font-bold text-stone-800 mt-6 mb-2; }
+  .article-body strong { @apply text-stone-800 font-semibold; }
+  .article-body em { @apply italic text-stone-500; }
+  .article-body a {
+    @apply text-amber-700 underline underline-offset-2 decoration-amber-400/50
+           hover:text-amber-900 hover:decoration-amber-600 transition-colors font-medium;
+  }
+  .product-inline-img-wrap {
+    @apply my-5 rounded-xl overflow-hidden max-h-64 flex items-center justify-center bg-stone-100;
+  }
+  .product-inline-img {
+    @apply w-full max-h-64 object-contain;
+  }
+
+  /* Quinconce article layout — un bloc par produit
+     Avec image  : [img carré | texte] ou [texte | img carré] en alternance
+     Sans image  : paragraphe pleine largeur */
+  .product-block {
+    @apply flex gap-5 my-7 items-start;
+  }
+  .product-block-left   { @apply flex-row; }
+  .product-block-right  { @apply flex-row-reverse; }
+  .product-block-noimg  { @apply block my-5; }
+  .product-block-media  {
+    @apply flex-none w-[150px] sm:w-[180px] flex flex-col items-center gap-2;
+  }
+  .product-block-img {
+    @apply w-full aspect-square object-contain bg-white rounded-xl border border-stone-200/70 shadow-sm p-1.5;
+  }
+  .product-block-cta {
+    @apply text-[11px] bg-amber-600 text-white px-3 py-1.5 rounded-lg
+           hover:bg-amber-700 transition-colors font-semibold inline-block mt-2;
+  }
+  .product-block-text   { @apply flex-1 min-w-0; }
+  .product-block-text p { @apply text-stone-700 leading-relaxed; }
 
   /* Disclosure légal */
   .disclosure-bar {
-    @apply w-full bg-amber-50 border-b border-amber-200 px-4 py-2.5;
+    @apply w-full bg-white/60 backdrop-blur-sm border-b border-stone-200/50 px-4 py-2;
   }
 }

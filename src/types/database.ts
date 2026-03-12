@@ -54,21 +54,9 @@ export interface Database {
           id: string;
           name: string;
           brand: string;
-          image_r2_key: string | null;
           image_url: string | null;
-          rating: number | null;
-          review_count: number;
-          badge: "best-value" | "premium" | "budget" | null;
-          pros_fr: Json;
-          cons_fr: Json;
-          pros_en: Json;
-          cons_en: Json;
-          ean: string | null;
-          amazon_asin: string | null;
-          amazon_url: string | null;
           release_date: string | null;
           created_at: string;
-          // Colonnes ajoutées par les migrations
           external_id: string | null;
           category_slug: string | null;
           embedding: number[] | null;
@@ -80,11 +68,9 @@ export interface Database {
           in_stock: boolean | null;
           affiliate_url: string | null;
           merchant_category: string | null;
-          mpn: string | null;
           active: boolean | null;
           last_price_update: string | null;
           description: string | null;
-          release_date: string | null;
         };
         Insert: Omit<Database["public"]["Tables"]["products"]["Row"], "id" | "created_at"> & { id?: string; created_at?: string };
         Update: Partial<Database["public"]["Tables"]["products"]["Insert"]>;
@@ -117,6 +103,19 @@ export interface Database {
         };
         Insert: Omit<Database["public"]["Tables"]["affiliate_links"]["Row"], "id" | "created_at" | "last_checked"> & { id?: string; created_at?: string; last_checked?: string };
         Update: Partial<Database["public"]["Tables"]["affiliate_links"]["Insert"]>;
+      };
+      top_articles: {
+        Row: {
+          id: string;
+          slug: string;
+          url: string | null;
+          title: string;
+          content: Json | null;
+          pin_images: Json | null;
+          created_at: string;
+        };
+        Insert: Omit<Database["public"]["Tables"]["top_articles"]["Row"], "id" | "created_at"> & { id?: string; created_at?: string };
+        Update: Partial<Database["public"]["Tables"]["top_articles"]["Insert"]>;
       };
       pinterest_pins: {
         Row: {
@@ -153,8 +152,6 @@ export interface Database {
           name: string;
           brand: string | null;
           image_url: string | null;
-          rating: number | null;
-          review_count: number | null;
           category_slug: string | null;
           affiliate_url: string | null;
           price: number | null;
@@ -175,16 +172,15 @@ export type Comparison     = Database["public"]["Tables"]["comparisons"]["Row"];
 export type Product        = Database["public"]["Tables"]["products"]["Row"];
 export type AffiliateLink  = Database["public"]["Tables"]["affiliate_links"]["Row"];
 export type PinterestPin   = Database["public"]["Tables"]["pinterest_pins"]["Row"];
+export type TopArticle     = Database["public"]["Tables"]["top_articles"]["Row"];
 
 export type FaqItem = { question: string; answer: string };
 
-export type Locale = "fr" | "en" | "de";
+export type Locale = "fr" | "en";
 
 /** Enriched product used in comparison pages */
 export interface ProductWithLinks extends Product {
   links: AffiliateLink[];
-  pros: string[];
-  cons: string[];
 }
 
 /** Full comparison page data */

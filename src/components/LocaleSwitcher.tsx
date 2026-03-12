@@ -4,34 +4,32 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const LOCALES = [
-  { code: "fr", flag: "🇫🇷", label: "FR" },
-  { code: "en", flag: "🇬🇧", label: "EN" },
-  { code: "de", flag: "🇩🇪", label: "DE" },
+  { code: "fr", label: "FR" },
+  { code: "en", label: "EN" },
 ] as const;
 
 export function LocaleSwitcher({ locale }: { locale: string }) {
-  const pathname = usePathname(); // e.g. "/fr/informatique/meilleures-souris"
+  const pathname = usePathname();
 
   function getHref(targetCode: string) {
-    // segments: ["", "fr", "informatique", ...]
     const segments = pathname.split("/");
     segments[1] = targetCode;
     return segments.join("/");
   }
 
   return (
-    <div className="flex items-center gap-1">
-      {LOCALES.map(({ code, flag, label }) => (
+    <div className="flex items-center gap-1 bg-stone-100/80 rounded-lg p-0.5">
+      {LOCALES.map(({ code, label }) => (
         <Link
           key={code}
           href={getHref(code)}
-          className={`px-2 py-1 text-xs rounded-md font-medium transition-colors ${
+          className={`px-2.5 py-1 text-xs rounded-md font-semibold transition-colors ${
             code === locale
-              ? "bg-emerald-600 text-white"
-              : "text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
+              ? "bg-stone-700 text-white shadow-sm"
+              : "text-stone-400 hover:text-stone-700"
           }`}
         >
-          {flag} {label}
+          {label}
         </Link>
       ))}
     </div>

@@ -16,8 +16,6 @@ export interface SearchResultItem {
   name: string;
   brand: string | null;
   image_url: string | null;
-  rating: number | null;
-  review_count: number;
   links: SearchAffiliateLink[];
   comparison_slug?: string | null;
   category_slug?: string | null;

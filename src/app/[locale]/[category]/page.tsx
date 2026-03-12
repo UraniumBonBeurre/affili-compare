@@ -74,7 +74,7 @@ export async function generateStaticParams() {
   );
 }
 
-export const revalidate = 3600;
+export const revalidate = 0;
 
 // ─── Page ──────────────────────────────────────────────────────────────────────
 export default async function CategoryPage({ params }: Props) {
@@ -105,8 +105,8 @@ export default async function CategoryPage({ params }: Props) {
   }
 
   return (
-    <>
-      {/* Breadcrumb + title */}
+    <div className="py-8">
+      {/* Breadcrumb + title */
       <div className="mb-8">
         <p className="text-sm text-gray-400 mb-2">
           <Link href={`/${locale}`} className="hover:underline">Accueil</Link>
@@ -167,6 +167,6 @@ export default async function CategoryPage({ params }: Props) {
           </div>
         </section>
       ))}
-    </>
+    </div>
   );
 }

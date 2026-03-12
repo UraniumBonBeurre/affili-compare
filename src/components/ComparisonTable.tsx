@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { ExternalLink, Star } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PARTNER_COLORS, PARTNER_LABELS, getLinksForLocale, cheapestLink, formatPrice } from "@/lib/affiliate-links";
 import type { ProductWithLinks, Locale } from "@/types/database";
@@ -17,29 +17,6 @@ const RANK_STYLE: Record<number, string> = {
   2: "bg-gray-300 text-gray-700",
   3: "bg-amber-600/70 text-white",
 };
-
-function Stars({ rating, reviewCount }: { rating: number | null; reviewCount?: number }) {
-  if (rating == null) {
-    return <p className="text-[10px] text-gray-400 italic">Aucune évaluation</p>;
-  }
-  return (
-    <div className="flex items-center gap-0.5">
-      {[1, 2, 3, 4, 5].map((s) => (
-        <Star
-          key={s}
-          className={cn(
-            "w-3 h-3",
-            s <= Math.round(rating) ? "fill-amber-400 text-amber-400" : "fill-gray-200 text-gray-200"
-          )}
-        />
-      ))}
-      <span className="ml-1 text-xs font-semibold text-gray-600">{rating.toFixed(1)}</span>
-      {reviewCount != null && reviewCount > 0 && (
-        <span className="ml-0.5 text-[10px] text-gray-400">({reviewCount.toLocaleString()})</span>
-      )}
-    </div>
-  );
-}
 
 function ReleaseDate({ date }: { date: string | null }) {
   if (!date) return null;
@@ -125,7 +102,6 @@ function ProductRow({
       <td className="py-4 pr-6 align-middle min-w-[180px]">
         <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-0.5">{product.brand}</p>
         <p className="font-bold text-gray-900 text-sm leading-snug mb-1">{product.name}</p>
-        <Stars rating={product.rating} reviewCount={product.review_count} />
         <ReleaseDate date={product.release_date ?? null} />
       </td>
 
@@ -162,7 +138,7 @@ function ProductRow({
 }
 
 export function ComparisonTable({ products, locale }: ComparisonTableProps) {
-  const [sort, setSort] = useState<"position" | "price" | "rating" | "score">("position");
+  const [sort, setSort] = useState<"position" | "price">("position");
 
   const sorted = [...products].sort((a, b) => {
     if (sort === "price") {
@@ -170,30 +146,12 @@ export function ComparisonTable({ products, locale }: ComparisonTableProps) {
       const pb = Math.min(...(b.links.filter((l) => l.price).map((l) => l.price!) ?? [Infinity]));
       return (pa ?? Infinity) - (pb ?? Infinity);
     }
-    if (sort === "rating") {
-      return (b.rating ?? 0) - (a.rating ?? 0);
-    }
-    if (sort === "score") {
-      // Score = note 60% + (prix inversé normalisé) 40%
-      const prices = products.map((p) => Math.min(...(p.links.filter((l) => l.price).map((l) => l.price!) ?? [Infinity])));
-      const maxP   = Math.max(...prices.filter((p) => p !== Infinity));
-      const minP   = Math.min(...prices.filter((p) => p !== Infinity));
-      const range  = maxP - minP || 1;
-      const priceScore = (x: number) => x === Infinity ? 0 : 1 - (x - minP) / range;
-      const pa = Math.min(...(a.links.filter((l) => l.price).map((l) => l.price!) ?? [Infinity]));
-      const pb = Math.min(...(b.links.filter((l) => l.price).map((l) => l.price!) ?? [Infinity]));
-      const sa = (a.rating ?? 0) / 5 * 0.6 + priceScore(pa) * 0.4;
-      const sb2 = (b.rating ?? 0) / 5 * 0.6 + priceScore(pb) * 0.4;
-      return sb2 - sa;
-    }
     return 0; // keep original position
   });
 
   const SORTS = [
     { key: "position" as const, label: "Classement" },
     { key: "price"    as const, label: "Prix ↑" },
-    { key: "rating"   as const, label: "Note ↓" },
-    { key: "score"    as const, label: "Meilleur rapport" },
   ];
 
   return (

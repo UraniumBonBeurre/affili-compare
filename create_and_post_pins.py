@@ -130,6 +130,15 @@ def _gradient_bg(top_color=(14, 20, 36), bot_color=(22, 32, 56)):
     return img
 
 
+def _get_bg(image_style: str, top_color=(14, 20, 36), bot_color=(22, 32, 56)) -> "Image.Image":
+    """Retourne l'image de fond : placeholder.jpg en test, HF sinon, gradient en dernier recours."""
+    if not production_workflow:
+        ph = ROOT / "public" / "placeholder.jpg"
+        if ph.exists():
+            return Image.open(ph).convert("RGB").resize((PIN_W, PIN_H), Image.LANCZOS)
+    return _generate_bg_hf(image_style) or _gradient_bg(top_color, bot_color)
+
+
 def _generate_bg_hf(prompt: str) -> Optional["Image.Image"]:
     if not HF_API_TOKEN:
         return None
@@ -174,7 +183,7 @@ def _make_hero(title: str, nb: int, niche_label: str,
                month_fr: str, year: str, image_style: str, save_to: Path) -> str:
     ACCENT, WHITE, LGRAY = (16, 185, 129), (255, 255, 255), (200, 220, 240)
     pad = 52
-    bg = _generate_bg_hf(image_style) or _gradient_bg((14, 20, 38), (20, 35, 60))
+    bg = _get_bg(image_style, (14, 20, 38), (20, 35, 60))
     canvas = bg.copy()
     draw = ImageDraw.Draw(canvas)
 
@@ -218,8 +227,7 @@ def _make_spotlight(product: dict, title: str, niche_label: str,
                     month_fr: str, year: str, image_style: str, save_to: Path) -> str:
     ACCENT, WHITE, LGRAY = (16, 185, 129), (255, 255, 255), (190, 210, 230)
     pad = 52
-    bg = _generate_bg_hf(image_style + ", warm afternoon light, cinematic") \
-         or _gradient_bg((28, 22, 48), (18, 14, 38))
+    bg = _get_bg(image_style + ", warm afternoon light, cinematic", (28, 22, 48), (18, 14, 38))
     canvas = bg.copy()
     draw = ImageDraw.Draw(canvas)
 
@@ -384,7 +392,7 @@ def _publish_pin(board_id: str, title: str, description: str,
 def count_pins_today() -> int:
     today_start = datetime.now(timezone.utc).replace(
         hour=0, minute=0, second=0, microsecond=0
-    ).isoformat()
+    ).strftime("%Y-%m-%dT%H:%M:%SZ")
     rows = sb_get("pinterest_pins", f"published_at=gte.{today_start}&select=id")
     return len(rows)
 
@@ -393,7 +401,7 @@ def count_pins_today() -> int:
 
 def fetch_articles_needing_pins(limit: int = 10) -> list[dict]:
     """Trouve les top_articles récents qui n'ont pas encore nb_pins_per_article pins."""
-    cutoff = (datetime.now(timezone.utc) - timedelta(days=30)).isoformat()
+    cutoff = (datetime.now(timezone.utc) - timedelta(days=30)).strftime("%Y-%m-%dT%H:%M:%SZ")
     articles = sb_get(
         "top_articles",
         f"created_at=gte.{cutoff}&select=*&order=created_at.desc&limit={limit * 3}",
@@ -464,14 +472,15 @@ def process_article(article: dict, taxonomy: dict, dry_run: bool = False) -> int
         print("  ⚠️  Pillow non disponible — pip install Pillow")
         return 0
 
+    slug_safe = re.sub(r"[^a-z0-9-]", "", slug.lower())[:42]
+
     # Determine output dir
     if production_workflow:
         out_dir = ROOT / "output" / "top_pins"
     else:
-        out_dir = LOCAL_PINTEREST_DIR
+        out_dir = ROOT / "public" / "local_pins" / slug_safe
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    slug_safe = re.sub(r"[^a-z0-9-]", "", slug.lower())[:42]
     nb_pins = min(nb_pins_per_article, 2)  # max 2 variants
 
     # Generate pin variants
@@ -479,7 +488,7 @@ def process_article(article: dict, taxonomy: dict, dry_run: bool = False) -> int
     variants = []
 
     # Variant 1: Hero
-    hero_path = out_dir / f"{slug_safe}_hero.jpg"
+    hero_path = out_dir / "hero.jpg"
     try:
         print(f"  🖼️  Génération Hero…")
         path = _make_hero(
@@ -494,7 +503,7 @@ def process_article(article: dict, taxonomy: dict, dry_run: bool = False) -> int
 
     # Variant 2: Spotlight (if nb_pins >= 2 and products available)
     if nb_pins >= 2 and products:
-        spot_path = out_dir / f"{slug_safe}_spotlight.jpg"
+        spot_path = out_dir / "spotlight.jpg"
         try:
             print(f"  🖼️  Génération Spotlight…")
             path = _make_spotlight(
@@ -585,6 +594,27 @@ def process_article(article: dict, taxonomy: dict, dry_run: bool = False) -> int
         published = len(pin_paths)
     else:
         print(f"  💾 {len(pin_paths)} visuel(s) sauvés dans {out_dir}/")
+        # Écriture pin.txt
+        pin_lines = [
+            f"SLUG: {slug}",
+            f"LIEN ARTICLE: {url}",
+            "",
+            f"--- DESCRIPTION FR ---",
+            description_fr,
+            "",
+            f"--- DESCRIPTION EN ---",
+            description_en,
+            "",
+            "--- PRODUITS ---",
+        ]
+        for p in products:
+            aff = p.get("affiliate_url") or p.get("url") or "#"
+            pin_lines.append(f"  {p.get('name', '?')} → {aff}")
+        try:
+            (out_dir / "pin.txt").write_text("\n".join(pin_lines), encoding="utf-8")
+            print(f"  📄 pin.txt → {out_dir}/pin.txt")
+        except Exception as e:
+            print(f"  ⚠️  pin.txt: {e}")
         published = len(pin_paths)
 
     return published

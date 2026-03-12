@@ -43,6 +43,10 @@ on:
         description: "Mode simulation (pas d'écriture)"
         type: boolean
         default: false
+      publish_to_pinterest:
+        description: "Publier les pins sur Pinterest + upload R2 (défaut: false)"
+        type: boolean
+        default: false
 
 jobs:
   generate:
@@ -111,6 +115,9 @@ jobs:
           if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
             ARGS="$ARGS --dry-run"
           fi
+          if [ "${{ github.event.inputs.publish_to_pinterest }}" = "true" ]; then
+            ARGS="$ARGS --publish-to-pinterest"
+          fi
           python3 create_and_post_top_products.py $ARGS
 
       # ── Pins pour les articles sans pin ──────────────────────────────────
@@ -140,3 +147,4 @@ jobs:
           echo "- Visuals  : ${{ github.event.inputs.nb_visuals || '2' }} ×2 (FR+EN)" >> $GITHUB_STEP_SUMMARY
           echo "- Niche : ${{ github.event.inputs.niche || 'auto-rotation' }}" >> $GITHUB_STEP_SUMMARY
           echo "- Dry   : ${{ github.event.inputs.dry_run || 'false' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Publish Pinterest: ${{ github.event.inputs.publish_to_pinterest || 'false' }}" >> $GITHUB_STEP_SUMMARY

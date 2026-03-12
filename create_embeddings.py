@@ -43,14 +43,13 @@ def _clean_title(title: str) -> str:
 
 
 def build_rich_text(product: dict) -> str:
-    """brand + title (nettoyé) + catégorie + mpn — pas de préfixe pour BGE-M3."""
+    """brand + title (nettoyé) + catégorie — pas de préfixe pour BGE-M3."""
     brand = product.get("brand") or ""
     name = _clean_title(product.get("name") or "")
     merchant_cat = product.get("merchant_category") or ""
     cat_slug = (product.get("category_slug") or "").replace("-", " ")
     cat_label = merchant_cat or cat_slug
-    mpn = product.get("mpn") or ""
-    return " ".join(p for p in [brand, name, cat_label, mpn] if p)
+    return " ".join(p for p in [brand, name, cat_label] if p)
 
 
 # ── Supabase helpers ─────────────────────────────────────────────────────────
@@ -96,7 +95,7 @@ def main() -> None:
     print(f"   ✓ Modèle chargé en {time.time() - t0:.1f}s")
 
     # Récupérer les produits
-    fields = "select=id,name,brand,category_slug,merchant_category,mpn"
+    fields = "select=id,name,brand,category_slug,merchant_category"
     extra_filter = "" if args.force else "&embedding=is.null"
     products: list[dict] = []
     offset = 0

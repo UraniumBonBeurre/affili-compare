@@ -50,12 +50,12 @@ from settings import (
 # ── Colonnes du flux Awin ────────────────────────────────────────────────────
 FEED_COLUMNS = ",".join([
     "aw_product_id", "product_name", "brand_name",
-    "aw_image_url", "aw_thumb_url",
-    "ean", "search_price", "currency",
+    "aw_image_url", "aw_thumb_url", "merchant_image_url",
+    "search_price", "currency",
     "merchant_deep_link", "aw_deep_link",
     "in_stock", "stock_quantity", "last_updated",
     "category_name", "description", "delivery_cost",
-    "merchant_category", "average_rating", "reviews",
+    "merchant_category",
 ])
 
 MERCHANTS_CONFIG_PATH = ROOT / "src" / "config" / "merchants.json"
@@ -287,42 +287,39 @@ def _build_payload(row: dict, merchant: dict) -> dict | None:
         return None
 
     brand = (row.get("brand_name") or "").strip()
-    image = (row.get("aw_image_url") or row.get("aw_thumb_url") or "").strip()
-    ean = (row.get("ean") or "").strip() or None
+    # Priorité : aw_image_url (proxy Awin) > merchant_image_url (CDN direct) > aw_thumb_url
+    image = (
+        row.get("aw_image_url") or
+        row.get("merchant_image_url") or
+        row.get("aw_thumb_url") or
+        ""
+    ).strip()
+    # Certains flux Awin incluent un " ou %22 en fin d'URL — on nettoie
+    image = image.replace('%22', '').rstrip('"').strip()
     price = _parse_price(row.get("search_price", ""))
     in_stock = _is_in_stock(row)
     aff_url = _tracking_url(row, merchant)
     category_slug = _infer_category_slug(_get_category(row))
     merchant_category = _get_category(row)
 
-    raw_rating = (row.get("average_rating") or "").strip()
-    try:
-        rating = float(raw_rating) if raw_rating else None
-        if rating is not None:
-            rating = round(min(5.0, max(0.0, rating)), 2)
-    except ValueError:
-        rating = None
-
-    try:
-        review_count = int(float(row.get("reviews") or "0"))
-    except (ValueError, TypeError):
-        review_count = 0
+    raw_desc = (row.get("description") or "").strip()
+    description = raw_desc[:2000] if raw_desc else None
 
     return {
         "name": name[:200],
         "brand": (brand or "—")[:100],
         "image_url": image or None,
         "external_id": ext_id,
-        "ean": ean,
         "price": price,
         "currency": "EUR",
-        "rating": rating,
-        "review_count": review_count,
+        "description": description,
         "category_slug": category_slug,
         "merchant_category": merchant_category,
         "merchant_key": merchant["key"],
+        "merchant_name": merchant.get("label") or merchant["key"],
         "affiliate_url": aff_url,
         "in_stock": in_stock,
+        "last_price_update": datetime.now(timezone.utc).isoformat(),
         "active": True,
     }
 
@@ -357,12 +354,70 @@ def _sb_batch_insert(payloads: list[dict], dry_run: bool = False) -> int:
     return total
 
 
+def _sb_batch_upsert(payloads: list[dict], dry_run: bool = False) -> int:
+    """Upsert (insert + update) en utilisant la contrainte unique (external_id, merchant_key)."""
+    if not payloads:
+        return 0
+    if dry_run:
+        for p in payloads:
+            print(f"  [DRY] {p['name'][:72]}  ({p.get('price') or 0:.2f}€)")
+        return len(payloads)
+
+    total = 0
+    for i in range(0, len(payloads), BATCH_SIZE):
+        chunk = payloads[i:i + BATCH_SIZE]
+        try:
+            r = requests.post(
+                f"{SUPABASE_URL}/rest/v1/products",
+                headers=sb_headers({
+                    "Prefer": "resolution=merge-duplicates,return=minimal",
+                    "on-conflict": "external_id,merchant_key",
+                }),
+                json=chunk,
+                timeout=60,
+            )
+            r.raise_for_status()
+            total += len(chunk)
+            print(f"   … {total} produits upsertés")
+        except Exception as e:
+            print(f"  ⚠  Erreur upsert batch {i}–{i+len(chunk)} : {e}")
+    return total
+
+
+def _sb_batch_delete(merchant_key: str, external_ids: set, dry_run: bool = False) -> int:
+    """Supprime les produits dont l'external_id n'est plus dans le flux."""
+    if not external_ids:
+        return 0
+    ids_list = list(external_ids)
+    total = 0
+    for i in range(0, len(ids_list), BATCH_SIZE):
+        chunk = ids_list[i:i + BATCH_SIZE]
+        ids_param = ",".join(f'"{eid}"' for eid in chunk)
+        if dry_run:
+            print(f"  [DRY] Supprimerait {len(chunk)} produits disparus")
+            total += len(chunk)
+            continue
+        try:
+            r = requests.delete(
+                f"{SUPABASE_URL}/rest/v1/products"
+                f"?merchant_key=eq.{merchant_key}&external_id=in.({ids_param})",
+                headers=sb_headers({"Prefer": "return=minimal"}),
+                timeout=30,
+            )
+            r.raise_for_status()
+            total += len(chunk)
+            print(f"   … {total} produits disparus supprimés")
+        except Exception as e:
+            print(f"  ⚠  Erreur suppression batch {i}–{i+len(chunk)} : {e}")
+    return total
+
+
 # ══════════════════════════════════════════════════════════════════════════════
 # MODE : UPDATE (incrémental)
 # ══════════════════════════════════════════════════════════════════════════════
 
 def cmd_update(merchant: dict, limit: int, dry_run: bool, force_download: bool):
-    """Import incrémental : insère seulement les nouveaux produits."""
+    """Mise à jour incrémentale : upsert des produits + suppression de ceux disparus du flux."""
     rows = load_feed(merchant, force_download)
     if not rows:
         return
@@ -395,7 +450,7 @@ def cmd_update(merchant: dict, limit: int, dry_run: bool, force_download: bool):
         rows = [r for r in rows if _get_category(r) not in excluded]
         print(f"   Catégories exclues: {len(excluded)}  ({before - len(rows):,} produits filtrés)")
 
-    # Identifier les produits déjà en base
+    # Identifier les external_id déjà en base pour ce marchand
     known_ids: set = set()
     if not dry_run:
         check_supabase()
@@ -410,25 +465,34 @@ def cmd_update(merchant: dict, limit: int, dry_run: bool, force_download: bool):
         except Exception:
             pass
 
-    new_rows = [r for r in rows if (r.get("aw_product_id") or "").strip() not in known_ids]
+    feed_ids = {(r.get("aw_product_id") or "").strip() for r in rows if (r.get("aw_product_id") or "").strip()}
+    new_ids  = feed_ids - known_ids
+    kept_ids = feed_ids & known_ids
+    gone_ids = known_ids - feed_ids
 
-    print(f"{'[DRY-RUN] ' if dry_run else ''}📦  Import incrémental — {merchant['key']}")
+    print(f"{'[DRY-RUN] ' if dry_run else ''}📦  Mise à jour incrémentale — {merchant['key']}")
     print(f"   Flux total   : {len(rows):>8,} produits")
-    print(f"   Déjà en base : {len(rows) - len(new_rows):>8,}")
-    print(f"   Nouveaux     : {len(new_rows):>8,}")
-    print(f"   Ce run       : {min(limit, len(new_rows)):>8,}")
+    print(f"   Déjà en base : {len(kept_ids):>8,}  (prix/attributs mis à jour)")
+    print(f"   Nouveaux     : {len(new_ids):>8,}  (à insérer)")
+    print(f"   Disparus     : {len(gone_ids):>8,}  (à supprimer)")
     print()
 
-    payloads = [p for row in new_rows[:limit] if (p := _build_payload(row, merchant))]
+    # Upsert : nouveaux + mise à jour des existants (on_conflict=external_id,merchant_key)
+    payloads = [p for row in rows[:limit] if (p := _build_payload(row, merchant))]
     if dry_run:
-        print(f"  [DRY] {len(payloads)} produits à insérer")
-        _sb_batch_insert(payloads, dry_run=True)
+        print(f"  [DRY] {len(payloads)} produits à upserter, {len(gone_ids)} à supprimer")
+        _sb_batch_upsert(payloads, dry_run=True)
     else:
-        imported = _sb_batch_insert(payloads)
-        print(f"\n✅  {imported} produits importés pour {merchant['key']}")
+        upserted = _sb_batch_upsert(payloads)
+        print(f"\n✅  {upserted} produits upsertés pour {merchant['key']}")
+
+        # Supprimer les produits qui ne sont plus dans le flux
+        if gone_ids:
+            _sb_batch_delete(merchant["key"], gone_ids, dry_run=False)
+
         return
 
-    print(f"\n{'[DRY-RUN] ' if dry_run else ''}✅  Import terminé pour {merchant['key']}")
+    print(f"\n[DRY-RUN] ✅  Import terminé pour {merchant['key']}")
 
 
 # ══════════════════════════════════════════════════════════════════════════════

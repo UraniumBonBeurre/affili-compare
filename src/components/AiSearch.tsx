@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Search, SendHorizonal, Loader2, Star, ExternalLink, Sparkles, ArrowUpDown } from "lucide-react";
+import { Search, SendHorizonal, Loader2, ExternalLink, Sparkles, ArrowUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   PARTNER_COLORS,
@@ -82,24 +82,6 @@ const UI = {
 
 // ── Sub-components ────────────────────────────────────────────────────────────
 
-function Stars({ rating }: { rating: number }) {
-  return (
-    <div className="flex items-center gap-0.5">
-      {[1, 2, 3, 4, 5].map((s) => (
-        <Star
-          key={s}
-          className={cn(
-            "w-3 h-3",
-            s <= Math.round(rating)
-              ? "fill-amber-400 text-amber-400"
-              : "fill-gray-200 text-gray-200 dark:fill-gray-700 dark:text-gray-700"
-          )}
-        />
-      ))}
-    </div>
-  );
-}
-
 function ResultCard({
   item,
   locale,
@@ -132,24 +114,13 @@ function ResultCard({
         )}
       </div>
 
-      {/* Name / brand / rating */}
+      {/* Name / brand */}
       <div className="flex-1 min-w-0">
         <p className="font-bold text-gray-900 dark:text-gray-100 text-sm leading-snug line-clamp-2">
           {item.name}
         </p>
         {item.brand && (
           <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{item.brand}</p>
-        )}
-        {item.rating != null && (
-          <div className="flex items-center gap-1 mt-1.5">
-            <Stars rating={item.rating} />
-            <span className="text-[10px] text-gray-400 dark:text-gray-500">{item.rating.toFixed(1)}</span>
-            {item.review_count > 0 && (
-              <span className="text-[10px] text-gray-400 dark:text-gray-500">
-                · {item.review_count.toLocaleString()} {ui.reviews}
-              </span>
-            )}
-          </div>
         )}
       </div>
 
@@ -254,7 +225,7 @@ export function AiSearch({ locale }: Props) {
     <div className="w-full">
       {/* Search box */}
       <div className="relative w-full max-w-2xl mx-auto">
-        <div className="flex items-end gap-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow-lg rounded-2xl px-4 py-3 focus-within:border-emerald-400 dark:focus-within:border-emerald-500 focus-within:ring-2 focus-within:ring-emerald-100 dark:focus-within:ring-emerald-900 transition-all">
+        <div className="flex items-end gap-2 bg-white/60 backdrop-blur-md border border-stone-200/60 shadow-lg rounded-2xl px-4 py-3 focus-within:border-stone-400 focus-within:ring-2 focus-within:ring-stone-200/50 transition-all">
           <Search className="w-5 h-5 text-gray-400 shrink-0 mb-0.5" />
           <textarea
             ref={inputRef}
@@ -270,7 +241,7 @@ export function AiSearch({ locale }: Props) {
           <button
             onClick={handleSearch}
             disabled={!query.trim() || loading}
-            className="shrink-0 p-2 rounded-xl bg-emerald-600 text-white hover:bg-emerald-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors mb-0.5"
+            className="shrink-0 p-2 rounded-xl bg-stone-800 text-white hover:bg-stone-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors mb-0.5"
             aria-label={ui.button}
           >
             {loading ? (
@@ -286,7 +257,7 @@ export function AiSearch({ locale }: Props) {
       {loading && (
         <div className="mt-6 text-center">
           <div className="inline-flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-            <Sparkles className="w-4 h-4 text-emerald-500 animate-pulse" />
+            <Sparkles className="w-4 h-4 text-amber-600 animate-pulse" />
             {ui.thinking}
           </div>
         </div>
@@ -308,7 +279,7 @@ export function AiSearch({ locale }: Props) {
           {/* Header bar: AI badge + sort */}
           {response.results.length > 0 && (
             <div className="mb-3 flex items-center justify-between">
-              <div className="flex items-center gap-1.5 text-xs text-emerald-700 dark:text-emerald-400 font-medium">
+              <div className="flex items-center gap-1.5 text-xs text-stone-600 font-medium">
                 {response.fromLLM && <><Sparkles className="w-3.5 h-3.5" />{ui.aiLabel}</>}
               </div>
               <button
@@ -316,8 +287,8 @@ export function AiSearch({ locale }: Props) {
                 className={cn(
                   "flex items-center gap-1 text-xs px-2.5 py-1 rounded-lg border transition-colors font-medium",
                   sortByPrice
-                    ? "bg-emerald-600 border-emerald-600 text-white"
-                    : "border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:border-emerald-400 hover:text-emerald-600"
+                    ? "bg-stone-700 border-stone-700 text-white"
+                    : "border-stone-200 text-stone-400 hover:border-stone-400 hover:text-stone-600"
                 )}
               >
                 <ArrowUpDown className="w-3 h-3" />

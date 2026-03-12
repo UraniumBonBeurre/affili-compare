@@ -78,7 +78,7 @@ export async function POST(req: Request) {
     await embedQuery(normQuery);
 
   // ── 2. Recherche des produits ─────────────────────────────────────────────────
-  let allProducts: { id: string; name: string; brand: string | null; image_url: string | null; rating: number | null; review_count: number | null; category_slug: string | null; affiliate_url?: string | null; price?: number | null; currency?: string | null; in_stock?: boolean | null; merchant_key?: string | null; }[] = [];
+  let allProducts: { id: string; name: string; brand: string | null; image_url: string | null; category_slug: string | null; affiliate_url?: string | null; price?: number | null; currency?: string | null; in_stock?: boolean | null; merchant_key?: string | null; }[] = [];
 
   if (queryEmbedding !== null) {
     // ── 2a. Recherche hybride vectorielle + BM25 ─────────────────────────────
@@ -107,9 +107,9 @@ export async function POST(req: Request) {
         return NextResponse.json({ results: [], fromLLM: false, message: noResultMsg } satisfies SearchApiResponse);
       }
 
-      allProducts = vectorResults.map((r: { id: string; name: string; brand: string | null; image_url: string | null; rating: number | null; review_count: number | null; category_slug: string | null; affiliate_url?: string | null; price?: number | null; currency?: string | null; in_stock?: boolean | null; merchant_key?: string | null }) => ({
+      allProducts = vectorResults.map((r: { id: string; name: string; brand: string | null; image_url: string | null; category_slug: string | null; affiliate_url?: string | null; price?: number | null; currency?: string | null; in_stock?: boolean | null; merchant_key?: string | null }) => ({
         id: r.id, name: r.name, brand: r.brand, image_url: r.image_url,
-        rating: r.rating, review_count: r.review_count ?? 0, category_slug: r.category_slug ?? null,
+        category_slug: r.category_slug ?? null,
         affiliate_url: r.affiliate_url ?? null, price: r.price ?? null,
         currency: r.currency ?? null, in_stock: r.in_stock ?? null, merchant_key: r.merchant_key ?? null,
       }));
@@ -124,7 +124,7 @@ export async function POST(req: Request) {
     const productOrFilter = sqlKeywords.map((k) => `name.ilike.%${k}%,brand.ilike.%${k}%`).join(",");
     const sqlBase = supabase
       .from("products")
-      .select("id, name, brand, image_url, rating, review_count, category_slug, affiliate_url, price, currency, in_stock, merchant_key")
+      .select("id, name, brand, image_url, category_slug, affiliate_url, price, currency, in_stock, merchant_key")
       .or(productOrFilter)
       .limit(40);
     const { data: sqlProducts } = categoryFilter
@@ -153,13 +153,13 @@ export async function POST(req: Request) {
         if (extraIds.length) {
           const { data: extraProds } = await supabase
             .from("products")
-            .select("id, name, brand, image_url, rating, review_count, affiliate_url, price, currency, in_stock, merchant_key")
+            .select("id, name, brand, image_url, affiliate_url, price, currency, in_stock, merchant_key")
             .in("id", extraIds);
-          allProducts = (extraProds ?? []).map((p) => ({ ...p, review_count: p.review_count ?? 0, category_slug: null }));
+          allProducts = (extraProds ?? []).map((p) => ({ ...p, category_slug: null }));
         }
       }
     } else {
-      allProducts = (sqlProducts ?? []).map((p) => ({ ...p, review_count: p.review_count ?? 0, category_slug: (p as { category_slug?: string | null }).category_slug ?? null }));
+      allProducts = (sqlProducts ?? []).map((p) => ({ ...p, category_slug: (p as { category_slug?: string | null }).category_slug ?? null }));
     }
   }
 
@@ -182,16 +182,33 @@ export async function POST(req: Request) {
     if (!hasMainBrandInTop5 && keyBrands.length > 0) {
       const { data: topRated } = await supabase
         .from("products")
-        .select("id, name, brand, image_url, rating, review_count, category_slug")
+        .select("id, name, brand, image_url, category_slug")
         .eq("category_slug", categoryFilter)
         .in("brand", keyBrands)
         .limit(10);
       const existingIds = new Set(allProducts.map((p) => p.id));
       const extra = (topRated ?? [])
         .filter((p) => !existingIds.has(p.id))
-        .map((p) => ({ ...p, review_count: (p as { review_count?: number | null }).review_count ?? 0, category_slug: (p as { category_slug?: string | null }).category_slug ?? null }));
+        .map((p) => ({ ...p, category_slug: (p as { category_slug?: string | null }).category_slug ?? null }));
       allProducts = [...extra, ...allProducts];
     }
+  }
+
+  // ── 2d. Category fallback: categoryFilter set but still no products found ───
+  // Happens when query is a generic category word (e.g. "smartphone") that doesn't
+  // appear in any product name or brand, but we can still serve the category.
+  if (!allProducts.length && categoryFilter) {
+    const { data: catFallback } = await supabase
+      .from("products")
+      .select("id, name, brand, image_url, category_slug, affiliate_url, price, currency, in_stock, merchant_key")
+      .eq("category_slug", categoryFilter)
+      .not("price", "is", null)
+      .order("price", { ascending: false })
+      .limit(20);
+    allProducts = (catFallback ?? []).map((p) => ({
+      ...p,
+      category_slug: (p as { category_slug?: string | null }).category_slug ?? null,
+    }));
   }
 
   if (!allProducts.length) {
@@ -257,7 +274,6 @@ export async function POST(req: Request) {
 
       return {
         id: p.id, name: p.name, brand: p.brand, image_url: p.image_url,
-        rating: p.rating, review_count: p.review_count ?? 0,
         links: productLinks,
         comparison_slug,
         category_slug,

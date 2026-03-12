@@ -115,21 +115,15 @@ export default async function ComparisonPage({ params }: Props) {
   const { category, comparison, products, links = [] } = data;
 
   const titleKey   = `title_${locale}` as "title_fr" | "title_en" | "title_de";
-  const prosKey    = `pros_${locale}`  as "pros_fr" | "pros_en";
-  const consKey    = `cons_${locale}`  as "cons_fr" | "cons_en";
   const catNameKey = `name_${locale}`  as "name_fr" | "name_en" | "name_de";
 
-  // Enrichir les produits avec leurs liens et pros/cons localisés
+  // Enrichir les produits avec leurs liens
   const enrichedProducts: ProductWithLinks[] = products.map((p) => {
     const productLinks = (links as AffiliateLink[]).filter((l) => l.product_id === p.id);
-    const raw = p[prosKey] ?? p.pros_fr;
-    const rawCons = p[consKey] ?? p.cons_fr;
 
     return {
       ...p,
-      links:    productLinks,
-      pros:     Array.isArray(raw)     ? (raw as string[])     : (JSON.parse(raw as string ?? "[]") as string[]),
-      cons:     Array.isArray(rawCons) ? (rawCons as string[]) : (JSON.parse(rawCons as string ?? "[]") as string[]),
+      links: productLinks,
     };
   });
 
@@ -146,7 +140,6 @@ export default async function ComparisonPage({ params }: Props) {
         url:      `${siteUrl}/${locale}/${category.slug}/${comparison.slug}`,
         price:    bestLink?.price ?? null,
         currency: bestLink?.currency ?? "EUR",
-        rating:   p.rating,
       };
     }),
     locale

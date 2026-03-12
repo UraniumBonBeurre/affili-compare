@@ -1,10 +1,10 @@
 import createMiddleware from "next-intl/middleware";
 
 export default createMiddleware({
-  locales:         ["fr", "en", "de"],
+  locales:         ["fr", "en"],
   defaultLocale:   "fr",
   localePrefix:    "always",
-  localeDetection: true, // detect Accept-Language on first visit → redirect to user's language
+  localeDetection: false, // désactivé : on ne redirige pas automatiquement selon Accept-Language
 });
 
 export const config = {

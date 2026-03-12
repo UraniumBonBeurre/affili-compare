@@ -1,21 +1,18 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { DM_Sans, Playfair_Display } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AffiliateDisclosure } from "@/components/AffiliateDisclosure";
-import { ThemeProvider } from "@/components/ThemeProvider";
 import type { Locale } from "@/types/database";
 import "../globals.css";
 
-// Inline script injected in <head> to apply saved theme BEFORE first paint (no flash)
-const ANTI_FOIT = `try{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');if(t==='dark')document.documentElement.classList.add('dark');}catch(e){}`;
+const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-dm-sans" });
+const playfair = Playfair_Display({ subsets: ["latin"], variable: "--font-playfair" });
 
-const inter = Inter({ subsets: ["latin"] });
-
-const locales: Locale[] = ["fr", "en", "de"];
+const locales: Locale[] = ["fr", "en"];
 
 // next-intl reads request headers; mark the entire locale tree as dynamic
 // so Vercel doesn't try (and fail) to pre-render during build.
@@ -45,17 +42,24 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} suppressHydrationWarning>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: ANTI_FOIT }} />
-      </head>
-      <body className={`${inter.className} bg-[#F8F9FA] dark:bg-gray-950 text-gray-900 dark:text-gray-100 antialiased`}>
+      <body className={`${dmSans.variable} ${playfair.variable} font-sans text-stone-800 antialiased min-h-screen relative`}>
+        {/* Background image — very light blur, mostly visible */}
+        <div
+          className="fixed inset-0 -z-20 bg-cover bg-center"
+          style={{
+            backgroundImage: "url('/bg-interior.jpg')",
+            filter: "blur(2px) brightness(0.96)",
+            transform: "scale(1.01)",
+          }}
+        />
+        {/* Very subtle warm overlay */}
+        <div className="fixed inset-0 -z-10 bg-white/15" />
+
         <NextIntlClientProvider messages={messages}>
-          <ThemeProvider>
-            <AffiliateDisclosure />
-            <Navbar locale={locale as Locale} />
-            <main className="max-w-5xl mx-auto px-4 py-8 min-h-[70vh]">{children}</main>
-            <Footer locale={locale as Locale} />
-          </ThemeProvider>
+          <AffiliateDisclosure />
+          <Navbar locale={locale as Locale} />
+          <main className="max-w-6xl mx-auto px-4">{children}</main>
+          <Footer locale={locale as Locale} />
         </NextIntlClientProvider>
       </body>
     </html>

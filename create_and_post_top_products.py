@@ -22,6 +22,7 @@ Usage :
 """
 
 import argparse
+import hashlib
 import io
 import json
 import random
@@ -33,6 +34,7 @@ from datetime import datetime, date, timezone
 from io import BytesIO
 from pathlib import Path
 from typing import Optional
+from urllib.parse import parse_qs, unquote, urlparse
 
 import requests
 from tenacity import retry, wait_fixed, stop_after_attempt, retry_if_exception_type
@@ -48,10 +50,115 @@ from settings import (
     OLLAMA_CLOUD_API_KEY, OLLAMA_CLOUD_HOST, OLLAMA_CLOUD_MODEL, OLLAMA_CLOUD_PINS_MODEL,
     HF_API_TOKEN, PINTEREST_ACCESS_TOKEN, PINTEREST_API_BASE, PINTEREST_BOARD_ID,
     R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET_NAME, R2_PUBLIC_URL,
-    SITE_URL, TAXONOMY_PATH, FONTS_DIR, OUTPUT_DIR,
+    SITE_URL, TAXONOMY_PATH, FONTS_DIR, OUTPUT_DIR, LOCAL_PINTEREST_DIR,
     production_workflow, nb_products_per_article, nb_pins_per_article,
     sb_headers, check_supabase, get_board_for_niche,
 )
+
+# ── Config placeholder images (source unique de vérité) ─────────────────────
+_PLACEHOLDER_CFG_PATH = ROOT / "src" / "config" / "placeholder_images.json"
+
+def _load_placeholder_cfg() -> dict[str, list[str]]:
+    """Charge le JSON de référence des images placeholder par marchand."""
+    try:
+        raw = json.loads(_PLACEHOLDER_CFG_PATH.read_text(encoding="utf-8"))
+        return {k: v for k, v in raw.items() if not k.startswith("_") and isinstance(v, list)}
+    except Exception:
+        return {}
+
+_PLACEHOLDER_CFG: dict[str, list[str]] = _load_placeholder_cfg()
+
+
+def _resolve_productserve_url(url: str) -> str:
+    """Décode un proxy productserve.com?url=ssl%3A... → URL CDN directe."""
+    if not url:
+        return url
+    if "productserve.com" in url and "url=" in url:
+        try:
+            qs = parse_qs(urlparse(url).query)
+            raw = qs.get("url", [""])[0]
+            if raw:
+                decoded = unquote(raw)
+                if decoded.startswith("ssl://"):
+                    return "https://" + decoded[6:]
+                if decoded.startswith("ssl:"):
+                    return "https://" + decoded[4:]
+                return decoded
+        except Exception:
+            pass
+    return url
+
+
+# ── Pixel hash pour la détection des placeholders visuels (CDNs à URLs multiples) ─
+_PIXEL_HASH_CACHE: dict[str, str | None] = {}   # URL → hash (None = échec)
+_REF_PIXEL_HASHES: dict[str, list[str]] | None = None  # lazy-loaded
+
+
+def _pixel_hash(data: bytes) -> str:
+    """Hash MD5 d'une normalisation 64×64 RGBA — même algo que check_affiliate_links.py."""
+    img = Image.open(io.BytesIO(data)).convert("RGBA").resize((64, 64), Image.LANCZOS)
+    return hashlib.md5(img.tobytes()).hexdigest()
+
+
+def _get_pixel_hash_for_url(url: str) -> str | None:
+    """Télécharge et hash une image (résultat mis en cache par URL)."""
+    if url in _PIXEL_HASH_CACHE:
+        return _PIXEL_HASH_CACHE[url]
+    try:
+        r = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=10)
+        h = _pixel_hash(r.content)
+        _PIXEL_HASH_CACHE[url] = h
+        return h
+    except Exception:
+        _PIXEL_HASH_CACHE[url] = None
+        return None
+
+
+def _get_ref_pixel_hashes() -> dict[str, list[str]]:
+    """Charge (paresseusement) les hashes pixels de référence depuis placeholder_images.json."""
+    global _REF_PIXEL_HASHES
+    if _REF_PIXEL_HASHES is not None:
+        return _REF_PIXEL_HASHES
+    if not _PIL:
+        _REF_PIXEL_HASHES = {}
+        return _REF_PIXEL_HASHES
+    result: dict[str, list[str]] = {}
+    for merchant, urls in _PLACEHOLDER_CFG.items():
+        hashes = [h for url in urls for h in [_get_pixel_hash_for_url(url)] if h]
+        if hashes:
+            result[merchant] = hashes
+    _REF_PIXEL_HASHES = result
+    return _REF_PIXEL_HASHES
+
+
+def _is_valid_product_image(image_url: str | None, merchant_key: str) -> bool:
+    """
+    Retourne True seulement si l'image est réelle (non-placeholder, non-vide).
+    Détection en deux passes :
+      1. Comparaison d'URL (sans réseau) — cas simples
+      2. Comparaison pixel 64×64 RGBA MD5 (download) — CDNs à URLs variables (ex: Rue du Commerce)
+    """
+    if not image_url:
+        return False
+    image_url = image_url.strip().replace('%22', '').rstrip('"')
+    if not image_url:
+        return False
+    known_placeholders = _PLACEHOLDER_CFG.get(merchant_key, [])
+    if not known_placeholders:
+        return True  # marchand sans config → on accepte
+    resolved = _resolve_productserve_url(image_url)
+    # Passe 1 : URL
+    if image_url in known_placeholders or resolved in known_placeholders:
+        return False
+    # Passe 2 : pixel hash (couvre les CDNs qui servent le même placeholder depuis plusieurs URLs)
+    if _PIL:
+        ref_hashes = _get_ref_pixel_hashes().get(merchant_key, [])
+        if ref_hashes:
+            img_hash = _get_pixel_hash_for_url(resolved)
+            if img_hash and img_hash in ref_hashes:
+                return False
+    return True
+
 
 # ── Constantes ────────────────────────────────────────────────────────────────
 PIN_W, PIN_H = 1000, 1500
@@ -62,8 +169,28 @@ MONTH_FR = {
     "09": "septembre", "10": "octobre", "11": "novembre", "12": "décembre",
 }
 
+_NICHE_LABEL_EN: dict[str, str] = {
+    "bedroom_essentials": "your bedroom",
+    "living_room_storage": "your living room",
+    "kitchen_organization": "your kitchen",
+    "cable_management": "cable management",
+    "bathroom_storage": "your bathroom",
+    "small_space_solutions": "small space living",
+    "entryway_decor": "your entryway",
+    "outdoor_living": "outdoor living",
+    "cozy_lighting": "cozy lighting",
+    "closet_organization": "your wardrobe",
+    "home_office_setup": "your home office",
+    "kids_room": "kids room",
+    "eco_home": "eco-friendly home",
+    "smart_home": "your smart home",
+    "gaming_setup": "your gaming setup",
+    "audio_hi_fi": "your hi-fi experience",
+    "mobile_nomade": "nomad & travel gear",
+}
+
 _PRODUCT_SELECT = (
-    "id,name,brand,image_url,rating,review_count,category_slug,"
+    "id,name,brand,image_url,category_slug,"
     "affiliate_url,price,currency,merchant_key,description,llm_product_type"
 )
 _ORDER_QUALITY = "&order=price.asc.nullslast"  # rating non fiable en DB, on trie par prix croissant
@@ -439,7 +566,7 @@ Retourne UNIQUEMENT un objet JSON valide (aucun texte avant ou après) :
     def _ct(t, fb): return (t or "").strip().strip('"').strip("'").split("\n")[0][:100] or fb
     def _co(t, fb):
         t = (t or "").strip().strip('"').strip("'").split("\n")[0]
-        return t if 4 <= len(t.split()) <= 12 else fb
+        return t if t else fb
     def _cd(t, fb): t = (t or "").strip(); return t[:500] if len(t) >= 60 else fb
 
     fb_overlay = f"Sélection {niche_label} {month_fr}"
@@ -464,12 +591,31 @@ Retourne UNIQUEMENT un objet JSON valide (aucun texte avant ou après) :
 
 def generate_content(niche: str, niche_label: str, month_fr: str, year: str,
                      products: list, taxonomy: dict) -> dict:
-    """Génère titre, intro et blurbs en FR et EN dans des appels séparés (FR d'abord, EN ensuite)."""
+    """Génère titre, intro, blurbs ET un article riche (HTML) avec liens affiliés intégrés, FR et EN."""
     n = len(products)
 
     product_list = "\n".join(
         f"{i+1}. {p.get('name','?')} ({p.get('brand','?')}, {p.get('price','?')} €)"
         for i, p in enumerate(products)
+    )
+
+    # Pré-calcul : mapping produit → lien affilié pour injection dans le prompt
+    product_links = []
+    for i, p in enumerate(products):
+        aff_url = p.get("affiliate_url") or p.get("url") or "#"
+        product_links.append({
+            "name": p.get("name", "?"),
+            "brand": p.get("brand", ""),
+            "price": p.get("price", "?"),
+            "url": aff_url,
+            "product_type": p.get("llm_product_type", ""),
+            "description": (p.get("description") or "").strip(),
+            "merchant": p.get("merchant_key", ""),
+        })
+
+    products_with_links = "\n".join(
+        f'{i+1}. {pl["name"]} ({pl["brand"]}, {pl["price"]} €) — LIEN: {pl["url"]}'
+        for i, pl in enumerate(product_links)
     )
 
     # ── 1. Titre + Intro bilingues en un seul appel ─────────────────────────
@@ -478,14 +624,17 @@ def generate_content(niche: str, niche_label: str, month_fr: str, year: str,
 
 {n} produits : {product_list}
 
+IMPORTANT: Le titre doit être accrocheur et attrayant, PAS un simple "Top {n} accessoires pour..." mais quelque chose de plus créatif et engageant.
+Exemples de bons titres : "Les pépites tech qui transforment votre quotidien", "Notre sélection coup de cœur pour un intérieur connecté", etc.
+
 Retourne EXACTEMENT ce format (rien d'autre) :
-FR_TITLE: [titre français percutant, 45-70 caractères, commence par "Top {n}"]
-EN_TITLE: [english title, 45-70 chars, starts with "Top {n}"]
+FR_TITLE: [titre français percutant et accrocheur, 45-70 caractères]
+EN_TITLE: [english title, 45-70 chars, catchy and engaging]
 ===FR_INTRO===
-[Introduction française, 120-180 mots, ton naturel et enthousiaste]
+[Introduction française, 50-70 mots, ton naturel et direct, accrocheur]
 ===EN_INTRO===
-[English introduction, 120-180 words, warm enthusiastic tone]""",
-        1200,
+[English introduction, 50-70 words, warm direct tone, engaging]""",
+        800,
     ) or ""
 
     # Parser le résultat
@@ -508,9 +657,9 @@ EN_TITLE: [english title, 45-70 chars, starts with "Top {n}"]
 
     # Fallbacks
     if not title_fr or len(title_fr) < 20:
-        title_fr = f"Top {n} incontournables pour {niche_label} en {month_fr} {year}"
+        title_fr = f"Notre sélection coup de cœur pour {niche_label} — {month_fr} {year}"
     if not title_en or len(title_en) < 20:
-        title_en = f"Top {n} must-haves for {niche_label} in {month_fr} {year}"
+        title_en = f"Our top picks for {niche_label} — {month_fr} {year}"
     if not intro_fr or len(intro_fr) < 50:
         intro_fr = (f"Découvrez notre sélection de {n} produits incontournables pour "
                     f"{niche_label} en {month_fr} {year}.")
@@ -542,13 +691,256 @@ EN_TITLE: [english title, 45-70 chars, starts with "Top {n}"]
     else:
         blurbs_fr = fallback_blurbs
 
+    time.sleep(2)
+
+    # ── 3. Article bilingue (un seul appel LLM, Markdown → HTML) ────────────
+    article_html_fr, article_html_en = _generate_article_body_bilingual(
+        title_fr, title_en, products, niche_label, month_fr, year
+    )
+
     return {
-        "title": title_fr,           # FR titre (utilisé comme titre principal)
+        "title": title_fr,
         "title_en": title_en,
         "intro": intro_fr,
         "intro_en": intro_en,
         "blurbs": blurbs_fr,
+        "body_html_fr": article_html_fr,
+        "body_html_en": article_html_en,
     }
+
+
+def _slugify_product(text: str) -> str:
+    """Slug ASCII simple pour les balises PRODUCT_IMAGE."""
+    text = text.lower()
+    for src, dst in [("éèêë", "e"), ("àâä", "a"), ("ùûü", "u"), ("ôö", "o"), ("îï", "i"), ("ç", "c")]:
+        for c in src:
+            text = text.replace(c, dst)
+    text = re.sub(r"[^a-z0-9]+", "-", text)
+    return text.strip("-")[:45]
+
+
+def _markdown_body_to_html(text: str, products: list) -> str:
+    """Convertit le corps généré par le LLM → HTML propre.
+    Layout quinconce :
+      - Produit avec vraie image → bloc flex [image | texte] (alternance gauche/droite)
+      - Produit sans image ou placeholder → paragraphe pleine largeur
+    """
+    if not text:
+        return ""
+
+    def _esc(s: str) -> str:
+        return s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;')
+
+    # ── Construire product_map : slug → info (uniquement si image valide) ──
+    product_map: dict[str, dict] = {}
+    # Map slug → produit pour les blocs sans image aussi (pour le texte)
+    product_text_map: dict[str, dict] = {}
+    for p in products:
+        slug = _slugify_product(f"{p.get('brand', '')}-{(p.get('name', '') or '')[:35]}")
+        img_url = (p.get("image_url") or "").strip().replace('%22', '').rstrip('"')
+        img_url = _resolve_productserve_url(img_url)  # proxy → URL CDN directe
+        merchant_key = p.get("merchant_key") or ""
+        name = (p.get("name") or "").strip()
+        aff_url = p.get("affiliate_url") or p.get("url") or "#"
+        product_text_map[slug] = {"name": name, "url": aff_url}
+        if _is_valid_product_image(img_url, merchant_key):
+            product_map[slug] = {"img": img_url, "name": name, "url": aff_url}
+
+    # ── Convertir Markdown inline → HTML ──
+    def _md_inline(s: str) -> str:
+        def _link_sub(m: re.Match) -> str:
+            link_text = m.group(1)
+            url = m.group(2).replace('&', '&amp;')
+            return f'<a href="{url}" target="_blank" rel="noopener noreferrer nofollow sponsored">{link_text}</a>'
+        s = re.sub(r"\[([^\]]+)\]\((https?://[^\)]+)\)", _link_sub, s)
+        s = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", s)
+        s = re.sub(r"\*([^*]+)\*",   r"<em>\1</em>", s)
+        return s
+
+    # ── Isoler les balises image sur leur propre paragraphe ──
+    text = re.sub(
+        r"\{\{PRODUCT_IMAGE:([^}]+)\}\}",
+        lambda m: "\n\n{{PRODUCT_IMAGE:" + m.group(1) + "}}\n\n",
+        text,
+    )
+
+    # ── Segmenter en blocs ("img", slug) | ("text", contenu) ──
+    segments: list[tuple[str, str]] = []
+    for para in re.split(r"\n{2,}", text.strip()):
+        para = para.strip()
+        if not para:
+            continue
+        m = re.match(r"^\{\{PRODUCT_IMAGE:([^}]+)\}\}$", para)
+        if m:
+            segments.append(("img", m.group(1)))
+        else:
+            # Nettoyer les balises image résiduelles dans les blocs texte
+            para = re.sub(r"\{\{PRODUCT_IMAGE:[^}]+\}\}", "", para).strip()
+            if para:
+                segments.append(("text", para))
+
+    # ── Construire le HTML avec couplage image + texte suivant ──
+    html_parts: list[str] = []
+    img_count = 0  # compte seulement les blocs avec vraie image (pour l'alternance)
+    i = 0
+    while i < len(segments):
+        kind, val = segments[i]
+
+        if kind == "img":
+            slug = val.strip()
+            prod = product_map.get(slug)          # None si pas de vraie image
+            txt_info = product_text_map.get(slug) # toujours disponible
+
+            # Consommer le prochain bloc texte (corps du paragraphe produit)
+            next_text = ""
+            if i + 1 < len(segments) and segments[i + 1][0] == "text":
+                next_text = segments[i + 1][1]
+                i += 1
+
+            if prod and next_text:
+                # ── Bloc quinconce : [image | texte] ou [texte | image] ──
+                side = "left" if img_count % 2 == 0 else "right"
+                img_count += 1
+                name_esc = _esc(prod["name"])
+                cta_url = prod["url"].replace('&', '&amp;')
+                html_parts.append(
+                    f'<div class="product-block product-block-{side}">'
+                    f'<div class="product-block-media">'
+                    f'<img src="{prod["img"]}" alt="{name_esc}" class="product-block-img" loading="lazy"'
+                    f' onerror="this.style.display=\'none\'">'
+                    f'</div>'
+                    f'<div class="product-block-text">'
+                    f'<p>{_md_inline(next_text.replace(chr(10), "<br>"))}</p>'
+                    f'<a href="{cta_url}" class="product-block-cta"'
+                    f' target="_blank" rel="noopener noreferrer nofollow sponsored">Voir le produit →</a>'
+                    f'</div>'
+                    f'</div>'
+                )
+            elif next_text:
+                # ── Pas d'image valide → paragraphe pleine largeur + CTA ──
+                noimg_url = (txt_info or {}).get("url", "#").replace('&', '&amp;')
+                noimg_cta = (
+                    f'<a href="{noimg_url}" class="product-block-cta"'
+                    f' target="_blank" rel="noopener noreferrer nofollow sponsored">Voir le produit →</a>'
+                ) if noimg_url != "#" else ""
+                html_parts.append(
+                    f'<div class="product-block product-block-noimg">'
+                    f'<p>{_md_inline(next_text.replace(chr(10), "<br>"))}</p>'
+                    f'{noimg_cta}'
+                    f'</div>'
+                )
+            # Si aucun texte associé → on ignore le tag image
+
+        else:  # kind == "text" non précédé d'une image → paragraphe libre
+            para = val
+            if re.match(r"^<(div|p|h[1-6]|ul|ol|li|blockquote)\b", para):
+                html_parts.append(para)
+            else:
+                html_parts.append(f"<p>{_md_inline(para.replace(chr(10), '<br>'))}</p>")
+
+        i += 1
+
+    return "\n".join(html_parts)
+
+
+def _generate_article_body_bilingual(
+    title_fr: str, title_en: str,
+    products: list, niche_label: str, month_fr: str, year: str
+) -> tuple:
+    """Génère le corps de l'article bilingue (FR + EN) en un seul appel LLM.
+    Utilise le format Markdown avec balises {{PRODUCT_IMAGE:slug}} et liens [name](url).
+    Retourne (body_html_fr, body_html_en) après conversion Markdown → HTML.
+    """
+    prod_blocks = []
+    for i, p in enumerate(products, 1):
+        name        = (p.get("name")            or "?").strip()
+        brand       = (p.get("brand")           or "?").strip()
+        price       = p.get("price")            or "?"
+        url         = p.get("affiliate_url")    or p.get("url") or ""
+        product_type = (p.get("llm_product_type") or "").strip()
+        description  = (p.get("description")    or "").strip()
+        slug  = _slugify_product(f"{brand}-{name[:35]}")
+        link_md = f"[{name}]({url})" if url else name
+
+        block_lines = [f"{i}. {name} — {brand} — {price} €"]
+        if product_type:
+            block_lines.append(f"   Type produit   : {product_type}")
+        if description:
+            block_lines.append(f"   Description    : {description[:300]}")
+        block_lines.append(f"   Balise image   : {{{{PRODUCT_IMAGE:{slug}}}}}")
+        block_lines.append(f"   Lien Markdown  : {link_md}")
+        prod_blocks.append("\n".join(block_lines))
+    products_block = "\n\n".join(prod_blocks)
+    n = len(products)
+
+    prompt = f"""Tu rédiges le corps d'un article de blog d'affiliation en DEUX langues : français ET anglais.
+
+Titre FR de l'article : « {title_fr} »
+Titre EN de l'article : « {title_en} »
+Thème : {niche_label} — {month_fr} {year}
+
+{n} PRODUITS À PRÉSENTER (dans cet ordre) :
+
+{products_block}
+
+STRUCTURE ATTENDUE (pour chaque langue) :
+1. Accroche courte (2-3 phrases) — ton direct, chaleureux, donne envie de lire.
+2. Pour CHAQUE produit, dans l'ordre :
+   a. La balise image sur sa propre ligne (copie-la exactement telle que fournie — IDENTIQUE en FR et EN)
+   b. Un paragraphe de 3-5 phrases dans la langue cible.
+      Dans ce paragraphe, cite le nom du produit avec le lien Markdown exact fourni.
+3. Conclusion courte (2-3 phrases) + CTA.
+
+RÈGLES ABSOLUES :
+- Copie les balises {{{{PRODUCT_IMAGE:...}}}} EXACTEMENT telles qu'elles sont fournies, identiques en FR et EN.
+- Utilise les liens Markdown EXACTS fournis pour chaque produit.
+- NE JAMAIS INVENTER d'informations non présentes dans le bloc produit ci-dessus (caractéristiques, compatibilités, taille d'écran, modèle de téléphone, etc.).
+- Si tu manques d'informations sur un produit, décris uniquement ce que tu sais (type de produit, marque, prix) sans inventer.
+- Ton : blog lifestyle, direct, chaleureux.
+- 300 à 450 mots par langue.
+- PAS de titre Markdown (#) — juste le corps du texte.
+- Retourne EXACTEMENT ce format, rien d'autre :
+
+[corps en français ici — 300-450 mots]
+===ENGLISH===
+[english body here — 300-450 words]"""
+
+    print(f"  📝 Génération corps article bilingue ({OLLAMA_CLOUD_MODEL})…")
+    raw = _call_llm(prompt, 3000) or ""
+    parts = raw.split("===ENGLISH===", 1)
+    fr_body_md = parts[0].strip() if parts else ""
+    en_body_md = parts[1].strip() if len(parts) == 2 else ""
+
+    def _fallback_body(lang: str) -> str:
+        paras = [
+            f"{'Découvrez' if lang == 'fr' else 'Discover'} notre sélection {niche_label} de {month_fr} {year}."
+        ]
+        for p in products:
+            name  = (p.get("name") or "?").strip()
+            brand = (p.get("brand") or "?").strip()
+            price = p.get("price") or "?"
+            url   = p.get("affiliate_url") or p.get("url") or ""
+            slug  = _slugify_product(f"{brand}-{name[:35]}")
+            link  = f"[{name}]({url})" if url else name
+            paras.append(f"{{{{PRODUCT_IMAGE:{slug}}}}}")
+            paras.append(
+                f"{link} ({brand}, {price} €) "
+                f"{'fait partie de nos coups de cœur.' if lang == 'fr' else 'is one of our top picks.'}"
+            )
+        paras.append(
+            f"{'Retrouvez toute la sélection sur' if lang == 'fr' else 'See the full selection on'} "
+            f"[MyGoodPick]({SITE_URL})."
+        )
+        return "\n\n".join(paras)
+
+    if not fr_body_md or len(fr_body_md.split()) < 50:
+        fr_body_md = _fallback_body("fr")
+    if not en_body_md or len(en_body_md.split()) < 50:
+        en_body_md = _fallback_body("en")
+
+    body_html_fr = _markdown_body_to_html(fr_body_md, products)
+    body_html_en = _markdown_body_to_html(en_body_md, products)
+    return body_html_fr, body_html_en
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -891,8 +1283,14 @@ def _generate_pin_image(prompt: str, overlay_text: str, save_to: Path) -> str:
 def generate_visuals(slug: str, title: str, nb_products: int, niche: str,
                      niche_label: str, month_fr: str, year: str,
                      products: list, taxonomy: dict, nb_visuals: int,
-                     overlay_texts: list = None,
-                     board_name_fr: str = "") -> list:
+                     overlay_texts_fr: list = None,
+                     overlay_texts_en: list = None,
+                     board_name_fr: str = "",
+                     board_name_en: str = "") -> dict:
+    """Génère nb_visuals × 2 pins (FR + EN) à partir d'un seul fond HF par variante.
+    Le même fond reçoit un overlay de texte différent selon la langue.
+    Retourne {"fr": [paths…], "en": [paths…]}.
+    """
     niche_cfg = taxonomy.get("niche_config", {}).get(niche, {})
 
     # ── Prompt niche-specific : on construit un prompt visuel ciblé sur ce que
@@ -984,26 +1382,19 @@ def generate_visuals(slug: str, title: str, nb_products: int, niche: str,
 
     slug_safe = re.sub(r"[^a-z0-9-]", "", slug.lower())[:42]
 
-    # ── Dossier de sortie : local_pinterest/<board_name>/ ou output/top_pins/
-    if board_name_fr and not production_workflow:
-        safe_board = re.sub(r"[^\w\- ]", "", board_name_fr).strip().replace(" ", "_")[:50]
-        out_dir = LOCAL_PINTEREST_DIR / safe_board
-    else:
-        out_dir = OUTPUT_DIR
-    out_dir.mkdir(parents=True, exist_ok=True)
+    # Un dossier par article — web-accessible via Next.js /public
+    slug_dir = ROOT / "public" / "local_pins" / slug_safe
+    slug_dir.mkdir(parents=True, exist_ok=True)
 
     nb = min(nb_visuals, 3)
 
-    # Textes d'overlay (passés par generate_pin_content ou fallback)
-    if not overlay_texts:
-        overlay_texts = [
-            title,
-            f"{(products[0].get('name') or '')[:50]} — {products[0].get('price', '?')} €"
-            if products else title,
-            f"Top {nb_products} {niche_label}",
-        ]
+    # Overlays par défaut
+    if not overlay_texts_fr:
+        overlay_texts_fr = [title] * nb
+    if not overlay_texts_en:
+        overlay_texts_en = [title] * nb
 
-    # Prompts image ciblés sur la niche
+    # Prompts image ciblés sur la niche — utilisés seulement en production
     _base = (
         f"Photorealistic vertical Pinterest image 1000x1500, {visual_hint}. "
         f"{product_mention}"
@@ -1011,27 +1402,65 @@ def generate_visuals(slug: str, title: str, nb_products: int, niche: str,
         f"NO PEOPLE anywhere in the image. Professional photography, "
         f"sharp focus, vibrant colors, editorial quality."
     )
-    prompts = [
-        f"{_base} Wide shot, golden morning light, aspirational lifestyle.",
-        f"{_base} Warm afternoon light, cinematic close-up, rich detail.",
-        f"{_base} Soft overhead light, clean flat-lay composition.",
+    _prompt_pool = [
+        f"{_base} Wide establishing shot, golden morning light, aspirational lifestyle.",
+        f"{_base} Warm afternoon light, cinematic close-up of key product, rich material detail.",
+        f"{_base} Soft overhead light, clean flat-lay composition, neutral background.",
+        f"{_base} Dramatic side lighting, moody editorial atmosphere, deep shadows.",
+        f"{_base} Bright airy feel, window light, Scandinavian minimalism.",
+        f"{_base} Cozy evening ambiance, warm lamplight, intimate lifestyle scene.",
     ]
-    suffixes = ["hero", "spotlight", "checklist"]
 
-    paths = []
+    def _get_base_img(prompt: str) -> "Image.Image":
+        """Retourne l'image de fond : placeholder en test, HF en production."""
+        if not production_workflow:
+            ph = ROOT / "public" / "placeholder.jpg"
+            if ph.exists():
+                return Image.open(ph).convert("RGB").resize((PIN_W, PIN_H), Image.LANCZOS)
+        img = _generate_image_hf(prompt)
+        img = _blur_text_regions(img)
+        return img.resize((PIN_W, PIN_H), Image.LANCZOS)
+
+    paths_fr: list = []
+    paths_en: list = []
+    bg_web_paths: list = []  # contient uniquement le chemin cover.jpg (fond sans overlay) pour la galerie
+
+    combo_idx = 0
     for i in range(nb):
-        variant = suffixes[i]
-        save_to = out_dir / f"{slug_safe}_{variant}.jpg"
-        print(f"  🖼️  Visuel {variant.capitalize()}…")
+        variant = f"pin{i + 1}"
+        fr_path = slug_dir / f"{variant}_fr.jpg"
+        en_path = slug_dir / f"{variant}_en.jpg"
+        ov_fr = overlay_texts_fr[i] if i < len(overlay_texts_fr) else title
+        ov_en = overlay_texts_en[i] if i < len(overlay_texts_en) else title
+
+        # ── Version FR ────────────────────────────────────────────────────
+        print(f"  🖼️  Visuel {variant} FR…")
         try:
-            path = _generate_pin_image(prompts[i], overlay_texts[i], save_to)
-            print(f"     → {save_to}")
-            paths.append(path)
+            base_fr = _get_base_img(_prompt_pool[combo_idx % len(_prompt_pool)])
+            # Premier visuel : sauvegarder le fond brut (sans overlay) comme image de couverture
+            if i == 0 and not bg_web_paths:
+                cover_path = slug_dir / "cover.jpg"
+                base_fr.copy().save(str(cover_path), "JPEG", quality=85)
+                bg_web_paths.append(f"/local_pins/{slug_safe}/cover.jpg")
+            _add_text_overlay(base_fr, ov_fr, str(fr_path))
+            print(f"     → [FR] {fr_path.name}  (\"{ov_fr[:40]}\")")
+            paths_fr.append(str(fr_path))
         except Exception as e:
-            print(f"  ⚠️  Visuel {variant} échoué : {e}")
-    return paths
+            print(f"  ⚠️  Visuel {variant} FR échoué : {e}")
+        combo_idx += 1
 
+        # ── Version EN ────────────────────────────────────────────────────
+        print(f"  🖼️  Visuel {variant} EN…")
+        try:
+            base_en = _get_base_img(_prompt_pool[combo_idx % len(_prompt_pool)])
+            _add_text_overlay(base_en, ov_en, str(en_path))
+            print(f"     → [EN] {en_path.name}  (\"{ov_en[:40]}\")")
+            paths_en.append(str(en_path))
+        except Exception as e:
+            print(f"  ⚠️  Visuel {variant} EN échoué : {e}")
+        combo_idx += 1
 
+    return {"fr": paths_fr, "en": paths_en, "bg": bg_web_paths}
 # ══════════════════════════════════════════════════════════════════════════════
 # R2 UPLOAD
 # ══════════════════════════════════════════════════════════════════════════════
@@ -1104,82 +1533,69 @@ def _publish_pin(board_id: str, title: str, description: str,
 def publish_visuals_pinterest(
         slug: str, title: str, niche: str,
         niche_label: str, month: str,
-        pin_paths: list, taxonomy: dict,
+        pin_paths: dict, taxonomy: dict,
         pin_title: str = None,
         pin_description: str = None,
         board_id_fr: str = None,
         board_id_en: str = None,
-        board_name_fr: str = "",
-        board_name_en: str = "",
-        pin_content: dict = None) -> list:
-    """Publie sur Pinterest : pins FR → board FR, pins EN → board EN.
-    En mode local (production_workflow=False), écrit les images dans
-    local_pinterest/<board_name>/ et simule la publication.
+        pin_content: dict = None,
+        publish_to_pinterest: bool = False) -> list:
+    """Publie ou confirme les pins FR → board FR et EN → board EN.
+    pin_paths = {"fr": [...chemins FR...], "en": [...chemins EN...]}
+    En mode local les fichiers sont déjà sauvegardes par generate_visuals().
     """
     article_url = f"{SITE_URL}/top/{slug}"
     final_title_fr = pin_title or title
-    en_data  = (pin_content or {}).get("en", {})
-    final_title_en  = en_data.get("pin_title") or final_title_fr
-    desc_en         = en_data.get("description") or pin_description or title
+    en_data        = (pin_content or {}).get("en", {})
+    final_title_en = en_data.get("pin_title") or final_title_fr
+    desc_en        = en_data.get("description") or pin_description or title
 
     if not pin_description:
         niche_cfg = taxonomy.get("niche_config", {}).get(niche, {})
         pin_description = niche_cfg.get("pinterest_description_fr", "").format(
-            n=len(pin_paths),
+            n=sum(len(v) for v in pin_paths.values()),
             month=MONTH_FR.get(month.split("-")[1], ""),
             year=month.split("-")[0],
         ) or f"{title} — {niche_label}"
 
+    fr_paths = pin_paths.get("fr", [])
+    en_paths = pin_paths.get("en", [])
     published = []
 
-    for i, local_path in enumerate(pin_paths):
-        variant = Path(local_path).stem.split("_")[-1]
+    # ── Mode local : les fichiers sont déjà enregistrés dans les bons dossiers ──
+    if not publish_to_pinterest:
+        for lang, paths in [("fr", fr_paths), ("en", en_paths)]:
+            for p in paths:
+                print(f"  💾 [{lang.upper()}] → {p}")
+                published.append({"variant": Path(p).stem, "r2_url": p, "pin_id": ""})
+        return published
 
-        # ── Mode local : copier dans les sous-dossiers board FR + board EN ──
-        if not production_workflow:
-            import shutil
-            for b_name, lang in [(board_name_fr, "fr"), (board_name_en, "en")]:
-                if not b_name:
-                    continue
-                safe_board = re.sub(r"[^\w\- ]", "", b_name).strip().replace(" ", "_")[:50]
-                dest_dir = LOCAL_PINTEREST_DIR / safe_board
-                dest_dir.mkdir(parents=True, exist_ok=True)
-                dest = dest_dir / f"{slug}_{lang}_{variant}.jpg"
-                shutil.copy2(local_path, dest)
-                print(f"  💾 [{lang.upper()}] → {dest}")
-            published.append({"variant": variant, "r2_url": str(local_path), "pin_id": ""})
-            if i < len(pin_paths) - 1:
-                time.sleep(1)
-            continue
+    # ── Mode production : upload R2 + publish FR + publish EN ───────────────
+    if not PINTEREST_ACCESS_TOKEN:
+        print("  ⚠️  PINTEREST_ACCESS_TOKEN manquant — publication ignorée")
+        return []
 
-        # ── Mode production : upload R2 + publish FR + publish EN ────────────
-        if not PINTEREST_ACCESS_TOKEN:
-            print("  ⚠️  PINTEREST_ACCESS_TOKEN manquant — publication ignorée")
-            break
+    for i, (fr_path, en_path) in enumerate(zip(fr_paths, en_paths)):
+        variant = f"pin{i + 1}"
 
-        r2_key = f"pins/top/{slug}_{variant}.jpg"
-        r2_url = upload_to_r2(Path(local_path), r2_key)
-        if not r2_url:
-            continue
+        # Upload image FR
+        r2_url_fr = upload_to_r2(Path(fr_path), f"pins/top/{slug}_{variant}_fr.jpg")
+        # Upload image EN
+        r2_url_en = upload_to_r2(Path(en_path), f"pins/top/{slug}_{variant}_en.jpg")
 
-        pin_id_fr = ""
-        if board_id_fr:
+        if board_id_fr and r2_url_fr:
             try:
                 pin = _publish_pin(
-                    board_id=board_id_fr,
-                    title=final_title_fr,
-                    description=pin_description,
-                    media_url=r2_url, link=article_url,
+                    board_id=board_id_fr, title=final_title_fr,
+                    description=pin_description, media_url=r2_url_fr, link=article_url,
                 )
-                pin_id_fr = pin.get("id", "")
-                print(f"  📌 Pin FR publié ({variant}): {pin_id_fr}")
-                published.append({"variant": variant, "r2_url": r2_url, "pin_id": pin_id_fr})
+                pid = pin.get("id", "")
+                print(f"  📌 Pin FR publié ({variant}): {pid}")
+                published.append({"variant": variant + "_fr", "r2_url": r2_url_fr, "pin_id": pid})
                 sb_upsert("pinterest_pins", {
-                    "pin_id": pin_id_fr,
-                    "image_url": r2_url,
-                    "pin_url": f"https://www.pinterest.com/pin/{pin_id_fr}/",
-                    "title": final_title_fr[:100],
-                    "description": pin_description[:500],
+                    "pin_id": pid, "image_url": r2_url_fr,
+                    "pin_url": f"https://www.pinterest.com/pin/{pid}/",
+                    "title": final_title_fr[:100], "description": pin_description[:500],
                     "link_to_article": article_url,
                     "published_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
                     "status": "published",
@@ -1188,27 +1604,24 @@ def publish_visuals_pinterest(
             except Exception as e:
                 print(f"  ⚠️  Pin FR ({variant}) échoué : {e}")
 
-        if board_id_en:
+        if board_id_en and r2_url_en:
             try:
                 pin_en = _publish_pin(
-                    board_id=board_id_en,
-                    title=final_title_en,
-                    description=desc_en,
-                    media_url=r2_url, link=article_url,
+                    board_id=board_id_en, title=final_title_en,
+                    description=desc_en, media_url=r2_url_en, link=article_url,
                 )
-                pin_id_en = pin_en.get("id", "")
-                print(f"  📌 Pin EN publié ({variant}): {pin_id_en}")
+                pid_en = pin_en.get("id", "")
+                print(f"  📌 Pin EN publié ({variant}): {pid_en}")
+                published.append({"variant": variant + "_en", "r2_url": r2_url_en, "pin_id": pid_en})
                 sb_upsert("pinterest_pins", {
-                    "pin_id": pin_id_en,
-                    "image_url": r2_url,
-                    "pin_url": f"https://www.pinterest.com/pin/{pin_id_en}/",
-                    "title": final_title_en[:100],
-                    "description": desc_en[:500],
+                    "pin_id": pid_en, "image_url": r2_url_en,
+                    "pin_url": f"https://www.pinterest.com/pin/{pid_en}/",
+                    "title": final_title_en[:100], "description": desc_en[:500],
                     "link_to_article": article_url,
                     "published_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
                     "status": "published",
                 })
-                if i < len(pin_paths) - 1:
+                if i < len(fr_paths) - 1:
                     time.sleep(30)
             except Exception as e:
                 print(f"  ⚠️  Pin EN ({variant}) échoué : {e}")
@@ -1225,6 +1638,7 @@ def run_article(niche: str, taxonomy: dict, trends: dict, args) -> bool:
     month_fr = MONTH_FR.get(mo, mo)
     niche_cfg = taxonomy.get("niche_config", {}).get(niche, {})
     niche_label = niche_cfg.get("label_fr", niche.replace("_", " "))
+    niche_label_en = niche_cfg.get("label_en") or _NICHE_LABEL_EN.get(niche, niche.replace("_", " ").title())
     slug_prefix = niche_cfg.get("page_slug_prefix", niche.replace("_", "-"))
     slug = f"{slug_prefix}-{args.month}"
 
@@ -1264,12 +1678,28 @@ def run_article(niche: str, taxonomy: dict, trends: dict, args) -> bool:
             print("  ⚠️  Pillow non disponible — pip install Pillow")
         else:
             nb_vis = max(1, min(args.nb_visuals, 3))
-            print(f"\n  🎨 Génération de {nb_vis} visuel(s)…")
+            print(f"\n  🎨 Génération de {nb_vis} × 2 visuels (FR + EN, fonds distincts)…")
+
+            # Overlays variés : hero LLM + fallbacks croissants pour chaque variante
+            _top_p_fr = f"Top {nb_prod} {niche_label}"
+            _top_p_en = f"Top {nb_prod} {niche_label.title()} picks"
+            _ov_fr_pool = [
+                pin_content["fr"]["overlay_hero"],
+                content["title"][:55] if len(content["title"]) <= 55 else _top_p_fr,
+                _top_p_fr,
+            ]
+            _ov_en_pool = [
+                pin_content["en"]["overlay_hero"],
+                content.get("title_en", "")[:55] or _top_p_en,
+                _top_p_en,
+            ]
             pin_paths = generate_visuals(
                 slug, content["title"], nb_prod, niche, niche_label,
                 month_fr, year, products, taxonomy, nb_vis,
-                overlay_texts=pin_content["overlay_texts"],
+                overlay_texts_fr=_ov_fr_pool[:nb_vis],
+                overlay_texts_en=_ov_en_pool[:nb_vis],
                 board_name_fr=board_name_fr,
+                board_name_en=board_name_en,
             )
 
     # 4. Enrichir les données produits pour le JSON
@@ -1282,7 +1712,6 @@ def run_article(niche: str, taxonomy: dict, trends: dict, args) -> bool:
             "url": p.get("affiliate_url"),
             "partner": p.get("merchant_key"),
             "image_url": p.get("image_url"),
-            "rating": p.get("rating"),
             "blurb_fr": content["blurbs"][i] if i < len(content["blurbs"]) else "",
         }
         for i, p in enumerate(products)
@@ -1292,10 +1721,13 @@ def run_article(niche: str, taxonomy: dict, trends: dict, args) -> bool:
     article_content = json.dumps({
         "category_slug": category_slug,
         "subcategory": niche_label,
+        "subcategory_en": niche_label_en,
         "keyword": niche,
         "title_en": content.get("title_en", ""),
         "intro_fr": content["intro"],
         "intro_en": content.get("intro_en", ""),
+        "body_html_fr": content.get("body_html_fr", ""),
+        "body_html_en": content.get("body_html_en", ""),
         "products": enriched,
         "month": args.month,
     }, ensure_ascii=False)
@@ -1332,23 +1764,69 @@ def run_article(niche: str, taxonomy: dict, trends: dict, args) -> bool:
     if ok:
         print(f"  ✅ Enregistré : {slug}")
 
-    # 6. Publication Pinterest (ou sauvegarde locale avec organisation par board)
-    if pin_paths:
-        label = "Publication Pinterest" if production_workflow and not args.no_publish else "Sauvegarde locale"
-        print(f"\n  📌 {label} ({len(pin_paths)} pin(s))…")
+    # Écriture des fichiers debug en mode local
+    if not production_workflow:
+        _slug_safe = re.sub(r"[^a-z0-9-]", "", slug.lower())[:42]
+        _slug_dir = ROOT / "public" / "local_pins" / _slug_safe
+        _slug_dir.mkdir(parents=True, exist_ok=True)
+
+        # article.txt — inputs LLM + article généré
+        article_lines = [
+            f"NICHE: {niche}", f"NICHE_LABEL: {niche_label}", f"MOIS: {args.month}", "",
+            f"TITRE FR: {content['title']}", f"TITRE EN: {content.get('title_en', '')}", "",
+            "--- INTRO FR ---", content["intro"], "",
+            "--- INTRO EN ---", content.get("intro_en", ""), "",
+            "--- ARTICLE HTML FR ---", content.get("body_html_fr", ""), "",
+            "--- ARTICLE HTML EN ---", content.get("body_html_en", ""),
+        ]
+        (_slug_dir / "article.txt").write_text("\n".join(article_lines), encoding="utf-8")
+
+        # pin.txt — titre pin, description, overlay, lien affilié
+        pin_lines = [
+            f"PIN TITLE FR: {pin_content['fr']['pin_title']}",
+            f"PIN TITLE EN: {pin_content['en']['pin_title']}",
+            f"OVERLAY FR: {pin_content['fr']['overlay_hero']}",
+            f"OVERLAY EN: {pin_content['en']['overlay_hero']}",
+            "",
+            "--- DESCRIPTION FR ---",
+            pin_content["fr"]["description"],
+            "",
+            "--- DESCRIPTION EN ---",
+            pin_content["en"]["description"],
+            "",
+            f"LIEN ARTICLE: {article_url}",
+            "",
+            "--- LIENS AFFILIÉS ---",
+        ]
+        for p in products:
+            aff = p.get("affiliate_url") or p.get("url") or "#"
+            pin_lines.append(f"  {p.get('name', '?')} → {aff}")
+        (_slug_dir / "pin.txt").write_text("\n".join(pin_lines), encoding="utf-8")
+        print(f"  📄 article.txt + pin.txt → {_slug_dir}")
+
+    # 6. Publication Pinterest (ou confirmation de sauvegarde locale)
+    if pin_paths and any(pin_paths.values()):
+        n_fr = len(pin_paths.get("fr", []))
+        n_en = len(pin_paths.get("en", []))
+        label = "Publication Pinterest" if args.publish_to_pinterest else "Sauvegarde locale"
+        print(f"\n  📌 {label} ({n_fr} FR + {n_en} EN = {n_fr + n_en} pins)…")
         published = publish_visuals_pinterest(
             slug, content["title"], niche, niche_label, args.month, pin_paths, taxonomy,
             pin_title=pin_content["pin_title"],
             pin_description=pin_content["description"],
             board_id_fr=board_id_fr,
             board_id_en=board_id_en,
-            board_name_fr=board_name_fr,
-            board_name_en=board_name_en,
             pin_content=pin_content,
+            publish_to_pinterest=args.publish_to_pinterest,
         )
-        if published and production_workflow and not args.no_publish:
-            r2_urls = [p["r2_url"] for p in published]
+        if published and args.publish_to_pinterest:
+            r2_urls = [p["r2_url"] for p in published if p.get("r2_url")]
             sb_patch("top_articles", f"slug=eq.{slug}", {"pin_images": json.dumps(r2_urls)})
+        else:
+            bg_web = pin_paths.get("bg", [])
+            if bg_web:
+                sb_patch("top_articles", f"slug=eq.{slug}", {"pin_images": json.dumps(bg_web)})
+                print(f"  🖼️  pin_images local mis à jour : {bg_web}")
 
     return ok
 
@@ -1369,6 +1847,9 @@ def main():
     parser.add_argument("--no-visuals", dest="create_visuals", action="store_false",
                         help="Pas de génération visuelle")
     parser.add_argument("--nb-visuals", type=int, default=2, help="Visuels par article (1-3, défaut: 2)")
+    parser.add_argument("--publish-to-pinterest", dest="publish_to_pinterest",
+                        action="store_true", default=False,
+                        help="Publier les pins sur Pinterest + upload R2 (indépendant de settings.py)")
     parser.add_argument("--no-publish", action="store_true",
                         help="Forcer sauvegarde locale même si production_workflow=True")
     parser.add_argument("--no-trends", action="store_true", help="Ignorer les tendances Pinterest")
@@ -1383,7 +1864,7 @@ def main():
     # Résumé config
     llm_info = f"Ollama Cloud ({OLLAMA_CLOUD_MODEL})" if OLLAMA_CLOUD_API_KEY else "template fallback"
     hf_info = ("HF FLUX.1-schnell" if HF_API_TOKEN else "gradient fallback") if args.create_visuals else "désactivé"
-    publish_mode = "Pinterest + R2" if (production_workflow and not args.no_publish) else "local seulement"
+    publish_mode = "Pinterest + R2" if args.publish_to_pinterest else "local seulement"
     nb_prod = args.nb_products or nb_products_per_article
     print(f"\n{'═'*62}")
     print(f"  🏆  create_and_post_top_products.py  —  Top {nb_prod}  —  {args.month}")
