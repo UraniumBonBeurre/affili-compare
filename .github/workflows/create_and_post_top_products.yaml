@@ -1,0 +1,144 @@
+# ══════════════════════════════════════════════════════════════════════════════
+# create_and_post_top_products.yaml — Génération quotidienne d'articles Top N
+#
+# Pipeline :
+#   Pour i in [1..top_articles_per_day] :
+#     1. Sélection niche (rotation pondérée)
+#     2. Génération contenu LLM + visuels
+#     3. Publication Pinterest + Supabase (si production_workflow=True dans settings.py)
+#
+# Cron : 08h00 UTC chaque jour (après la mise à jour produits de 02h)
+# ══════════════════════════════════════════════════════════════════════════════
+
+name: "Create & Post Top Products"
+
+on:
+  schedule:
+    - cron: "0 8 * * *"
+  workflow_dispatch:
+    inputs:
+      count:
+        description: "Nombre d'articles à générer (défaut: valeur de top_articles_per_day)"
+        type: string
+        default: ""
+      nb_articles:
+        description: "N — Nombre d'articles (prioritaire sur count, défaut: 1)"
+        type: string
+        default: ""
+      nb_products:
+        description: "K — Produits par article (défaut: 5)"
+        type: string
+        default: "5"
+      nb_visuals:
+        description: "X — Variantes visuels par article (défaut: 2, ×2 car FR+EN)"
+        type: string
+        default: "2"
+      niche:
+        description: "Forcer une niche spécifique (optionnel)"
+        type: string
+        default: ""
+      no_visuals:
+        description: "Désactiver la génération d'images"
+        type: boolean
+        default: false
+      dry_run:
+        description: "Mode simulation (pas d'écriture)"
+        type: boolean
+        default: false
+
+jobs:
+  generate:
+    name: "Generate Top Articles"
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    env:
+      NEXT_PUBLIC_SUPABASE_URL:  ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      OLLAMA_CLOUD_API_KEY:      ${{ secrets.OLLAMA_CLOUD_API_KEY }}
+      OLLAMA_CLOUD_HOST:         ${{ secrets.OLLAMA_CLOUD_HOST }}
+      OLLAMA_CLOUD_MODEL:        ${{ secrets.OLLAMA_CLOUD_MODEL }}
+      HF_API_TOKEN:              ${{ secrets.HF_API_TOKEN }}
+      PINTEREST_ACCESS_TOKEN:    ${{ secrets.PINTEREST_ACCESS_TOKEN }}
+      PINTEREST_BOARD_ID:        ${{ secrets.PINTEREST_BOARD_ID }}
+      R2_ACCOUNT_ID:             ${{ secrets.R2_ACCOUNT_ID }}
+      R2_ACCESS_KEY_ID:          ${{ secrets.R2_ACCESS_KEY_ID }}
+      R2_SECRET_ACCESS_KEY:      ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      R2_BUCKET_NAME:            ${{ secrets.R2_BUCKET_NAME }}
+      R2_PUBLIC_URL:             ${{ secrets.R2_PUBLIC_URL }}
+      NEXT_PUBLIC_SITE_URL:      ${{ secrets.NEXT_PUBLIC_SITE_URL }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
+          restore-keys: ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: pip install requests python-dotenv Pillow boto3
+
+      # ── Génération articles ──────────────────────────────────────────────
+      - name: Generate Top Articles
+        working-directory: affili-compare
+        run: |
+          ARGS=""
+          # nb_articles (prioritaire sur count)
+          if [ -n "${{ github.event.inputs.nb_articles }}" ]; then
+            ARGS="$ARGS --count ${{ github.event.inputs.nb_articles }}"
+          elif [ -n "${{ github.event.inputs.count }}" ]; then
+            ARGS="$ARGS --count ${{ github.event.inputs.count }}"
+          fi
+          if [ -n "${{ github.event.inputs.nb_products }}" ] && [ "${{ github.event.inputs.nb_products }}" != "5" ]; then
+            ARGS="$ARGS --nb-products ${{ github.event.inputs.nb_products }}"
+          fi
+          if [ -n "${{ github.event.inputs.nb_visuals }}" ] && [ "${{ github.event.inputs.nb_visuals }}" != "2" ]; then
+            ARGS="$ARGS --nb-visuals ${{ github.event.inputs.nb_visuals }}"
+          fi
+          if [ -n "${{ github.event.inputs.niche }}" ]; then
+            ARGS="$ARGS --niche ${{ github.event.inputs.niche }}"
+          fi
+          if [ "${{ github.event.inputs.no_visuals }}" = "true" ]; then
+            ARGS="$ARGS --no-visuals"
+          fi
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            ARGS="$ARGS --dry-run"
+          fi
+          python3 create_and_post_top_products.py $ARGS
+
+      # ── Pins pour les articles sans pin ──────────────────────────────────
+      - name: Create & Publish Pins
+        if: ${{ github.event.inputs.dry_run != 'true' }}
+        working-directory: affili-compare
+        run: python3 create_and_post_pins.py
+
+      # ── Commit taxonomy (last_used update) ──────────────────────────────
+      - name: Commit taxonomy updates
+        if: ${{ github.event.inputs.dry_run != 'true' }}
+        run: |
+          cd affili-compare
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/config/product_taxonomy.json
+          git diff --cached --quiet || git commit -m "chore: update niche last_used [skip ci]"
+          git push || echo "Push failed (likely no changes)"
+
+      # ── Résumé ──────────────────────────────────────────────────────────
+      - name: Summary
+        if: always()
+        run: |
+          echo "### Top Articles — $(date '+%Y-%m-%d %H:%M UTC')" >> $GITHUB_STEP_SUMMARY
+          echo "- Count    : ${{ github.event.inputs.nb_articles || github.event.inputs.count || 'default' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Products : ${{ github.event.inputs.nb_products || '5' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Visuals  : ${{ github.event.inputs.nb_visuals || '2' }} ×2 (FR+EN)" >> $GITHUB_STEP_SUMMARY
+          echo "- Niche : ${{ github.event.inputs.niche || 'auto-rotation' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Dry   : ${{ github.event.inputs.dry_run || 'false' }}" >> $GITHUB_STEP_SUMMARY

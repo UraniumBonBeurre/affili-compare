@@ -1,0 +1,112 @@
+{
+  "boards": [
+    {
+      "theme": "Gaming & Battlestation",
+      "niches": [
+        "gaming_setup"
+      ],
+      "fr": {
+        "name": "Setup Gaming & Battlestation",
+        "board_id": "1046101888385968873"
+      },
+      "en": {
+        "name": "Gaming Setup & Battlestation",
+        "board_id": "1046101888385968874"
+      }
+    },
+    {
+      "theme": "Audio & Home Cinéma",
+      "niches": [
+        "audio_hi_fi",
+        "living_room_storage"
+      ],
+      "fr": {
+        "name": "Audio Hi-Fi & Home Cinéma",
+        "board_id": "1046101888385968875"
+      },
+      "en": {
+        "name": "Hi-Fi Audio & Home Cinema",
+        "board_id": "1046101888385968876"
+      }
+    },
+    {
+      "theme": "Home Office & Productivité",
+      "niches": [
+        "home_office_setup",
+        "cable_management",
+        "small_space_solutions"
+      ],
+      "fr": {
+        "name": "Bureau & Télétravail Ergonomique",
+        "board_id": "1046101888385968877"
+      },
+      "en": {
+        "name": "Home Office & Remote Work Setup",
+        "board_id": "1046101888385968878"
+      }
+    },
+    {
+      "theme": "Maison Connectée & Sécurité",
+      "niches": [
+        "smart_home",
+        "entryway_decor",
+        "eco_home"
+      ],
+      "fr": {
+        "name": "Maison Connectée, Sécurité & Éco",
+        "board_id": "1046101888385968879"
+      },
+      "en": {
+        "name": "Smart Home, Security & Eco Tech",
+        "board_id": "1046101888385968880"
+      }
+    },
+    {
+      "theme": "Déco, Chambre & Ambiance",
+      "niches": [
+        "cozy_lighting",
+        "bedroom_essentials",
+        "closet_organization",
+        "kids_room"
+      ],
+      "fr": {
+        "name": "Déco Chambre, Ambiance & Famille",
+        "board_id": "1046101888385968881"
+      },
+      "en": {
+        "name": "Bedroom Decor, Cozy Lighting & Family",
+        "board_id": "1046101888385968882"
+      }
+    },
+    {
+      "theme": "Cuisine & Bien-être",
+      "niches": [
+        "kitchen_organization",
+        "bathroom_storage"
+      ],
+      "fr": {
+        "name": "Cuisine & Bien-être Connecté",
+        "board_id": "1046101888385968883"
+      },
+      "en": {
+        "name": "Smart Kitchen & Connected Wellness",
+        "board_id": "1046101888385968884"
+      }
+    },
+    {
+      "theme": "Extérieur & Mobilité",
+      "niches": [
+        "outdoor_living",
+        "mobile_nomade"
+      ],
+      "fr": {
+        "name": "Extérieur Tech & Vie Nomade",
+        "board_id": "1046101888385968885"
+      },
+      "en": {
+        "name": "Outdoor Tech & Nomad Lifestyle",
+        "board_id": "1046101888385968886"
+      }
+    }
+  ]
+}
