@@ -81,7 +81,7 @@ jobs:
 
       - name: Install dependencies
         shell: bash
-        run: pip install requests python-dotenv sentence-transformers
+        run: pip install requests python-dotenv sentence-transformers tenacity
 
       # ── 1. Import flux Awin ──────────────────────────────────────────────
       - name: Import Awin feeds (incremental)
