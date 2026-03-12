@@ -79,6 +79,7 @@ jobs:
           path: ~/.cache/huggingface
           key: ${{ runner.os }}-hf-bge-m3
 
+      - name: Install Python deps
         run: pip install -r requirements.txt
 
       # ── 1. Import flux Awin ──────────────────────────────────────────────
