@@ -34,3 +34,4 @@ Thumbs.db
 # ── CSV feeds (trop volumineux) ──────────────────────────────────────────────
 *.csv
 
+.env.example
