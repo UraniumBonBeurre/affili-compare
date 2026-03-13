@@ -719,7 +719,7 @@ def _slugify_product(text: str) -> str:
     return text.strip("-")[:45]
 
 
-def _markdown_body_to_html(text: str, products: list) -> str:
+def _markdown_body_to_html(text: str, products: list, lang: str = "fr") -> str:
     """Convertit le corps généré par le LLM → HTML propre.
     Layout quinconce :
       - Produit avec vraie image → bloc flex [image | texte] (alternance gauche/droite)
@@ -730,6 +730,8 @@ def _markdown_body_to_html(text: str, products: list) -> str:
 
     def _esc(s: str) -> str:
         return s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;')
+
+    cta_label = "Je fonce !" if lang == "fr" else "I'm in!"
 
     # ── Construire product_map : slug → info (uniquement si image valide) ──
     product_map: dict[str, dict] = {}
@@ -812,7 +814,7 @@ def _markdown_body_to_html(text: str, products: list) -> str:
                     f'<div class="product-block-text">'
                     f'<p>{_md_inline(next_text.replace(chr(10), "<br>"))}</p>'
                     f'<a href="{cta_url}" class="product-block-cta"'
-                    f' target="_blank" rel="noopener noreferrer nofollow sponsored">Voir le produit →</a>'
+                    f' target="_blank" rel="noopener noreferrer nofollow sponsored">{cta_label}</a>'
                     f'</div>'
                     f'</div>'
                 )
@@ -821,7 +823,7 @@ def _markdown_body_to_html(text: str, products: list) -> str:
                 noimg_url = (txt_info or {}).get("url", "#").replace('&', '&amp;')
                 noimg_cta = (
                     f'<a href="{noimg_url}" class="product-block-cta"'
-                    f' target="_blank" rel="noopener noreferrer nofollow sponsored">Voir le produit →</a>'
+                    f' target="_blank" rel="noopener noreferrer nofollow sponsored">{cta_label}</a>'
                 ) if noimg_url != "#" else ""
                 html_parts.append(
                     f'<div class="product-block product-block-noimg">'
@@ -938,8 +940,8 @@ RÈGLES ABSOLUES :
     if not en_body_md or len(en_body_md.split()) < 50:
         en_body_md = _fallback_body("en")
 
-    body_html_fr = _markdown_body_to_html(fr_body_md, products)
-    body_html_en = _markdown_body_to_html(en_body_md, products)
+    body_html_fr = _markdown_body_to_html(fr_body_md, products, lang="fr")
+    body_html_en = _markdown_body_to_html(en_body_md, products, lang="en")
     return body_html_fr, body_html_en
 
 
@@ -1892,6 +1894,21 @@ def main():
     total = ok = 0
     used_niches: set = set()
     max_attempts = args.count * 5
+
+    # Exclure les niches déjà publiées ce mois (évite d'écraser un article existant)
+    if not args.dry_run:
+        try:
+            published = sb_get("top_articles", f"slug=like.*-{args.month}&select=slug")
+            published_slugs = {r["slug"] for r in published}
+            niche_config = taxonomy.get("niche_config", {})
+            for _niche, _cfg in niche_config.items():
+                _pfx = _cfg.get("page_slug_prefix", _niche.replace("_", "-"))
+                if f"{_pfx}-{args.month}" in published_slugs:
+                    used_niches.add(_niche)
+            if used_niches:
+                print(f"  ⏭️  {len(used_niches)} niche(s) déjà publiée(s) ce mois — exclues")
+        except Exception as e:
+            print(f"  ⚠️  Impossible de récupérer les articles existants : {e}")
 
     for attempt in range(1, max_attempts + 1):
         if ok >= args.count:
