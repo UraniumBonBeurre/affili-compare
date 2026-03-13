@@ -72,7 +72,7 @@ R2_BUCKET_NAME: str = os.environ.get("R2_BUCKET_NAME", "")
 R2_PUBLIC_URL: str = os.environ.get("R2_PUBLIC_URL", "").rstrip("/")
 
 # Site
-SITE_URL: str = os.environ.get("NEXT_PUBLIC_SITE_URL", os.environ.get("SITE_URL", "https://mygoodpick.com")).rstrip("/")
+SITE_URL: str = "https://mygoodpick.com"
 
 # ══════════════════════════════════════════════════════════════════════════════
 # CHEMINS

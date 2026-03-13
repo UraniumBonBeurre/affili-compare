@@ -116,7 +116,6 @@ jobs:
           R2_SECRET_ACCESS_KEY:   ${{ secrets.R2_SECRET_ACCESS_KEY }}
           R2_BUCKET_NAME:         ${{ secrets.R2_BUCKET_NAME }}
           R2_PUBLIC_URL:          ${{ secrets.R2_PUBLIC_URL }}
-          NEXT_PUBLIC_SITE_URL:   ${{ secrets.NEXT_PUBLIC_SITE_URL }}
         run: python3 create_and_post_top_products.py
       # ── Résumé ──────────────────────────────────────────────────────────
       - name: Summary
