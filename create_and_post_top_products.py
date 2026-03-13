@@ -326,6 +326,10 @@ def pick_niche(taxonomy: dict, trends: dict,
         jitter = random.uniform(0.8, 1.2)
         scores[n] = days * weight * boost * count_mult * jitter
 
+    if not scores:
+        print("  ⚠️  Plus aucune niche disponible")
+        return None
+
     chosen = max(scores, key=scores.__getitem__)
     top5 = sorted(scores.items(), key=lambda x: -x[1])[:5]
     print(f"  📅 Mois {datetime.now().month}  |  Boostées: {_current_boosted(taxonomy)[:4]}")
@@ -1919,6 +1923,9 @@ def main():
         print(f"  [Article {ok+1}/{args.count}] Tentative {attempt}/{max_attempts} — Sélection de niche…")
         niche = pick_niche(taxonomy, trends, forced=forced, exclude=used_niches,
                            niche_counts=niche_counts, min_products=min(3, nb_prod))
+        if niche is None:
+            print("  ⚠️  Toutes les niches épuisées — arrêt")
+            break
         used_niches.add(niche)
 
         total += 1

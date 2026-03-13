@@ -55,6 +55,7 @@ jobs:
     timeout-minutes: 90
 
     env:
+      PYTHONUNBUFFERED:          "1"
       NEXT_PUBLIC_SUPABASE_URL:  ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
       SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
       OLLAMA_CLOUD_API_KEY:      ${{ secrets.OLLAMA_CLOUD_API_KEY }}
