@@ -106,7 +106,7 @@ export default async function CategoryPage({ params }: Props) {
 
   return (
     <div className="py-8">
-      {/* Breadcrumb + title */
+      {/* Breadcrumb + title */}
       <div className="mb-8">
         <p className="text-sm text-gray-400 mb-2">
           <Link href={`/${locale}`} className="hover:underline">Accueil</Link>
