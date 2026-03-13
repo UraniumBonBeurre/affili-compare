@@ -17,112 +17,113 @@
   .prose-comparison h3 { @apply text-lg font-semibold text-gray-800 mt-5 mb-2; }
   .prose-comparison p  { @apply text-gray-700 leading-relaxed mb-4; }
   .prose-comparison ul { @apply list-disc pl-5 space-y-1 mb-4 text-gray-700; }
+}
 
-  /* ── Article body ── */
-  .article-body p {
-    @apply mb-4 leading-relaxed;
-    text-align: justify;
+/* ── Article body — hors @layer pour éviter la purge Tailwind ── */
+.article-body p {
+  margin-bottom: 1rem;
+  line-height: 1.7;
+  text-align: justify;
+}
+
+/* Blocs produits quinconce (format actuel) */
+.article-body .product-block {
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+  margin: 1.5rem 0;
+}
+
+.article-body .product-block-left  { flex-direction: row; }
+.article-body .product-block-right { flex-direction: row-reverse; }
+
+.article-body .product-block-media {
+  flex: 0 0 160px;
+  max-width: 160px;
+}
+
+.article-body .product-block-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 160px;
+  object-fit: contain;
+  border-radius: 0.75rem;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.article-body .product-block-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.article-body .product-block-text p {
+  margin-bottom: 0.75rem;
+}
+
+.article-body .product-block-noimg {
+  margin: 1.25rem 0;
+}
+
+.article-body .product-block-cta {
+  display: inline-block;
+  margin-top: 0.5rem;
+  padding: 0.4rem 1rem;
+  background: #f59e0b;
+  color: white;
+  font-weight: 600;
+  font-size: 0.875rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+}
+
+.article-body .product-block-cta:hover {
+  background: #d97706;
+}
+
+/* Blocs produits (ancien format float — rétrocompat) */
+.article-body .product-float-left {
+  float: left;
+  width: 30%;
+  margin: 0 1.25rem 0.5rem 0;
+}
+
+.article-body .product-float-right {
+  float: right;
+  width: 30%;
+  margin: 0 0 0.5rem 1.25rem;
+}
+
+.article-body .product-float-left img,
+.article-body .product-float-right img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 0.75rem;
+  object-fit: contain;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.article-body .product-float-caption { display: none; }
+.article-body .product-float-clear   { clear: both; }
+
+/* Petits écrans */
+@media (max-width: 480px) {
+  .article-body .product-block,
+  .article-body .product-block-right {
+    flex-direction: column;
   }
-
-  /* ── Blocs produits quinconce (format actuel) ── */
-  .article-body .product-block {
-    display: flex;
-    gap: 1.25rem;
-    align-items: flex-start;
-    margin: 1.5rem 0;
-  }
-
-  .article-body .product-block-left  { flex-direction: row; }
-  .article-body .product-block-right { flex-direction: row-reverse; }
-
   .article-body .product-block-media {
-    flex: 0 0 160px;
-    max-width: 160px;
+    flex: none;
+    max-width: 50%;
+    margin: 0 auto;
   }
-
-  .article-body .product-block-img {
-    display: block;
-    width: 100%;
-    height: auto;
-    max-height: 160px;
-    object-fit: contain;
-    border-radius: 0.75rem;
-    background: white;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  }
-
-  .article-body .product-block-text {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .article-body .product-block-text p {
-    margin-bottom: 0.75rem;
-  }
-
-  .article-body .product-block-noimg {
-    margin: 1.25rem 0;
-  }
-
-  .article-body .product-block-cta {
-    display: inline-block;
-    margin-top: 0.5rem;
-    padding: 0.4rem 1rem;
-    background: #f59e0b;
-    color: white;
-    font-weight: 600;
-    font-size: 0.875rem;
-    border-radius: 0.5rem;
-    text-decoration: none;
-  }
-
-  .article-body .product-block-cta:hover {
-    background: #d97706;
-  }
-
-  /* ── Blocs produits (ancien format float — rétrocompat) ── */
-  .article-body .product-float-left {
-    float: left;
-    width: 30%;
-    margin: 0 1.25rem 0.5rem 0;
-  }
-
+  .article-body .product-float-left,
   .article-body .product-float-right {
-    float: right;
-    width: 30%;
-    margin: 0 0 0.5rem 1.25rem;
-  }
-
-  .article-body .product-float-left img,
-  .article-body .product-float-right img {
-    display: block;
-    width: 100%;
-    height: auto;
-    border-radius: 0.75rem;
-    object-fit: contain;
-    background: white;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  }
-
-  .article-body .product-float-caption { display: none; }
-  .article-body .product-float-clear   { clear: both; }
-
-  /* Petits écrans */
-  @media (max-width: 480px) {
-    .article-body .product-block,
-    .article-body .product-block-right {
-      flex-direction: column;
-    }
-    .article-body .product-block-media {
-      flex: none;
-      max-width: 50%;
-      margin: 0 auto;
-    }
-    .article-body .product-float-left,
-    .article-body .product-float-right {
-      float: none;
-      width: 50%;
-      margin: 0 auto 1rem;
-    }
+    float: none;
+    width: 50%;
+    margin: 0 auto 1rem;
   }
 }
