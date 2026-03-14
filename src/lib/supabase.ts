@@ -8,8 +8,13 @@ const supabaseAnon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 export const supabase = createClient<Database>(supabaseUrl, supabaseAnon);
 
 // Factory pour Server Components qui ont besoin d'un client frais par requête
+// cache: 'no-store' force Next.js à ne pas mettre en cache les fetch Supabase
 export function createSupabaseServerClient() {
-  return createClient<Database>(supabaseUrl, supabaseAnon);
+  return createClient<Database>(supabaseUrl, supabaseAnon, {
+    global: {
+      fetch: (url, options = {}) => fetch(url, { ...options, cache: "no-store" }),
+    },
+  });
 }
 
 /**

@@ -130,7 +130,7 @@ export default async function TopArticlePage({ params }: Props) {
 
   return (
     <ArticlePanel bgImage={bgImage} backLabel={l.back}>
-      <div className="max-w-2xl mx-auto px-4 pb-16 pt-4">
+      <div className="max-w-4xl mx-auto px-8 pb-16 pt-4">
 
         {/* Title block */}
         <div className="mb-6">

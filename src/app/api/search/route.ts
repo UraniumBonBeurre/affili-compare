@@ -4,18 +4,23 @@
  *
  * Pipeline :
  *   1. Analyse sémantique (lib/search-utils) : synonymes + intention prix + marque + prix
- *   2. Embedding de la requête (lib/embedding.ts) → vecteur 384 dims
- *   3a. Recherche HYBRIDE (pgvector 60% + trigram 25% + BM25 15%) via Supabase RPC
- *   3b. Fallback SQL classique (OR ILIKE) si pas d'embedding disponible
- *   4. Enrichissement (affiliate_links, comparisons, categories)
- *   5. Tri déterministe par intention prix (priceIntent)
+ *   2. En parallèle  :
+ *        a. FTS article search  (top_articles.fts GIN — instant même à >10k articles)
+ *        b. Embedding de la requête (lib/embedding.ts) → vecteur 384 dims
+ *   3a. Recherche produits HYBRIDE (pgvector 60% + trigram 25% + BM25 15%)
+ *   3b. Fallback SQL classique si pas d'embedding
+ *   4.  En parallèle avec enrichissement :
+ *        · overlap sur ids_products_used[] (GIN, O(log n))
+ *        · Affiliate links + comparisons
+ *   5. Tri déterministe par intention prix
+ *   6. Réponse : produits + articles (FTS ∪ produit→article, dédupliqués, max 6)
  */
 
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 import { parseQuery } from "@/lib/search-utils";
 import { embedQuery } from "@/lib/embedding";
-import type { SearchResultItem, SearchApiResponse, SearchAffiliateLink } from "@/types/search";
+import type { SearchResultItem, SearchApiResponse, SearchAffiliateLink, ArticleMatch } from "@/types/search";
 
 /**
  * Détecte la catégorie la plus probable à partir de la requête brute.
@@ -45,10 +50,14 @@ function detectQueryCategory(query: string): string | null {
 export async function POST(req: Request) {
   let query = "";
   let locale: "fr" | "en" | "de" = "fr";
+  let nicheFilter: string | null = null;
+  let merchantFilter: string | null = null;
   try {
     const body = await req.json();
     query = String(body.query ?? "").trim().slice(0, 500);
     locale = ["fr", "en", "de"].includes(body.locale) ? body.locale : "fr";
+    nicheFilter    = typeof body.nicheFilter    === "string" && body.nicheFilter    !== "all" ? body.nicheFilter    : null;
+    merchantFilter = typeof body.merchantFilter === "string" && body.merchantFilter !== "all" ? body.merchantFilter : null;
   } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
@@ -71,7 +80,44 @@ export async function POST(req: Request) {
     return NextResponse.json({ results: [], fromLLM: false, message: noResultMsg } satisfies SearchApiResponse);
   }
 
-  // ── 1. Embedding de la requête (tente vectorielle, graceful fallback) ────────
+  // ── 1. Article FTS search + Embedding lancés en parallèle ───────────────────
+  // L'article FTS search tourne en parallèle avec l'embedding dès que sqlKeywords
+  // est prêt. La colonne fts (GIN, GENERATED ALWAYS AS) garantit O(log n) à grande échelle.
+  // Si la migration n'a pas encore été appliquée → fallback ILIKE sur title.
+  type RawArticle = { slug: string; title: string; content: unknown; pin_images: unknown };
+  const ftsQuery = sqlKeywords.join(" ");
+  const ftsArticlePromise: Promise<RawArticle[]> = ftsQuery
+    ? supabase
+        .from("top_articles")
+        .select("slug, title, content, pin_images")
+        .textSearch("fts", ftsQuery, { type: "plain", config: "simple" })
+        .order("created_at", { ascending: false })
+        .limit(5)
+        .then(({ data, error }) => {
+          if (error) {
+            console.warn("[search] FTS article search failed, falling back:", error.message);
+            const titleFilter = sqlKeywords.map((k) => `title.ilike.%${k}%`).join(",");
+            return titleFilter
+              ? supabase.from("top_articles").select("slug, title, content, pin_images")
+                  .or(titleFilter).order("created_at", { ascending: false }).limit(5)
+                  .then(({ data: d }) => (d as RawArticle[] | null) ?? [])
+              : [];
+          }
+          return (data as RawArticle[] | null) ?? [];
+        })
+    : Promise.resolve([]);
+
+  function parseArticles(rawArticles: RawArticle[]): ArticleMatch[] {
+    return rawArticles.map((a) => {
+      const c = typeof a.content === "string"
+        ? (() => { try { return JSON.parse(a.content as string) as Record<string, unknown>; } catch { return {} as Record<string, unknown>; } })()
+        : (a.content ?? {}) as Record<string, unknown>;
+      const subcategory = (c.subcategory as string) ?? "";
+      const pinImages   = Array.isArray(a.pin_images) ? (a.pin_images as string[]) : [];
+      return { slug: a.slug, title: a.title, subcategory, pinImages };
+    });
+  }
+
   // Fallback : essayer la version sans accents si le modèle Xenova échoue sur unicode
   const queryEmbedding =
     await embedQuery(rawQuery) ??
@@ -91,20 +137,15 @@ export async function POST(req: Request) {
         query_text:       sqlKeywords.join(" "),
         match_count:      20,
         brand_filter:     brand ?? null,
-        category_filter:  categoryFilter,
+        category_filter:  nicheFilter ?? categoryFilter,
       }
     );
 
     if (!vectorError && vectorResults?.length) {
-      // Garde de pertinence : si aucun résultat n'a de correspondance FTS (branche lexicale)
-      // ET qu'on n'a ni filtre catégorie ni filtre marque → la requête est hors-catalogue.
-      // Ex: "fleur", "voiture", "recette gateau" → retourner vide plutôt que les voisins vectoriels.
       const anyLexicalMatch = vectorResults.some((r: { in_lexical?: boolean }) => r.in_lexical);
-      // Garde de pertinence : aucun résultat lexical → requête hors-catalogue.
-      // S'applique aussi quand un categoryFilter est présent (ex: "chaise gaming" en catégorie
-      // gaming → FTS ne trouve aucun meuble → retourner vide plutôt que des périphériques).
       if (!anyLexicalMatch && !brand) {
-        return NextResponse.json({ results: [], fromLLM: false, message: noResultMsg } satisfies SearchApiResponse);
+        const articles = parseArticles(await ftsArticlePromise);
+        return NextResponse.json({ results: [], articles, fromLLM: false, message: noResultMsg } satisfies SearchApiResponse);
       }
 
       allProducts = vectorResults.map((r: { id: string; name: string; brand: string | null; image_url: string | null; category_slug: string | null; affiliate_url?: string | null; price?: number | null; currency?: string | null; in_stock?: boolean | null; merchant_key?: string | null }) => ({
@@ -113,6 +154,7 @@ export async function POST(req: Request) {
         affiliate_url: r.affiliate_url ?? null, price: r.price ?? null,
         currency: r.currency ?? null, in_stock: r.in_stock ?? null, merchant_key: r.merchant_key ?? null,
       }));
+      if (merchantFilter) allProducts = allProducts.filter((p) => p.merchant_key === merchantFilter);
     } else if (vectorError) {
       // pgvector non activé ou colonnes manquantes → fallback SQL classique
       console.warn("[search] Vector search failed, falling back to SQL:", vectorError.message);
@@ -122,14 +164,14 @@ export async function POST(req: Request) {
   // ── 2b. Fallback SQL classique si vectorielle a échoué ou pas d'embedding ────
   if (!allProducts.length) {
     const productOrFilter = sqlKeywords.map((k) => `name.ilike.%${k}%,brand.ilike.%${k}%`).join(",");
-    const sqlBase = supabase
+    const effectiveCategoryFilter = nicheFilter ?? categoryFilter;
+    let sqlQ = supabase
       .from("products")
       .select("id, name, brand, image_url, category_slug, affiliate_url, price, currency, in_stock, merchant_key")
-      .or(productOrFilter)
-      .limit(40);
-    const { data: sqlProducts } = categoryFilter
-      ? await sqlBase.eq("category_slug", categoryFilter)
-      : await sqlBase;
+      .or(productOrFilter);
+    if (effectiveCategoryFilter) sqlQ = sqlQ.or(`category_slug.eq.${effectiveCategoryFilter},llm_niche.eq.${effectiveCategoryFilter}`);
+    if (merchantFilter)          sqlQ = sqlQ.eq("merchant_key", merchantFilter);
+    const { data: sqlProducts } = await sqlQ.limit(40);
 
     // Recherche via titres de comparatifs si toujours vide
     if ((sqlProducts?.length ?? 0) === 0) {
@@ -212,7 +254,45 @@ export async function POST(req: Request) {
   }
 
   if (!allProducts.length) {
-    return NextResponse.json({ results: [], fromLLM: false, message: noResultMsg } satisfies SearchApiResponse);
+    const articles = parseArticles(await ftsArticlePromise);
+    return NextResponse.json({ results: [], articles, fromLLM: false, message: noResultMsg } satisfies SearchApiResponse);
+  }
+
+  // ── Product→article lookup via ids_products_used ────────────────────────────
+  // ids_products_used uuid[] is already indexed with GIN (top_articles_products_gin).
+  // .overlaps() maps to the && array operator → O(log n) at any scale.
+  const productIds = allProducts.map((p) => p.id);
+  const productArticlePromise: Promise<RawArticle[]> = productIds.length > 0
+    ? supabase
+        .from("top_articles")
+        .select("slug, title, content, pin_images")
+        .overlaps("ids_products_used", productIds)
+        .order("created_at", { ascending: false })
+        .limit(5)
+        .then(({ data }) => (data as RawArticle[] | null) ?? [])
+    : Promise.resolve([]);
+
+  async function buildFinalArticles(): Promise<ArticleMatch[]> {
+    const [ftsRaw, productRaw] = await Promise.all([ftsArticlePromise, productArticlePromise]);
+    const seen = new Set(ftsRaw.map((a) => a.slug));
+    const merged = [...ftsRaw, ...productRaw.filter((a) => !seen.has(a.slug))].slice(0, 5);
+    if (merged.length > 0) return parseArticles(merged);
+
+    // Fallback: when neither FTS nor product-overlap found articles (e.g. ids_products_used
+    // contains stale UUIDs after a product re-import), search article FTS by brand names
+    // extracted from the matched products. Uses websearch OR syntax.
+    const brands = [...new Set(allProducts.map((p) => p.brand).filter(Boolean))] as string[];
+    if (brands.length > 0) {
+      const brandQuery = brands.slice(0, 3).join(" OR ");
+      const { data: brandArticles } = await supabase
+        .from("top_articles")
+        .select("slug, title, content, pin_images")
+        .textSearch("fts", brandQuery, { type: "websearch", config: "simple" })
+        .order("created_at", { ascending: false })
+        .limit(5);
+      return parseArticles((brandArticles as RawArticle[] | null) ?? []);
+    }
+    return [];
   }
 
   // ── 3. Liens affiliates ───────────────────────────────────────────────────────
@@ -306,9 +386,11 @@ export async function POST(req: Request) {
       const hint = cheapestWithLinks[0]
         ? ` Le moins cher disponible est à ${cheapestWithLinks[0].minPrice}€ (${cheapestWithLinks[0].name}).`
         : "";
-      return NextResponse.json({ results: [], fromLLM: false, message: noResultMsg + hint } satisfies SearchApiResponse);
+      const articles = await buildFinalArticles();
+      return NextResponse.json({ results: [], articles, fromLLM: false, message: noResultMsg + hint } satisfies SearchApiResponse);
     }
-    return NextResponse.json({ results: [], fromLLM: false, message: noResultMsg } satisfies SearchApiResponse);
+    const articles = await buildFinalArticles();
+    return NextResponse.json({ results: [], articles, fromLLM: false, message: noResultMsg } satisfies SearchApiResponse);
   }
 
   // -- 6. Tri deterministe par intention prix
@@ -324,8 +406,14 @@ export async function POST(req: Request) {
       ? [...results].sort((a, b) => getMinPrice(b) - getMinPrice(a))
       : results; // deja trie par hybrid_score pgvector
 
+  // ── 7. Articles (FTS sur fts tsvector + overlap sur ids_products_used) ──────
+  // ftsArticlePromise    : FTS sur la colonne fts générée (GIN, O(log n))
+  // productArticlePromise: overlap sur ids_products_used[] (GIN, O(log n))
+  const articles: ArticleMatch[] = await buildFinalArticles();
+
   return NextResponse.json({
-    results: sorted.slice(0, 10),
+    results: sorted.slice(0, 8),
+    articles,
     fromLLM: false,
     ...(priceIntent === "cheapest" && { autoSort: "price_asc" as const }),
     ...(priceIntent === "premium"  && { autoSort: "price_desc" as const }),

@@ -71,6 +71,9 @@ export interface Database {
           active: boolean | null;
           last_price_update: string | null;
           description: string | null;
+          llm_category:     string | null;
+          llm_niche:        string | null;
+          llm_product_type: string | null;
         };
         Insert: Omit<Database["public"]["Tables"]["products"]["Row"], "id" | "created_at"> & { id?: string; created_at?: string };
         Update: Partial<Database["public"]["Tables"]["products"]["Insert"]>;

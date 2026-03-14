@@ -176,6 +176,8 @@ export const KNOWN_BRANDS = new Set([
   "samsung","seagate","western digital","wd","toshiba","kingston","crucial","sandisk",
   // Divers
   "anker","belkin","trust","nacon","thrustmaster","elgato","rode","blue",
+  // Caméras / surveillance
+  "imou","reolink","dahua","hikvision","axis","arlo","ring","netatmo","eufy","blink",
 ]);
 
 /**

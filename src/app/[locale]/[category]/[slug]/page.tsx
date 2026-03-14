@@ -1,177 +1,85 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { supabase } from "@/lib/supabase";
-import { getComparisonMeta, buildItemListSchema } from "@/lib/seo";
-import { getLinksForLocale, cheapestLink } from "@/lib/affiliate-links";
-import { ComparisonTable } from "@/components/ComparisonTable";
-import type { Locale, ProductWithLinks, AffiliateLink } from "@/types/database";
+import { getSiteCategories, getSiteCategory, getSiteNiche } from "@/lib/site-categories";
+import { NichePageClient } from "@/components/NichePageClient";
+import type { Locale, TopArticle } from "@/types/database";
 
 interface Props {
   params: { locale: Locale; category: string; slug: string };
 }
 
-// ─── Data fetching ────────────────────────────────────────────────────────────
-
-async function getComparisonData(categorySlug: string, compSlug: string) {
-  const { data: category } = await supabase
-    .from("categories")
-    .select("*")
-    .eq("slug", categorySlug)
-    .single();
-
-  if (!category) return null;
-
-  const { data: comparison } = await supabase
-    .from("comparisons")
-    .select("*")
-    .eq("slug", compSlug)
-    .eq("category_id", category.id)
-    .eq("is_published", true)
-    .single();
-
-  if (!comparison) return null;
-
-  // Produits liés à cette comparaison (via comparison_products, triés par position)
-  const { data: cpData } = await supabase
-    .from("comparison_products")
-    .select("position, product_id")
-    .eq("comparison_id", comparison.id)
-    .order("position");
-
-  const productIds = (cpData ?? []).map((cp) => cp.product_id);
-
-  if (!productIds.length) return { category, comparison, products: [] };
-
-  const [productsRes, linksRes] = await Promise.all([
-    supabase.from("products").select("*").in("id", productIds),
-    supabase.from("affiliate_links").select("*").in("product_id", productIds).eq("comparison_id", comparison.id),
-  ]);
-
-  // Trier les produits selon comparison_products.position
-  const sortedProducts = (productsRes.data ?? []).sort((a, b) => {
-    const posA = cpData?.find((cp) => cp.product_id === a.id)?.position ?? 99;
-    const posB = cpData?.find((cp) => cp.product_id === b.id)?.position ?? 99;
-    return posA - posB;
-  });
-
-  return {
-    category,
-    comparison,
-    products:   sortedProducts,
-    links:      linksRes.data ?? [],
-  };
-}
-
-// ─── Metadata ─────────────────────────────────────────────────────────────────
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const data = await getComparisonData(params.category, params.slug);
-  if (!data) return { title: "Not found" };
-
-  const meta = getComparisonMeta(data.comparison, data.category, params.locale);
+  const cat   = getSiteCategory(params.category);
+  const niche = cat ? getSiteNiche(params.category, params.slug) : null;
+  if (!cat || !niche) return { title: "Not found" };
+  const isEn = params.locale === "en";
+  const nicheName    = isEn ? niche.name_en    : niche.name;
+  const categoryName = isEn ? cat.name_en      : cat.name;
   return {
-    title:       meta.title,
-    description: meta.description,
-    alternates:  { canonical: meta.canonical },
-    openGraph: {
-      title:       meta.title,
-      description: meta.description,
-      type:        "article",
-      locale:      params.locale,
-    },
+    title: `${nicheName} — ${categoryName} | MyGoodPick`,
+    description: isEn
+      ? `Hand-picked products and guides for ${nicheName.toLowerCase()}.`
+      : `Produits et guides sélectionnés pour ${nicheName.toLowerCase()}.`,
   };
 }
 
-export async function generateStaticParams() {
-  const { data: comparisons } = await supabase
-    .from("comparisons")
-    .select("slug, category_id")
-    .eq("is_published", true);
-
-  const { data: categories } = await supabase.from("categories").select("id, slug");
-
-  return (comparisons ?? []).flatMap((comp) => {
-    const cat = categories?.find((c) => c.id === comp.category_id);
-    if (!cat) return [];
-    return (["fr", "en", "de"] as Locale[]).map((locale) => ({
-      locale,
-      category: cat.slug,
-      slug:     comp.slug,
-    }));
-  });
+export function generateStaticParams() {
+  const locales: Locale[] = ["fr", "en"];
+  return getSiteCategories().flatMap((cat) =>
+    cat.niches.flatMap((niche) =>
+      locales.map((locale) => ({ locale, category: cat.id, slug: niche.slug }))
+    )
+  );
 }
 
-export const revalidate = 86400; // ISR 24h
+export const revalidate = 0;
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
+export default async function NichePage({ params }: Props) {
+  const { locale, category: categoryId, slug: nicheSlug } = params;
 
-export default async function ComparisonPage({ params }: Props) {
-  const { locale } = params;
-  const data = await getComparisonData(params.category, params.slug);
+  const cat   = getSiteCategory(categoryId);
+  const niche = cat ? getSiteNiche(categoryId, nicheSlug) : null;
+  if (!cat || !niche) notFound();
 
-  if (!data) notFound();
+  // Fetch products classified to this niche (populated by classification.py)
+  const { data: productsRaw } = await supabase
+    .from("products")
+    .select("id, name, brand, image_url, price, currency, affiliate_url")
+    .eq("llm_niche", nicheSlug)
+    .eq("active", true)
+    .order("price", { ascending: true })
+    .limit(100);
 
-  const { category, comparison, products, links = [] } = data;
+  // Fetch articles whose subcategory matches niche name (FR or EN)
+  const { data: articlesRaw } = await supabase
+    .from("top_articles")
+    .select("id, slug, title, content, pin_images, created_at")
+    .or(
+      `content->>subcategory.eq.${niche.name},content->>subcategory.eq.${niche.name_en}`,
+    )
+    .order("created_at", { ascending: false })
+    .limit(24);
 
-  const titleKey   = `title_${locale}` as "title_fr" | "title_en" | "title_de";
-  const catNameKey = `name_${locale}`  as "name_fr" | "name_en" | "name_de";
+  const products = (productsRaw ?? []).map((p) => ({
+    id:            p.id,
+    name:          p.name,
+    brand:         (p as { brand?: string | null }).brand ?? null,
+    image_url:     p.image_url,
+    price:         p.price,
+    currency:      p.currency,
+    affiliate_url: p.affiliate_url,
+  }));
 
-  // Enrichir les produits avec leurs liens
-  const enrichedProducts: ProductWithLinks[] = products.map((p) => {
-    const productLinks = (links as AffiliateLink[]).filter((l) => l.product_id === p.id);
-
-    return {
-      ...p,
-      links: productLinks,
-    };
-  });
-
-  const title = (comparison as Record<string, string>)[titleKey] ?? comparison.title_fr;
-
-  // Schema.org
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mygoodpick.com";
-  const itemListSchema = buildItemListSchema(
-    comparison,
-    enrichedProducts.map((p) => {
-      const bestLink = cheapestLink(getLinksForLocale(p.links, locale));
-      return {
-        name:     p.name,
-        url:      `${siteUrl}/${locale}/${category.slug}/${comparison.slug}`,
-        price:    bestLink?.price ?? null,
-        currency: bestLink?.currency ?? "EUR",
-      };
-    }),
-    locale
-  );
+  const articles = (articlesRaw ?? []) as TopArticle[];
 
   return (
-    <>
-      {/* Schema.org JSON-LD */}
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }} />
-
-      {/* Breadcrumb */}
-      <nav className="text-sm text-gray-400 mb-6">
-        <Link href={`/${locale}`} className="hover:underline">Accueil</Link>
-        {" / "}
-        <Link href={`/${locale}/${category.slug}`} className="hover:underline">
-          {(category as Record<string, string>)[catNameKey] ?? category.name_fr}
-        </Link>
-        {" / "}
-        <span className="text-gray-600">{title}</span>
-      </nav>
-
-      {/* Titre */}
-      <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-2 leading-tight">{title}</h1>
-      <p className="text-xs text-gray-400 mb-6">
-        Mis à jour le {new Date(comparison.last_updated).toLocaleDateString(
-          locale === "de" ? "de-DE" : locale === "en" ? "en-GB" : "fr-FR",
-          { day: "2-digit", month: "long", year: "numeric" }
-        )}
-      </p>
-
-      {/* Tableau comparatif */}
-      <ComparisonTable products={enrichedProducts} locale={locale} />
-    </>
+    <NichePageClient
+      category={cat}
+      niche={niche}
+      products={products}
+      articles={articles}
+      locale={locale}
+    />
   );
 }

@@ -5,7 +5,6 @@ import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
-import { AffiliateDisclosure } from "@/components/AffiliateDisclosure";
 import type { Locale } from "@/types/database";
 import "../globals.css";
 
@@ -56,9 +55,10 @@ export default async function LocaleLayout({
         <div className="fixed inset-0 -z-10 bg-white/15" />
 
         <NextIntlClientProvider messages={messages}>
-          <AffiliateDisclosure />
           <Navbar locale={locale as Locale} />
-          <main className="max-w-6xl mx-auto px-4">{children}</main>
+          <main className="max-w-6xl mx-auto px-4">
+            {children}
+          </main>
           <Footer locale={locale as Locale} />
         </NextIntlClientProvider>
       </body>

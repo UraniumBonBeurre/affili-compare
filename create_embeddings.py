@@ -91,7 +91,7 @@ def main() -> None:
 
     print(f"📦  Chargement du modèle {MODEL_NAME}…")
     t0 = time.time()
-    model = SentenceTransformer(MODEL_NAME)
+    model = SentenceTransformer(MODEL_NAME, device="cpu")
     print(f"   ✓ Modèle chargé en {time.time() - t0:.1f}s")
 
     # Récupérer les produits

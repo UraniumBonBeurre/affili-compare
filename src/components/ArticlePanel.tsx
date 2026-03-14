@@ -7,9 +7,10 @@ interface Props {
   children: React.ReactNode;
   bgImage?: string | null;
   backLabel: string;
+  onClose?: () => void;
 }
 
-export function ArticlePanel({ children, bgImage: _bgImage, backLabel }: Props) {
+export function ArticlePanel({ children, bgImage: _bgImage, backLabel, onClose }: Props) {
   const router = useRouter();
   const [entered, setEntered] = useState(false);
   const [exiting, setExiting] = useState(false);
@@ -22,37 +23,32 @@ export function ArticlePanel({ children, bgImage: _bgImage, backLabel }: Props) 
   const handleBack = useCallback(() => {
     if (exiting) return;
     setExiting(true);
-    setTimeout(() => router.back(), 420);
-  }, [exiting, router]);
+    setTimeout(() => { if (onClose) onClose(); else router.back(); }, 420);
+  }, [exiting, router, onClose]);
 
   const isVisible = entered && !exiting;
 
   return (
     <>
-      {/* ── Backdrop: blurs everything behind, very slight dark tint ── */}
+      {/* Blur backdrop — z-40 stays below navbar (z-[60]) so navbar remains readable */}
       <div
         className={`fixed inset-0 z-40 transition-opacity duration-300 ${isVisible ? "opacity-100" : "opacity-0"}`}
-        style={{
-          background: "rgba(0, 0, 0, 0.18)",
-          backdropFilter: "blur(8px)",
-          WebkitBackdropFilter: "blur(8px)",
-        }}
+        style={{ backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)", background: "rgba(15,10,5,0.25)" }}
         onClick={handleBack}
       />
 
-      {/* ── Centering wrapper — transparent, pointer-events-none ──
-           Clicks on gaps (left / right / above the white page) pass through
-           to the backdrop above and close the panel.                        ── */}
+      {/* Panel wrapper — starts just below the sticky navbar (h-14 = 3.5rem) */}
       <div
         className="fixed inset-x-0 bottom-0 z-50 flex justify-center pointer-events-none"
-        style={{ top: "calc(3.5rem + 3rem)" }}
+        style={{ top: "3.5rem" }}
       >
-        {/* White narrow page — slides from bottom */}
+        {/* White sheet — slides from bottom */}
         <div
-          className={`w-full max-w-3xl h-full flex flex-col bg-white rounded-t-2xl overflow-hidden shadow-2xl pointer-events-auto transition-transform duration-[420ms] ease-[cubic-bezier(0.32,0.72,0,1)] ${isVisible ? "translate-y-0" : "translate-y-full"}`}
+          className={`w-full max-w-5xl h-full flex flex-col bg-white rounded-t-2xl overflow-hidden shadow-2xl pointer-events-auto transition-transform duration-[420ms] ease-[cubic-bezier(0.32,0.72,0,1)] ${isVisible ? "translate-y-0" : "translate-y-full"}`}
         >
-          {/* Back button — thin strip, same width as white page, ~1cm tall */}
-          <div className="flex-none border-b border-stone-100 px-4 h-9 flex items-center">
+          {/* Drag handle + back button */}
+          <div className="flex-none border-b border-stone-100 px-4 h-10 flex items-center gap-3">
+            <div className="w-8 h-1 bg-stone-200 rounded-full mx-auto absolute left-1/2 -translate-x-1/2 top-2" />
             <button
               onClick={handleBack}
               className="flex items-center gap-1.5 text-xs font-medium text-stone-400 hover:text-stone-700 transition-colors group"

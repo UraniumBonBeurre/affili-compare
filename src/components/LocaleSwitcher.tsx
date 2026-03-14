@@ -4,8 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const LOCALES = [
-  { code: "fr", label: "FR" },
-  { code: "en", label: "EN" },
+  { code: "fr", label: "🇫🇷" },
+  { code: "en", label: "🇬🇧" },
 ] as const;
 
 export function LocaleSwitcher({ locale }: { locale: string }) {
@@ -23,10 +23,10 @@ export function LocaleSwitcher({ locale }: { locale: string }) {
         <Link
           key={code}
           href={getHref(code)}
-          className={`px-2.5 py-1 text-xs rounded-md font-semibold transition-colors ${
+          className={`px-2 py-1 text-base rounded-md transition-all ${
             code === locale
-              ? "bg-stone-700 text-white shadow-sm"
-              : "text-stone-400 hover:text-stone-700"
+              ? "bg-amber-500 shadow-sm scale-110"
+              : "opacity-50 hover:opacity-80"
           }`}
         >
           {label}

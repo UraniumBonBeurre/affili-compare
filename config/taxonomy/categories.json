@@ -1,0 +1,794 @@
+{
+  "categories": [
+    {
+      "id": "beaute-soins",
+      "name": "Beauté & Soins",
+      "name_en": "Beauty & Care",
+      "icon": "💄",
+      "gradient_from": "#831843",
+      "gradient_to": "#9f1239",
+      "niches": [
+        {
+          "name": "Maquillage",
+          "name_en": "Makeup",
+          "slug": "maquillage"
+        },
+        {
+          "name": "Soins visage",
+          "name_en": "Skincare",
+          "slug": "soins-visage"
+        },
+        {
+          "name": "Soins corps",
+          "name_en": "Body Care",
+          "slug": "soins-corps"
+        },
+        {
+          "name": "Parfums",
+          "name_en": "Perfumes",
+          "slug": "parfums"
+        },
+        {
+          "name": "Soins cheveux",
+          "name_en": "Hair Care",
+          "slug": "soins-cheveux"
+        },
+        {
+          "name": "Manucure & ongles",
+          "name_en": "Nails",
+          "slug": "manucure-ongles"
+        },
+        {
+          "name": "Spa & bien-être",
+          "name_en": "Spa & Wellness",
+          "slug": "spa-bien-etre"
+        },
+        {
+          "name": "Épilation & rasage",
+          "name_en": "Hair Removal & Shaving",
+          "slug": "epilation-rasage"
+        },
+        {
+          "name": "Solaires & autobronzants",
+          "name_en": "Sun & Self-Tanning",
+          "slug": "solaires-autobronzants"
+        },
+        {
+          "name": "Cosmétiques bio & naturels",
+          "name_en": "Natural Cosmetics",
+          "slug": "cosmetiques-bio-naturels"
+        },
+        {
+          "name": "Hygiène dentaire",
+          "name_en": "Dental Hygiene",
+          "slug": "hygiene-dentaire"
+        },
+        {
+          "name": "Soins des yeux",
+          "name_en": "Eye Care",
+          "slug": "soins-des-yeux"
+        }
+      ]
+    },
+    {
+      "id": "mode-accessoires",
+      "name": "Mode & Accessoires",
+      "name_en": "Fashion & Accessories",
+      "icon": "👗",
+      "gradient_from": "#4c1d95",
+      "gradient_to": "#5b21b6",
+      "niches": [
+        {
+          "name": "Vêtements femme",
+          "name_en": "Women's Clothing",
+          "slug": "vetements-femme"
+        },
+        {
+          "name": "Chaussures",
+          "name_en": "Shoes",
+          "slug": "chaussures"
+        },
+        {
+          "name": "Sacs & maroquinerie",
+          "name_en": "Bags & Leather Goods",
+          "slug": "sacs-maroquinerie"
+        },
+        {
+          "name": "Bijoux & montres",
+          "name_en": "Jewellery & Watches",
+          "slug": "bijoux-montres"
+        },
+        {
+          "name": "Lingerie",
+          "name_en": "Lingerie",
+          "slug": "lingerie"
+        },
+        {
+          "name": "Sport & activewear",
+          "name_en": "Sport & Activewear",
+          "slug": "sport-activewear"
+        },
+        {
+          "name": "Mode grande taille",
+          "name_en": "Plus Size Fashion",
+          "slug": "mode-grande-taille"
+        },
+        {
+          "name": "Accessoires",
+          "name_en": "Accessories",
+          "slug": "accessoires"
+        },
+        {
+          "name": "Maternité",
+          "name_en": "Maternity",
+          "slug": "maternite"
+        },
+        {
+          "name": "Mode enfant",
+          "name_en": "Kids Fashion",
+          "slug": "mode-enfant"
+        }
+      ]
+    },
+    {
+      "id": "maison-deco",
+      "name": "Maison & Déco",
+      "name_en": "Home & Decor",
+      "icon": "🏠",
+      "gradient_from": "#78350f",
+      "gradient_to": "#92400e",
+      "niches": [
+        {
+          "name": "Literie & linge de lit",
+          "name_en": "Bedding & Linen",
+          "slug": "literie-linge-de-lit"
+        },
+        {
+          "name": "Décoration intérieure",
+          "name_en": "Interior Decor",
+          "slug": "decoration-interieure"
+        },
+        {
+          "name": "Meubles",
+          "name_en": "Furniture",
+          "slug": "meubles"
+        },
+        {
+          "name": "Cuisine & arts de la table",
+          "name_en": "Kitchen & Tableware",
+          "slug": "cuisine-arts-de-la-table"
+        },
+        {
+          "name": "Rangement & organisation",
+          "name_en": "Storage & Organisation",
+          "slug": "rangement-organisation"
+        },
+        {
+          "name": "Luminaires",
+          "name_en": "Lighting",
+          "slug": "luminaires"
+        },
+        {
+          "name": "Textiles (rideaux, tapis)",
+          "name_en": "Textiles",
+          "slug": "textiles"
+        },
+        {
+          "name": "Salle de bain",
+          "name_en": "Bathroom",
+          "slug": "salle-de-bain"
+        },
+        {
+          "name": "Bougies & parfums d'intérieur",
+          "name_en": "Candles & Home Fragrance",
+          "slug": "bougies-parfums-interieur"
+        },
+        {
+          "name": "Papier peint & peinture",
+          "name_en": "Wallpaper & Paint",
+          "slug": "papier-peint-peinture"
+        }
+      ]
+    },
+    {
+      "id": "cuisine-gastronomie",
+      "name": "Cuisine & Gastronomie",
+      "name_en": "Food & Gastronomy",
+      "icon": "🍽️",
+      "gradient_from": "#7c2d12",
+      "gradient_to": "#9a3412",
+      "niches": [
+        {
+          "name": "Électroménager cuisine",
+          "name_en": "Kitchen Appliances",
+          "slug": "electromenager-cuisine"
+        },
+        {
+          "name": "Ustensiles & accessoires",
+          "name_en": "Utensils & Accessories",
+          "slug": "ustensiles-accessoires"
+        },
+        {
+          "name": "Épicerie fine & terroir",
+          "name_en": "Fine Food & Local Produce",
+          "slug": "epicerie-fine-terroir"
+        },
+        {
+          "name": "Thé, café & infusions",
+          "name_en": "Tea, Coffee & Herbal Drinks",
+          "slug": "the-cafe-infusions"
+        },
+        {
+          "name": "Vins & spiritueux",
+          "name_en": "Wine & Spirits",
+          "slug": "vins-spiritueux"
+        },
+        {
+          "name": "Alimentation bio",
+          "name_en": "Organic Food",
+          "slug": "alimentation-bio"
+        },
+        {
+          "name": "Épices & condiments",
+          "name_en": "Spices & Condiments",
+          "slug": "epices-condiments"
+        },
+        {
+          "name": "Chocolat & confiserie",
+          "name_en": "Chocolate & Confectionery",
+          "slug": "chocolat-confiserie"
+        },
+        {
+          "name": "Livres de cuisine",
+          "name_en": "Cookbooks",
+          "slug": "livres-de-cuisine"
+        },
+        {
+          "name": "Meal prep & lunch box",
+          "name_en": "Meal Prep & Lunch Box",
+          "slug": "meal-prep-lunch-box"
+        }
+      ]
+    },
+    {
+      "id": "sante-bien-etre",
+      "name": "Santé & Bien-être",
+      "name_en": "Health & Wellness",
+      "icon": "🌿",
+      "gradient_from": "#134e4a",
+      "gradient_to": "#115e59",
+      "niches": [
+        {
+          "name": "Compléments alimentaires",
+          "name_en": "Dietary Supplements",
+          "slug": "complements-alimentaires"
+        },
+        {
+          "name": "Vitamines & minéraux",
+          "name_en": "Vitamins & Minerals",
+          "slug": "vitamines-mineraux"
+        },
+        {
+          "name": "Phytothérapie & aromathérapie",
+          "name_en": "Herbal & Aromatherapy",
+          "slug": "phytotherapie-aromatherapie"
+        },
+        {
+          "name": "Médecines douces",
+          "name_en": "Alternative Medicine",
+          "slug": "medecines-douces"
+        },
+        {
+          "name": "Yoga & méditation",
+          "name_en": "Yoga & Meditation",
+          "slug": "yoga-meditation"
+        },
+        {
+          "name": "Santé féminine",
+          "name_en": "Women's Health",
+          "slug": "sante-feminine"
+        },
+        {
+          "name": "Santé intestinale",
+          "name_en": "Gut Health",
+          "slug": "sante-intestinale"
+        },
+        {
+          "name": "Sommeil & relaxation",
+          "name_en": "Sleep & Relaxation",
+          "slug": "sommeil-relaxation"
+        },
+        {
+          "name": "Minceur & détox",
+          "name_en": "Weight Loss & Detox",
+          "slug": "minceur-detox"
+        },
+        {
+          "name": "Hygiène naturelle",
+          "name_en": "Natural Hygiene",
+          "slug": "hygiene-naturelle"
+        }
+      ]
+    },
+    {
+      "id": "sport-fitness",
+      "name": "Sport & Fitness",
+      "name_en": "Sport & Fitness",
+      "icon": "🏋️",
+      "gradient_from": "#14532d",
+      "gradient_to": "#166534",
+      "niches": [
+        {
+          "name": "Équipement fitness maison",
+          "name_en": "Home Fitness Equipment",
+          "slug": "equipement-fitness-maison"
+        },
+        {
+          "name": "Vêtements sport",
+          "name_en": "Sportswear",
+          "slug": "vetements-sport"
+        },
+        {
+          "name": "Chaussures sport",
+          "name_en": "Sports Shoes",
+          "slug": "chaussures-sport"
+        },
+        {
+          "name": "Nutrition sportive",
+          "name_en": "Sports Nutrition",
+          "slug": "nutrition-sportive"
+        },
+        {
+          "name": "Running & cardio",
+          "name_en": "Running & Cardio",
+          "slug": "running-cardio"
+        },
+        {
+          "name": "Yoga & pilates",
+          "name_en": "Yoga & Pilates",
+          "slug": "yoga-pilates"
+        },
+        {
+          "name": "Sports de raquette",
+          "name_en": "Racket Sports",
+          "slug": "sports-de-raquette"
+        },
+        {
+          "name": "Sports d'hiver",
+          "name_en": "Winter Sports",
+          "slug": "sports-d-hiver"
+        },
+        {
+          "name": "Randonnée & outdoor",
+          "name_en": "Hiking & Outdoor",
+          "slug": "randonnee-outdoor"
+        },
+        {
+          "name": "Natation & aquatique",
+          "name_en": "Swimming & Water Sports",
+          "slug": "natation-aquatique"
+        }
+      ]
+    },
+    {
+      "id": "enfants-famille",
+      "name": "Enfants & Famille",
+      "name_en": "Kids & Family",
+      "icon": "👶",
+      "gradient_from": "#0c4a6e",
+      "gradient_to": "#075985",
+      "niches": [
+        {
+          "name": "Puériculture & bébé",
+          "name_en": "Baby Care",
+          "slug": "puericulture-bebe"
+        },
+        {
+          "name": "Jouets & jeux",
+          "name_en": "Toys & Games",
+          "slug": "jouets-jeux"
+        },
+        {
+          "name": "Vêtements enfant",
+          "name_en": "Kids Clothing",
+          "slug": "vetements-enfant"
+        },
+        {
+          "name": "Livres & éducation",
+          "name_en": "Books & Education",
+          "slug": "livres-education"
+        },
+        {
+          "name": "Anniversaires & fêtes",
+          "name_en": "Birthdays & Parties",
+          "slug": "anniversaires-fetes"
+        },
+        {
+          "name": "Sécurité enfant",
+          "name_en": "Child Safety",
+          "slug": "securite-enfant"
+        },
+        {
+          "name": "Activités créatives",
+          "name_en": "Creative Activities",
+          "slug": "activites-creatives"
+        },
+        {
+          "name": "Alimentation bébé",
+          "name_en": "Baby Food",
+          "slug": "alimentation-bebe"
+        },
+        {
+          "name": "Mobilier chambre enfant",
+          "name_en": "Kids Room Furniture",
+          "slug": "mobilier-chambre-enfant"
+        },
+        {
+          "name": "Fournitures scolaires",
+          "name_en": "School Supplies",
+          "slug": "fournitures-scolaires"
+        }
+      ]
+    },
+    {
+      "id": "animaux",
+      "name": "Animaux",
+      "name_en": "Pets",
+      "icon": "🐾",
+      "gradient_from": "#713f12",
+      "gradient_to": "#854d0e",
+      "niches": [
+        {
+          "name": "Alimentation chien",
+          "name_en": "Dog Food",
+          "slug": "alimentation-chien"
+        },
+        {
+          "name": "Alimentation chat",
+          "name_en": "Cat Food",
+          "slug": "alimentation-chat"
+        },
+        {
+          "name": "Accessoires chien",
+          "name_en": "Dog Accessories",
+          "slug": "accessoires-chien"
+        },
+        {
+          "name": "Accessoires chat",
+          "name_en": "Cat Accessories",
+          "slug": "accessoires-chat"
+        },
+        {
+          "name": "Soins & hygiène animaux",
+          "name_en": "Pet Care & Hygiene",
+          "slug": "soins-hygiene-animaux"
+        },
+        {
+          "name": "Jouets pour animaux",
+          "name_en": "Pet Toys",
+          "slug": "jouets-pour-animaux"
+        },
+        {
+          "name": "Aquariophilie",
+          "name_en": "Aquariums",
+          "slug": "aquariophilie"
+        },
+        {
+          "name": "Rongeurs & lapins",
+          "name_en": "Rodents & Rabbits",
+          "slug": "rongeurs-lapins"
+        },
+        {
+          "name": "Santé animale",
+          "name_en": "Animal Health",
+          "slug": "sante-animale"
+        },
+        {
+          "name": "Élevage & reproduction",
+          "name_en": "Breeding",
+          "slug": "elevage-reproduction"
+        }
+      ]
+    },
+    {
+      "id": "jardin-exterieur",
+      "name": "Jardin & Extérieur",
+      "name_en": "Garden & Outdoors",
+      "icon": "🌱",
+      "gradient_from": "#1a2e05",
+      "gradient_to": "#1e3a0f",
+      "niches": [
+        {
+          "name": "Mobilier de jardin",
+          "name_en": "Garden Furniture",
+          "slug": "mobilier-de-jardin"
+        },
+        {
+          "name": "Outillage jardinage",
+          "name_en": "Gardening Tools",
+          "slug": "outillage-jardinage"
+        },
+        {
+          "name": "Plantes & fleurs",
+          "name_en": "Plants & Flowers",
+          "slug": "plantes-fleurs"
+        },
+        {
+          "name": "Potager & semences",
+          "name_en": "Vegetable Garden & Seeds",
+          "slug": "potager-semences"
+        },
+        {
+          "name": "Piscine & spa",
+          "name_en": "Pool & Spa",
+          "slug": "piscine-spa"
+        },
+        {
+          "name": "Barbecue & plancha",
+          "name_en": "BBQ & Plancha",
+          "slug": "barbecue-plancha"
+        },
+        {
+          "name": "Éclairage extérieur",
+          "name_en": "Outdoor Lighting",
+          "slug": "eclairage-exterieur"
+        },
+        {
+          "name": "Abris & pergolas",
+          "name_en": "Shelters & Pergolas",
+          "slug": "abris-pergolas"
+        },
+        {
+          "name": "Arrosage",
+          "name_en": "Watering & Irrigation",
+          "slug": "arrosage"
+        },
+        {
+          "name": "Décoration extérieure",
+          "name_en": "Outdoor Decor",
+          "slug": "decoration-exterieure"
+        }
+      ]
+    },
+    {
+      "id": "tech-high-tech",
+      "name": "Tech & High-Tech",
+      "name_en": "Tech & Electronics",
+      "icon": "📱",
+      "gradient_from": "#1e3a5f",
+      "gradient_to": "#1e3a8a",
+      "niches": [
+        {
+          "name": "Smartphones & accessoires",
+          "name_en": "Smartphones & Accessories",
+          "slug": "smartphones-accessoires"
+        },
+        {
+          "name": "Audio (casques, enceintes)",
+          "name_en": "Audio (Headphones, Speakers)",
+          "slug": "audio"
+        },
+        {
+          "name": "Maison connectée",
+          "name_en": "Smart Home",
+          "slug": "maison-connectee"
+        },
+        {
+          "name": "Wearables & montres",
+          "name_en": "Wearables & Smartwatches",
+          "slug": "wearables-montres"
+        },
+        {
+          "name": "Photo & vidéo",
+          "name_en": "Photo & Video",
+          "slug": "photo-video"
+        },
+        {
+          "name": "Tablettes & PC",
+          "name_en": "Tablets & PCs",
+          "slug": "tablettes-pc"
+        },
+        {
+          "name": "Gaming",
+          "name_en": "Gaming",
+          "slug": "gaming"
+        },
+        {
+          "name": "Accessoires bureau",
+          "name_en": "Office Accessories",
+          "slug": "accessoires-bureau"
+        },
+        {
+          "name": "Chargeurs & batteries",
+          "name_en": "Chargers & Batteries",
+          "slug": "chargeurs-batteries"
+        },
+        {
+          "name": "Impression 3D & domotique",
+          "name_en": "3D Printing & Home Automation",
+          "slug": "impression-3d-domotique"
+        }
+      ]
+    },
+    {
+      "id": "voyage-loisirs",
+      "name": "Voyage & Loisirs",
+      "name_en": "Travel & Leisure",
+      "icon": "✈️",
+      "gradient_from": "#164e63",
+      "gradient_to": "#155e75",
+      "niches": [
+        {
+          "name": "Bagages & valises",
+          "name_en": "Luggage & Suitcases",
+          "slug": "bagages-valises"
+        },
+        {
+          "name": "Accessoires voyage",
+          "name_en": "Travel Accessories",
+          "slug": "accessoires-voyage"
+        },
+        {
+          "name": "Livres & lecture",
+          "name_en": "Books & Reading",
+          "slug": "livres-lecture"
+        },
+        {
+          "name": "Jeux de société",
+          "name_en": "Board Games",
+          "slug": "jeux-de-societe"
+        },
+        {
+          "name": "Loisirs créatifs",
+          "name_en": "Creative Hobbies",
+          "slug": "loisirs-creatifs"
+        },
+        {
+          "name": "Photographie",
+          "name_en": "Photography",
+          "slug": "photographie"
+        },
+        {
+          "name": "Camping & bivouac",
+          "name_en": "Camping",
+          "slug": "camping-bivouac"
+        },
+        {
+          "name": "Musique & instruments",
+          "name_en": "Music & Instruments",
+          "slug": "musique-instruments"
+        },
+        {
+          "name": "Jeux vidéo",
+          "name_en": "Video Games",
+          "slug": "jeux-video"
+        },
+        {
+          "name": "Puzzles & collections",
+          "name_en": "Puzzles & Collectibles",
+          "slug": "puzzles-collections"
+        }
+      ]
+    },
+    {
+      "id": "senior",
+      "name": "Senior",
+      "name_en": "Senior",
+      "icon": "👴",
+      "gradient_from": "#292524",
+      "gradient_to": "#44403c",
+      "niches": [
+        {
+          "name": "Mobilité & aide à la marche",
+          "name_en": "Mobility Aids",
+          "slug": "mobilite-aide-marche"
+        },
+        {
+          "name": "Confort & bien-être",
+          "name_en": "Comfort & Wellness",
+          "slug": "confort-bien-etre"
+        },
+        {
+          "name": "Santé & médicaments",
+          "name_en": "Health & Medicine",
+          "slug": "sante-medicaments"
+        },
+        {
+          "name": "Loisirs senior",
+          "name_en": "Senior Leisure",
+          "slug": "loisirs-senior"
+        },
+        {
+          "name": "Maison adaptée",
+          "name_en": "Adapted Home",
+          "slug": "maison-adaptee"
+        },
+        {
+          "name": "Audition & optique",
+          "name_en": "Hearing & Vision",
+          "slug": "audition-optique"
+        },
+        {
+          "name": "Numérique senior",
+          "name_en": "Digital for Seniors",
+          "slug": "numerique-senior"
+        },
+        {
+          "name": "Voyage senior",
+          "name_en": "Senior Travel",
+          "slug": "voyage-senior"
+        },
+        {
+          "name": "Garde-robe confort",
+          "name_en": "Comfort Wardrobe",
+          "slug": "garde-robe-confort"
+        },
+        {
+          "name": "Jardinage senior",
+          "name_en": "Senior Gardening",
+          "slug": "jardinage-senior"
+        }
+      ]
+    },
+    {
+      "id": "bricolage-diy",
+      "name": "Bricolage & DIY",
+      "name_en": "DIY & Home Improvement",
+      "icon": "🔧",
+      "gradient_from": "#27272a",
+      "gradient_to": "#3f3f46",
+      "niches": [
+        {
+          "name": "Outillage électroportatif",
+          "name_en": "Power Tools",
+          "slug": "outillage-electroportatif"
+        },
+        {
+          "name": "Peinture & enduits",
+          "name_en": "Paint & Coatings",
+          "slug": "peinture-enduits"
+        },
+        {
+          "name": "Plomberie",
+          "name_en": "Plumbing",
+          "slug": "plomberie"
+        },
+        {
+          "name": "Électricité",
+          "name_en": "Electrical",
+          "slug": "electricite"
+        },
+        {
+          "name": "Quincaillerie",
+          "name_en": "Hardware",
+          "slug": "quincaillerie"
+        },
+        {
+          "name": "Matériaux & construction",
+          "name_en": "Building Materials",
+          "slug": "materiaux-construction"
+        },
+        {
+          "name": "Déco DIY & créatif",
+          "name_en": "Creative DIY Decor",
+          "slug": "deco-diy-creatif"
+        },
+        {
+          "name": "Isolation & énergie",
+          "name_en": "Insulation & Energy",
+          "slug": "isolation-energie"
+        },
+        {
+          "name": "Menuiserie",
+          "name_en": "Carpentry & Woodworking",
+          "slug": "menuiserie"
+        },
+        {
+          "name": "Alarme & sécurité",
+          "name_en": "Alarm & Security",
+          "slug": "alarme-securite"
+        }
+      ]
+    }
+  ]
+}

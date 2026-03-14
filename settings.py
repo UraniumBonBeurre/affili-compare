@@ -27,7 +27,7 @@ nb_products_per_article: int = 5       # Nombre de produits par article
 nb_pins_per_article: int = 2           # Nombre de pins Pinterest par article
 
 # ── Modèles LLM / IA ─────────────────────────────────────────────────────────
-CLASSIFICATION_LLM: str = "gemini-2.5-flash-lite"
+CLASSIFICATION_LLM: str = "gemini-3.1-flash-lite-preview"
 ARTICLES_WRITING_LLM: str = "deepseek-v3.2:cloud"
 PINS_WRITING_LLM: str = "deepseek-v3.2:cloud"
 VISUAL_GENERATOR_MODEL: str = "FLUX.1-schnell"
@@ -78,7 +78,7 @@ SITE_URL: str = "https://mygoodpick.com"
 # CHEMINS
 # ══════════════════════════════════════════════════════════════════════════════
 
-TAXONOMY_PATH = ROOT / "src" / "config" / "product_taxonomy.json"
+TAXONOMY_PATH = ROOT / "config" / "taxonomy" / "product_types.json"
 MERCHANT_CATEGORIES_PATH = ROOT / "src" / "config" / "merchant_categories.json"
 BOARDS_PATH = ROOT / "data" / "pinterest_boards.json"
 CACHE_DIR = ROOT / ".cache"

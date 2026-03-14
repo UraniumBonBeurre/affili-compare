@@ -1,0 +1,3806 @@
+{
+  "maquillage": [
+    {
+      "id": "fond_de_teint",
+      "name_fr": "Fond de teint",
+      "name_en": "Foundation"
+    },
+    {
+      "id": "rouge_a_levres",
+      "name_fr": "Rouge à lèvres",
+      "name_en": "Lipstick"
+    },
+    {
+      "id": "mascara",
+      "name_fr": "Mascara",
+      "name_en": "Mascara"
+    },
+    {
+      "id": "ombre_a_paupieres",
+      "name_fr": "Ombre à paupières",
+      "name_en": "Eye shadow"
+    },
+    {
+      "id": "eye_liner",
+      "name_fr": "Eye-liner",
+      "name_en": "Eye liner"
+    },
+    {
+      "id": "blush_bronzer",
+      "name_fr": "Blush / Bronzer",
+      "name_en": "Blush / Bronzer"
+    },
+    {
+      "id": "palette_maquillage",
+      "name_fr": "Palette maquillage",
+      "name_en": "Makeup palette"
+    },
+    {
+      "id": "correcteur",
+      "name_fr": "Correcteur / Anticernes",
+      "name_en": "Concealer"
+    },
+    {
+      "id": "pinceau_maquillage",
+      "name_fr": "Pinceau / Éponge",
+      "name_en": "Makeup brush / Sponge"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "soins-visage": [
+    {
+      "id": "serum_visage",
+      "name_fr": "Sérum visage",
+      "name_en": "Face serum"
+    },
+    {
+      "id": "creme_hydratante",
+      "name_fr": "Crème hydratante",
+      "name_en": "Moisturiser"
+    },
+    {
+      "id": "masque_visage",
+      "name_fr": "Masque visage",
+      "name_en": "Face mask"
+    },
+    {
+      "id": "huile_visage",
+      "name_fr": "Huile visage",
+      "name_en": "Face oil"
+    },
+    {
+      "id": "contour_yeux",
+      "name_fr": "Soin contour des yeux",
+      "name_en": "Eye cream"
+    },
+    {
+      "id": "nettoyant_visage",
+      "name_fr": "Nettoyant / Démaquillant",
+      "name_en": "Cleanser / Makeup remover"
+    },
+    {
+      "id": "tonique_visage",
+      "name_fr": "Tonique / Lotion",
+      "name_en": "Toner / Lotion"
+    },
+    {
+      "id": "exfoliant_visage",
+      "name_fr": "Exfoliant / Gommage",
+      "name_en": "Exfoliator / Scrub"
+    },
+    {
+      "id": "lotion_micellaire",
+      "name_fr": "Eau micellaire",
+      "name_en": "Micellar water"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "soins-corps": [
+    {
+      "id": "creme_corps",
+      "name_fr": "Crème corps",
+      "name_en": "Body cream"
+    },
+    {
+      "id": "huile_corps",
+      "name_fr": "Huile corps",
+      "name_en": "Body oil"
+    },
+    {
+      "id": "gommage_corps",
+      "name_fr": "Gommage corps",
+      "name_en": "Body scrub"
+    },
+    {
+      "id": "lait_corps",
+      "name_fr": "Lait corps",
+      "name_en": "Body lotion"
+    },
+    {
+      "id": "gel_douche",
+      "name_fr": "Gel douche",
+      "name_en": "Shower gel"
+    },
+    {
+      "id": "savon_corps",
+      "name_fr": "Savon",
+      "name_en": "Soap"
+    },
+    {
+      "id": "baume_corps",
+      "name_fr": "Baume / Beurre corps",
+      "name_en": "Body butter / Balm"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "parfums": [
+    {
+      "id": "eau_de_parfum",
+      "name_fr": "Eau de parfum",
+      "name_en": "Eau de parfum"
+    },
+    {
+      "id": "eau_de_toilette",
+      "name_fr": "Eau de toilette",
+      "name_en": "Eau de toilette"
+    },
+    {
+      "id": "eau_de_cologne",
+      "name_fr": "Eau de cologne",
+      "name_en": "Eau de cologne"
+    },
+    {
+      "id": "parfum_solide",
+      "name_fr": "Parfum solide",
+      "name_en": "Solid perfume"
+    },
+    {
+      "id": "coffret_parfum",
+      "name_fr": "Coffret parfum",
+      "name_en": "Perfume gift set"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "soins-cheveux": [
+    {
+      "id": "shampooing",
+      "name_fr": "Shampoing",
+      "name_en": "Shampoo"
+    },
+    {
+      "id": "apres_shampooing",
+      "name_fr": "Après-shampoing",
+      "name_en": "Conditioner"
+    },
+    {
+      "id": "masque_capillaire",
+      "name_fr": "Masque capillaire",
+      "name_en": "Hair mask"
+    },
+    {
+      "id": "huile_capillaire",
+      "name_fr": "Huile capillaire",
+      "name_en": "Hair oil"
+    },
+    {
+      "id": "serum_capillaire",
+      "name_fr": "Sérum capillaire",
+      "name_en": "Hair serum"
+    },
+    {
+      "id": "soin_coiffant",
+      "name_fr": "Soin coiffant",
+      "name_en": "Styling product"
+    },
+    {
+      "id": "accessoire_cheveux",
+      "name_fr": "Accessoire cheveux",
+      "name_en": "Hair accessory"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "manucure-ongles": [
+    {
+      "id": "vernis_ongles",
+      "name_fr": "Vernis à ongles",
+      "name_en": "Nail polish"
+    },
+    {
+      "id": "gel_uv_ongles",
+      "name_fr": "Gel UV / Ongles",
+      "name_en": "UV gel nails"
+    },
+    {
+      "id": "kit_manucure",
+      "name_fr": "Kit manucure",
+      "name_en": "Manicure kit"
+    },
+    {
+      "id": "lime_ongles",
+      "name_fr": "Lime à ongles",
+      "name_en": "Nail file"
+    },
+    {
+      "id": "soin_ongles",
+      "name_fr": "Soin ongles",
+      "name_en": "Nail treatment"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "spa-bien-etre": [
+    {
+      "id": "huile_de_massage",
+      "name_fr": "Huile de massage",
+      "name_en": "Massage oil"
+    },
+    {
+      "id": "bain_moussant",
+      "name_fr": "Bain moussant",
+      "name_en": "Bubble bath"
+    },
+    {
+      "id": "sel_bain",
+      "name_fr": "Sel de bain",
+      "name_en": "Bath salt"
+    },
+    {
+      "id": "bougie_bien_etre",
+      "name_fr": "Bougie bien-être",
+      "name_en": "Wellness candle"
+    },
+    {
+      "id": "kit_spa",
+      "name_fr": "Kit spa / coffret",
+      "name_en": "Spa kit / Gift set"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "epilation-rasage": [
+    {
+      "id": "rasoir",
+      "name_fr": "Rasoir",
+      "name_en": "Razor"
+    },
+    {
+      "id": "creme_epilation",
+      "name_fr": "Crème épilatoire",
+      "name_en": "Hair removal cream"
+    },
+    {
+      "id": "cire_epilation",
+      "name_fr": "Cire épilatoire",
+      "name_en": "Waxing"
+    },
+    {
+      "id": "epilateur_electrique",
+      "name_fr": "Épilateur électrique",
+      "name_en": "Electric epilator"
+    },
+    {
+      "id": "apres_rasage",
+      "name_fr": "Après-rasage",
+      "name_en": "Aftershave"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "solaires-autobronzants": [
+    {
+      "id": "creme_solaire",
+      "name_fr": "Crème solaire",
+      "name_en": "Sunscreen"
+    },
+    {
+      "id": "autobronzant",
+      "name_fr": "Autobronzant",
+      "name_en": "Self-tanner"
+    },
+    {
+      "id": "spray_solaire",
+      "name_fr": "Spray solaire",
+      "name_en": "Sun spray"
+    },
+    {
+      "id": "apres_soleil",
+      "name_fr": "Après-soleil",
+      "name_en": "After-sun"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "cosmetiques-bio-naturels": [
+    {
+      "id": "cosmetique_bio",
+      "name_fr": "Cosmétique bio",
+      "name_en": "Organic cosmetic"
+    },
+    {
+      "id": "huile_essentielle",
+      "name_fr": "Huile essentielle",
+      "name_en": "Essential oil"
+    },
+    {
+      "id": "deodorant_naturel",
+      "name_fr": "Déodorant naturel",
+      "name_en": "Natural deodorant"
+    },
+    {
+      "id": "zero_dechet_beaute",
+      "name_fr": "Produit zéro déchet",
+      "name_en": "Zero waste product"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "hygiene-dentaire": [
+    {
+      "id": "brosse_a_dents_electrique",
+      "name_fr": "Brosse à dents électrique",
+      "name_en": "Electric toothbrush"
+    },
+    {
+      "id": "dentifrice",
+      "name_fr": "Dentifrice",
+      "name_en": "Toothpaste"
+    },
+    {
+      "id": "fil_dentaire",
+      "name_fr": "Fil dentaire",
+      "name_en": "Dental floss"
+    },
+    {
+      "id": "bain_de_bouche",
+      "name_fr": "Bain de bouche",
+      "name_en": "Mouthwash"
+    },
+    {
+      "id": "irrigateur_buccal",
+      "name_fr": "Irrigateur buccal",
+      "name_en": "Water flosser"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "soins-des-yeux": [
+    {
+      "id": "collyre",
+      "name_fr": "Collyre / Gouttes",
+      "name_en": "Eye drops"
+    },
+    {
+      "id": "masque_yeux",
+      "name_fr": "Masque yeux",
+      "name_en": "Eye mask"
+    },
+    {
+      "id": "contour_yeux",
+      "name_fr": "Soin contour des yeux",
+      "name_en": "Eye cream"
+    },
+    {
+      "id": "lunettes_loupe",
+      "name_fr": "Lunettes loupe",
+      "name_en": "Magnifying glasses"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "vetements-femme": [
+    {
+      "id": "robe",
+      "name_fr": "Robe",
+      "name_en": "Dress"
+    },
+    {
+      "id": "chemisier",
+      "name_fr": "Chemisier / Top",
+      "name_en": "Blouse / Top"
+    },
+    {
+      "id": "jean_femme",
+      "name_fr": "Jean femme",
+      "name_en": "Women's jeans"
+    },
+    {
+      "id": "veste_femme",
+      "name_fr": "Veste / Blazer",
+      "name_en": "Jacket / Blazer"
+    },
+    {
+      "id": "manteau_femme",
+      "name_fr": "Manteau",
+      "name_en": "Coat"
+    },
+    {
+      "id": "pull_femme",
+      "name_fr": "Pull / Sweat",
+      "name_en": "Jumper / Sweatshirt"
+    },
+    {
+      "id": "jupe",
+      "name_fr": "Jupe",
+      "name_en": "Skirt"
+    },
+    {
+      "id": "combinaison_femme",
+      "name_fr": "Combinaison / Jumpsuit",
+      "name_en": "Jumpsuit"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "chaussures": [
+    {
+      "id": "baskets",
+      "name_fr": "Baskets / Sneakers",
+      "name_en": "Sneakers"
+    },
+    {
+      "id": "escarpins",
+      "name_fr": "Escarpins / Talons",
+      "name_en": "Heels"
+    },
+    {
+      "id": "bottes",
+      "name_fr": "Bottes / Bottines",
+      "name_en": "Boots / Ankle boots"
+    },
+    {
+      "id": "sandales",
+      "name_fr": "Sandales",
+      "name_en": "Sandals"
+    },
+    {
+      "id": "mocassins",
+      "name_fr": "Mocassins / Derbies",
+      "name_en": "Loafers / Derby"
+    },
+    {
+      "id": "ballerines",
+      "name_fr": "Ballerines / Mules",
+      "name_en": "Ballet flats / Mules"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "sacs-maroquinerie": [
+    {
+      "id": "sac_a_main",
+      "name_fr": "Sac à main",
+      "name_en": "Handbag"
+    },
+    {
+      "id": "sac_a_dos_mode",
+      "name_fr": "Sac à dos mode",
+      "name_en": "Fashion backpack"
+    },
+    {
+      "id": "pochette",
+      "name_fr": "Pochette / Clutch",
+      "name_en": "Clutch bag"
+    },
+    {
+      "id": "portefeuille",
+      "name_fr": "Portefeuille",
+      "name_en": "Wallet"
+    },
+    {
+      "id": "sac_bandouliere",
+      "name_fr": "Sac bandoulière",
+      "name_en": "Cross-body bag"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "bijoux-montres": [
+    {
+      "id": "bague",
+      "name_fr": "Bague",
+      "name_en": "Ring"
+    },
+    {
+      "id": "collier_bijou",
+      "name_fr": "Collier",
+      "name_en": "Necklace"
+    },
+    {
+      "id": "bracelet_bijou",
+      "name_fr": "Bracelet",
+      "name_en": "Bracelet"
+    },
+    {
+      "id": "boucles_oreilles",
+      "name_fr": "Boucles d'oreilles",
+      "name_en": "Earrings"
+    },
+    {
+      "id": "montre_bijou",
+      "name_fr": "Montre classique",
+      "name_en": "Watch"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "lingerie": [
+    {
+      "id": "soutien_gorge",
+      "name_fr": "Soutien-gorge",
+      "name_en": "Bra"
+    },
+    {
+      "id": "culotte",
+      "name_fr": "Culotte",
+      "name_en": "Knickers"
+    },
+    {
+      "id": "body_lingerie",
+      "name_fr": "Body",
+      "name_en": "Body"
+    },
+    {
+      "id": "pyjama",
+      "name_fr": "Pyjama / Nuisette",
+      "name_en": "Pyjama / Nightgown"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "sport-activewear": [
+    {
+      "id": "legging_sport",
+      "name_fr": "Legging sport",
+      "name_en": "Sports leggings"
+    },
+    {
+      "id": "brassiere_sport",
+      "name_fr": "Brassière",
+      "name_en": "Sports bra"
+    },
+    {
+      "id": "t_shirt_sport_mode",
+      "name_fr": "T-shirt sport",
+      "name_en": "Sports t-shirt"
+    },
+    {
+      "id": "veste_sport_mode",
+      "name_fr": "Veste / Coupe-vent",
+      "name_en": "Windbreaker"
+    },
+    {
+      "id": "short_sport_mode",
+      "name_fr": "Short sport",
+      "name_en": "Sports shorts"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "mode-grande-taille": [
+    {
+      "id": "robe_grande_taille",
+      "name_fr": "Robe grande taille",
+      "name_en": "Plus size dress"
+    },
+    {
+      "id": "pull_grande_taille",
+      "name_fr": "Pull grande taille",
+      "name_en": "Plus size jumper"
+    },
+    {
+      "id": "jean_grande_taille",
+      "name_fr": "Jean grande taille",
+      "name_en": "Plus size jeans"
+    },
+    {
+      "id": "manteau_grande_taille",
+      "name_fr": "Manteau grande taille",
+      "name_en": "Plus size coat"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "accessoires": [
+    {
+      "id": "ceinture",
+      "name_fr": "Ceinture",
+      "name_en": "Belt"
+    },
+    {
+      "id": "chapeau_mode",
+      "name_fr": "Chapeau / Bonnet",
+      "name_en": "Hat / Beanie"
+    },
+    {
+      "id": "echarpe",
+      "name_fr": "Écharpe / Foulard",
+      "name_en": "Scarf"
+    },
+    {
+      "id": "lunettes_de_soleil",
+      "name_fr": "Lunettes de soleil",
+      "name_en": "Sunglasses"
+    },
+    {
+      "id": "gants_mode",
+      "name_fr": "Gants",
+      "name_en": "Gloves"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "maternite": [
+    {
+      "id": "robe_maternite",
+      "name_fr": "Robe maternité",
+      "name_en": "Maternity dress"
+    },
+    {
+      "id": "legging_maternite",
+      "name_fr": "Legging maternité",
+      "name_en": "Maternity leggings"
+    },
+    {
+      "id": "coussin_grossesse",
+      "name_fr": "Coussin de grossesse",
+      "name_en": "Pregnancy pillow"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "mode-enfant": [
+    {
+      "id": "vetement_enfant_mode",
+      "name_fr": "Vêtement enfant",
+      "name_en": "Kids clothing"
+    },
+    {
+      "id": "chaussure_enfant_mode",
+      "name_fr": "Chaussures enfant",
+      "name_en": "Kids shoes"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "literie-linge-de-lit": [
+    {
+      "id": "matelas",
+      "name_fr": "Matelas",
+      "name_en": "Mattress"
+    },
+    {
+      "id": "couette",
+      "name_fr": "Couette",
+      "name_en": "Duvet"
+    },
+    {
+      "id": "oreiller",
+      "name_fr": "Oreiller",
+      "name_en": "Pillow"
+    },
+    {
+      "id": "housse_de_couette",
+      "name_fr": "Housse de couette",
+      "name_en": "Duvet cover"
+    },
+    {
+      "id": "drap_de_lit",
+      "name_fr": "Drap",
+      "name_en": "Sheet"
+    },
+    {
+      "id": "protege_matelas",
+      "name_fr": "Protège-matelas",
+      "name_en": "Mattress protector"
+    },
+    {
+      "id": "surmatelas",
+      "name_fr": "Surmatelas",
+      "name_en": "Mattress topper"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "decoration-interieure": [
+    {
+      "id": "cadre_deco",
+      "name_fr": "Cadre / Tableau",
+      "name_en": "Frame / Wall art"
+    },
+    {
+      "id": "miroir_deco",
+      "name_fr": "Miroir décoratif",
+      "name_en": "Decorative mirror"
+    },
+    {
+      "id": "vase",
+      "name_fr": "Vase",
+      "name_en": "Vase"
+    },
+    {
+      "id": "figurine_deco",
+      "name_fr": "Figurine / Objet déco",
+      "name_en": "Figurine / Decorative object"
+    },
+    {
+      "id": "tapis_interierur",
+      "name_fr": "Tapis",
+      "name_en": "Rug"
+    },
+    {
+      "id": "horloge",
+      "name_fr": "Horloge / Pendule",
+      "name_en": "Clock"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "meubles": [
+    {
+      "id": "canape",
+      "name_fr": "Canapé",
+      "name_en": "Sofa"
+    },
+    {
+      "id": "lit_adulte",
+      "name_fr": "Lit adulte",
+      "name_en": "Bed frame"
+    },
+    {
+      "id": "table_basse",
+      "name_fr": "Table basse / Table",
+      "name_en": "Coffee table / Table"
+    },
+    {
+      "id": "chaise_maison",
+      "name_fr": "Chaise",
+      "name_en": "Chair"
+    },
+    {
+      "id": "armoire",
+      "name_fr": "Armoire / Penderie",
+      "name_en": "Wardrobe"
+    },
+    {
+      "id": "commode",
+      "name_fr": "Commode / Buffet",
+      "name_en": "Chest of drawers"
+    },
+    {
+      "id": "etagere_meuble",
+      "name_fr": "Étagère",
+      "name_en": "Shelving unit"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "cuisine-arts-de-la-table": [
+    {
+      "id": "service_vaisselle",
+      "name_fr": "Service de vaisselle",
+      "name_en": "Dinnerware set"
+    },
+    {
+      "id": "verre_carafe",
+      "name_fr": "Verre / Carafe",
+      "name_en": "Glass / Carafe"
+    },
+    {
+      "id": "couverts_table",
+      "name_fr": "Couverts",
+      "name_en": "Cutlery"
+    },
+    {
+      "id": "casserole",
+      "name_fr": "Casserole / Poêle",
+      "name_en": "Saucepan / Frying pan"
+    },
+    {
+      "id": "moule_patisserie",
+      "name_fr": "Moule à pâtisserie",
+      "name_en": "Baking mould"
+    },
+    {
+      "id": "planche_decouper",
+      "name_fr": "Planche à découper",
+      "name_en": "Cutting board"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "rangement-organisation": [
+    {
+      "id": "boite_rangement",
+      "name_fr": "Boîte de rangement",
+      "name_en": "Storage box"
+    },
+    {
+      "id": "panier_rangement",
+      "name_fr": "Panier / Corbeille",
+      "name_en": "Basket / Bin"
+    },
+    {
+      "id": "organiseur_tiroir",
+      "name_fr": "Organiseur tiroir",
+      "name_en": "Drawer organiser"
+    },
+    {
+      "id": "porte_manteau",
+      "name_fr": "Porte-manteau",
+      "name_en": "Coat rack"
+    },
+    {
+      "id": "etagere_rangement",
+      "name_fr": "Étagère rangement",
+      "name_en": "Storage shelf"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "luminaires": [
+    {
+      "id": "lampe_salon",
+      "name_fr": "Lampe à poser",
+      "name_en": "Table lamp"
+    },
+    {
+      "id": "lustre",
+      "name_fr": "Lustre / Suspension",
+      "name_en": "Chandelier / Pendant light"
+    },
+    {
+      "id": "applique_murale",
+      "name_fr": "Applique murale",
+      "name_en": "Wall light"
+    },
+    {
+      "id": "lampe_bureau",
+      "name_fr": "Lampe de bureau",
+      "name_en": "Desk lamp"
+    },
+    {
+      "id": "lampe_chevet",
+      "name_fr": "Lampe de chevet",
+      "name_en": "Bedside lamp"
+    },
+    {
+      "id": "bandeau_led",
+      "name_fr": "Bandeau / Ruban LED",
+      "name_en": "LED strip"
+    },
+    {
+      "id": "lampe_connectee",
+      "name_fr": "Lampe connectée",
+      "name_en": "Smart lamp"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "textiles": [
+    {
+      "id": "rideau",
+      "name_fr": "Rideau / Voilage",
+      "name_en": "Curtain / Voile"
+    },
+    {
+      "id": "nappe",
+      "name_fr": "Nappe / Sets de table",
+      "name_en": "Tablecloth / Placemats"
+    },
+    {
+      "id": "coussin_deco",
+      "name_fr": "Coussin décoratif",
+      "name_en": "Decorative cushion"
+    },
+    {
+      "id": "tapis_textile",
+      "name_fr": "Tapis",
+      "name_en": "Rug"
+    },
+    {
+      "id": "plaid",
+      "name_fr": "Plaid",
+      "name_en": "Throw blanket"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "salle-de-bain": [
+    {
+      "id": "porte_serviette",
+      "name_fr": "Porte-serviette",
+      "name_en": "Towel rail"
+    },
+    {
+      "id": "miroir_sdb",
+      "name_fr": "Miroir salle de bain",
+      "name_en": "Bathroom mirror"
+    },
+    {
+      "id": "meuble_vasque",
+      "name_fr": "Meuble vasque",
+      "name_en": "Vanity unit"
+    },
+    {
+      "id": "accessoire_sdb",
+      "name_fr": "Accessoire salle de bain",
+      "name_en": "Bathroom accessory"
+    },
+    {
+      "id": "serviette_bain",
+      "name_fr": "Serviette / Peignoir",
+      "name_en": "Towel / Bathrobe"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "bougies-parfums-interieur": [
+    {
+      "id": "bougie_parfumee",
+      "name_fr": "Bougie parfumée",
+      "name_en": "Scented candle"
+    },
+    {
+      "id": "diffuseur_parfum_int",
+      "name_fr": "Diffuseur de parfum",
+      "name_en": "Fragrance diffuser"
+    },
+    {
+      "id": "encens",
+      "name_fr": "Encens / Bâtons",
+      "name_en": "Incense"
+    },
+    {
+      "id": "sachet_parfume",
+      "name_fr": "Sachet parfumé",
+      "name_en": "Scented sachet"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "papier-peint-peinture": [
+    {
+      "id": "papier_peint",
+      "name_fr": "Papier peint",
+      "name_en": "Wallpaper"
+    },
+    {
+      "id": "peinture_murale",
+      "name_fr": "Peinture murale",
+      "name_en": "Wall paint"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "electromenager-cuisine": [
+    {
+      "id": "robot_cuisine",
+      "name_fr": "Robot de cuisine",
+      "name_en": "Food processor"
+    },
+    {
+      "id": "machine_cafe",
+      "name_fr": "Machine à café",
+      "name_en": "Coffee machine"
+    },
+    {
+      "id": "machine_a_pain",
+      "name_fr": "Machine à pain",
+      "name_en": "Bread maker"
+    },
+    {
+      "id": "mixeur_blender",
+      "name_fr": "Mixeur / Blender",
+      "name_en": "Blender"
+    },
+    {
+      "id": "grille_pain_toaster",
+      "name_fr": "Grille-pain / Toaster",
+      "name_en": "Toaster"
+    },
+    {
+      "id": "centrifugeuse",
+      "name_fr": "Centrifugeuse / Extracteur",
+      "name_en": "Juicer"
+    },
+    {
+      "id": "yaourtiere",
+      "name_fr": "Yaourtière",
+      "name_en": "Yoghurt maker"
+    },
+    {
+      "id": "friteuse_air",
+      "name_fr": "Friteuse à air",
+      "name_en": "Air fryer"
+    },
+    {
+      "id": "monocuiseur",
+      "name_fr": "Cuiseur vapeur / Multicuiseur",
+      "name_en": "Steamer / Multicooker"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "ustensiles-accessoires": [
+    {
+      "id": "couteau_cuisine",
+      "name_fr": "Couteau de cuisine",
+      "name_en": "Kitchen knife"
+    },
+    {
+      "id": "batterie_cuisine",
+      "name_fr": "Batterie de cuisine",
+      "name_en": "Cookware set"
+    },
+    {
+      "id": "fouet_spatule",
+      "name_fr": "Fouet / Spatule",
+      "name_en": "Whisk / Spatula"
+    },
+    {
+      "id": "passoire_chinois",
+      "name_fr": "Passoire / Chinois",
+      "name_en": "Colander / Strainer"
+    },
+    {
+      "id": "moule_patisserie_k",
+      "name_fr": "Moule à pâtisserie",
+      "name_en": "Baking mould"
+    },
+    {
+      "id": "balance_cuisine",
+      "name_fr": "Balance de cuisine",
+      "name_en": "Kitchen scale"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "epicerie-fine-terroir": [
+    {
+      "id": "foie_gras",
+      "name_fr": "Foie gras",
+      "name_en": "Foie gras"
+    },
+    {
+      "id": "saumon_fume",
+      "name_fr": "Saumon fumé",
+      "name_en": "Smoked salmon"
+    },
+    {
+      "id": "conserve_gourmet",
+      "name_fr": "Conserves gastronomiques",
+      "name_en": "Gourmet preserves"
+    },
+    {
+      "id": "coffret_epicerie",
+      "name_fr": "Coffret épicerie fine",
+      "name_en": "Fine food gift box"
+    },
+    {
+      "id": "charcuterie",
+      "name_fr": "Charcuterie / Fromage",
+      "name_en": "Charcuterie / Cheese"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "the-cafe-infusions": [
+    {
+      "id": "cafe_grain",
+      "name_fr": "Café en grains / moulu",
+      "name_en": "Coffee beans / ground"
+    },
+    {
+      "id": "capsule_cafe",
+      "name_fr": "Capsule café",
+      "name_en": "Coffee capsules"
+    },
+    {
+      "id": "the_vrac",
+      "name_fr": "Thé en vrac",
+      "name_en": "Loose leaf tea"
+    },
+    {
+      "id": "tisane",
+      "name_fr": "Tisane / Infusion",
+      "name_en": "Herbal tea"
+    },
+    {
+      "id": "accessoire_cafe",
+      "name_fr": "Accessoire café / thé",
+      "name_en": "Coffee / Tea accessory"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "vins-spiritueux": [
+    {
+      "id": "vin_rouge",
+      "name_fr": "Vin rouge",
+      "name_en": "Red wine"
+    },
+    {
+      "id": "vin_blanc",
+      "name_fr": "Vin blanc",
+      "name_en": "White wine"
+    },
+    {
+      "id": "champagne_mousseux",
+      "name_fr": "Champagne / Mousseux",
+      "name_en": "Champagne / Sparkling wine"
+    },
+    {
+      "id": "whisky_whiskey",
+      "name_fr": "Whisky / Whiskey",
+      "name_en": "Whisky"
+    },
+    {
+      "id": "cognac_armagnac",
+      "name_fr": "Cognac / Armagnac",
+      "name_en": "Cognac"
+    },
+    {
+      "id": "cave_a_vin",
+      "name_fr": "Cave à vin",
+      "name_en": "Wine cellar / Cooler"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "alimentation-bio": [
+    {
+      "id": "produit_bio_sec",
+      "name_fr": "Produit bio sec",
+      "name_en": "Organic dry food"
+    },
+    {
+      "id": "complement_bio",
+      "name_fr": "Complément bio",
+      "name_en": "Organic supplement"
+    },
+    {
+      "id": "boisson_bio",
+      "name_fr": "Boisson bio",
+      "name_en": "Organic drink"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "epices-condiments": [
+    {
+      "id": "epice_melange",
+      "name_fr": "Épice / Mélange",
+      "name_en": "Spice / Blend"
+    },
+    {
+      "id": "condiment_sauce",
+      "name_fr": "Condiment / Sauce",
+      "name_en": "Condiment / Sauce"
+    },
+    {
+      "id": "vinaigre_huile",
+      "name_fr": "Vinaigre / Huile",
+      "name_en": "Vinegar / Oil"
+    },
+    {
+      "id": "herbe_aromatique",
+      "name_fr": "Herbes aromatiques",
+      "name_en": "Herbs"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "chocolat-confiserie": [
+    {
+      "id": "chocolat_tablette",
+      "name_fr": "Chocolat tablette",
+      "name_en": "Chocolate bar"
+    },
+    {
+      "id": "coffret_chocolat",
+      "name_fr": "Coffret chocolats",
+      "name_en": "Chocolate gift box"
+    },
+    {
+      "id": "bonbon_confiserie",
+      "name_fr": "Bonbons / Confiseries",
+      "name_en": "Sweets / Confectionery"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "livres-de-cuisine": [
+    {
+      "id": "livre_cuisine_fr",
+      "name_fr": "Livre de cuisine",
+      "name_en": "Cookbook"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "meal-prep-lunch-box": [
+    {
+      "id": "lunch_box",
+      "name_fr": "Lunch box",
+      "name_en": "Lunch box"
+    },
+    {
+      "id": "contenant_repas",
+      "name_fr": "Contenant repas",
+      "name_en": "Meal prep container"
+    },
+    {
+      "id": "sac_isotherme",
+      "name_fr": "Sac isotherme",
+      "name_en": "Insulated bag"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "complements-alimentaires": [
+    {
+      "id": "complement_alimentation",
+      "name_fr": "Complément alimentaire",
+      "name_en": "Dietary supplement"
+    },
+    {
+      "id": "proteine",
+      "name_fr": "Protéine / Whey",
+      "name_en": "Protein / Whey"
+    },
+    {
+      "id": "omega_3",
+      "name_fr": "Oméga-3",
+      "name_en": "Omega-3"
+    },
+    {
+      "id": "probiotique",
+      "name_fr": "Probiotique",
+      "name_en": "Probiotic"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "vitamines-mineraux": [
+    {
+      "id": "vitamine_c",
+      "name_fr": "Vitamine C",
+      "name_en": "Vitamin C"
+    },
+    {
+      "id": "vitamine_d",
+      "name_fr": "Vitamine D",
+      "name_en": "Vitamin D"
+    },
+    {
+      "id": "magnesium",
+      "name_fr": "Magnésium",
+      "name_en": "Magnesium"
+    },
+    {
+      "id": "zinc_fer",
+      "name_fr": "Zinc / Fer",
+      "name_en": "Zinc / Iron"
+    },
+    {
+      "id": "complexe_multivit",
+      "name_fr": "Complexe multivitaminé",
+      "name_en": "Multivitamin complex"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "phytotherapie-aromatherapie": [
+    {
+      "id": "huile_essentielle",
+      "name_fr": "Huile essentielle",
+      "name_en": "Essential oil"
+    },
+    {
+      "id": "plante_medicinale",
+      "name_fr": "Plante médicinale",
+      "name_en": "Medicinal plant"
+    },
+    {
+      "id": "diffuseur_arome",
+      "name_fr": "Diffuseur d'arômes",
+      "name_en": "Aroma diffuser"
+    },
+    {
+      "id": "hydrolat",
+      "name_fr": "Hydrolat",
+      "name_en": "Hydrosol"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "medecines-douces": [
+    {
+      "id": "homeopathie",
+      "name_fr": "Homéopathie",
+      "name_en": "Homeopathy"
+    },
+    {
+      "id": "fleur_bach",
+      "name_fr": "Fleurs de Bach",
+      "name_en": "Bach flowers"
+    },
+    {
+      "id": "cristaux_lithotherapie",
+      "name_fr": "Cristaux / Lithothérapie",
+      "name_en": "Crystals / Lithotherapy"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "yoga-meditation": [
+    {
+      "id": "tapis_yoga",
+      "name_fr": "Tapis de yoga",
+      "name_en": "Yoga mat"
+    },
+    {
+      "id": "bloc_yoga",
+      "name_fr": "Bloc de yoga",
+      "name_en": "Yoga block"
+    },
+    {
+      "id": "sangle_yoga",
+      "name_fr": "Sangle de yoga",
+      "name_en": "Yoga strap"
+    },
+    {
+      "id": "coussin_meditation",
+      "name_fr": "Coussin de méditation",
+      "name_en": "Meditation cushion"
+    },
+    {
+      "id": "bolster_yoga",
+      "name_fr": "Bolster",
+      "name_en": "Yoga bolster"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "sante-feminine": [
+    {
+      "id": "complement_femme",
+      "name_fr": "Complément santé femme",
+      "name_en": "Women's health supplement"
+    },
+    {
+      "id": "culotte_regles",
+      "name_fr": "Culotte menstruelle",
+      "name_en": "Period underwear"
+    },
+    {
+      "id": "coupe_menstruelle",
+      "name_fr": "Coupe menstruelle",
+      "name_en": "Menstrual cup"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "sante-intestinale": [
+    {
+      "id": "probiotique_intestinal",
+      "name_fr": "Probiotique intestinal",
+      "name_en": "Gut probiotic"
+    },
+    {
+      "id": "fibre_prebiotique",
+      "name_fr": "Fibre / Prébiotique",
+      "name_en": "Fibre / Prebiotic"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "sommeil-relaxation": [
+    {
+      "id": "masque_sommeil",
+      "name_fr": "Masque de nuit",
+      "name_en": "Sleep mask"
+    },
+    {
+      "id": "tisane_sommeil",
+      "name_fr": "Tisane sommeil",
+      "name_en": "Sleep tea"
+    },
+    {
+      "id": "diffuseur_aromatherapie",
+      "name_fr": "Diffuseur aromathérapie",
+      "name_en": "Aromatherapy diffuser"
+    },
+    {
+      "id": "oreiller_ergonomique",
+      "name_fr": "Oreiller ergonomique",
+      "name_en": "Ergonomic pillow"
+    },
+    {
+      "id": "couverture_lestee",
+      "name_fr": "Couverture lestée",
+      "name_en": "Weighted blanket"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "minceur-detox": [
+    {
+      "id": "complement_minceur",
+      "name_fr": "Complément minceur",
+      "name_en": "Slimming supplement"
+    },
+    {
+      "id": "the_detox",
+      "name_fr": "Thé détox",
+      "name_en": "Detox tea"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "hygiene-naturelle": [
+    {
+      "id": "deodorant_naturel_s",
+      "name_fr": "Déodorant naturel",
+      "name_en": "Natural deodorant"
+    },
+    {
+      "id": "savon_naturel",
+      "name_fr": "Savon naturel",
+      "name_en": "Natural soap"
+    },
+    {
+      "id": "dentifrice_naturel",
+      "name_fr": "Dentifrice naturel",
+      "name_en": "Natural toothpaste"
+    },
+    {
+      "id": "zero_dechet_hyg",
+      "name_fr": "Produit zéro déchet",
+      "name_en": "Zero waste hygiene"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "equipement-fitness-maison": [
+    {
+      "id": "haltere",
+      "name_fr": "Haltère",
+      "name_en": "Dumbbell"
+    },
+    {
+      "id": "barre_de_traction",
+      "name_fr": "Barre de traction",
+      "name_en": "Pull-up bar"
+    },
+    {
+      "id": "tapis_roulant",
+      "name_fr": "Tapis de course",
+      "name_en": "Treadmill"
+    },
+    {
+      "id": "velo_appartement",
+      "name_fr": "Vélo d'appartement",
+      "name_en": "Exercise bike"
+    },
+    {
+      "id": "corde_a_sauter",
+      "name_fr": "Corde à sauter",
+      "name_en": "Jump rope"
+    },
+    {
+      "id": "kettlebell",
+      "name_fr": "Kettlebell",
+      "name_en": "Kettlebell"
+    },
+    {
+      "id": "elastique_resistance",
+      "name_fr": "Élastique résistance",
+      "name_en": "Resistance band"
+    },
+    {
+      "id": "banc_musculation",
+      "name_fr": "Banc de musculation",
+      "name_en": "Weight bench"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "vetements-sport": [
+    {
+      "id": "t_shirt_technique",
+      "name_fr": "T-shirt technique",
+      "name_en": "Performance t-shirt"
+    },
+    {
+      "id": "legging_sport2",
+      "name_fr": "Legging sport",
+      "name_en": "Sports leggings"
+    },
+    {
+      "id": "veste_running_sport",
+      "name_fr": "Veste / Coupe-vent",
+      "name_en": "Running jacket"
+    },
+    {
+      "id": "short_cyclisme",
+      "name_fr": "Short / Cuissard",
+      "name_en": "Shorts / Cycling shorts"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "chaussures-sport": [
+    {
+      "id": "chaussure_running",
+      "name_fr": "Chaussure running",
+      "name_en": "Running shoe"
+    },
+    {
+      "id": "chaussure_trail",
+      "name_fr": "Chaussure trail",
+      "name_en": "Trail shoe"
+    },
+    {
+      "id": "chaussure_fitness",
+      "name_fr": "Chaussure fitness",
+      "name_en": "Training shoe"
+    },
+    {
+      "id": "chaussure_tennis",
+      "name_fr": "Chaussure tennis",
+      "name_en": "Tennis shoe"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "nutrition-sportive": [
+    {
+      "id": "proteine_sport",
+      "name_fr": "Protéine sport",
+      "name_en": "Sports protein"
+    },
+    {
+      "id": "barre_energetique",
+      "name_fr": "Barre énergétique",
+      "name_en": "Energy bar"
+    },
+    {
+      "id": "boisson_isotonique",
+      "name_fr": "Boisson isotonique",
+      "name_en": "Sports drink"
+    },
+    {
+      "id": "creatine",
+      "name_fr": "Créatine",
+      "name_en": "Creatine"
+    },
+    {
+      "id": "amino_acides",
+      "name_fr": "Acides aminés / BCAA",
+      "name_en": "Amino acids / BCAA"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "running-cardio": [
+    {
+      "id": "chaussure_running",
+      "name_fr": "Chaussure running",
+      "name_en": "Running shoe"
+    },
+    {
+      "id": "montre_gps_sport",
+      "name_fr": "Montre GPS sport",
+      "name_en": "GPS sports watch"
+    },
+    {
+      "id": "bracelet_sport",
+      "name_fr": "Bracelet fitness",
+      "name_en": "Fitness tracker"
+    },
+    {
+      "id": "sac_running",
+      "name_fr": "Ceinture / Sac running",
+      "name_en": "Running belt / pack"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "yoga-pilates": [
+    {
+      "id": "tapis_yoga",
+      "name_fr": "Tapis de yoga",
+      "name_en": "Yoga mat"
+    },
+    {
+      "id": "roue_yoga",
+      "name_fr": "Roue de yoga",
+      "name_en": "Yoga wheel"
+    },
+    {
+      "id": "balle_pilates",
+      "name_fr": "Balle de pilates",
+      "name_en": "Pilates ball"
+    },
+    {
+      "id": "bloc_yoga",
+      "name_fr": "Bloc de yoga",
+      "name_en": "Yoga block"
+    },
+    {
+      "id": "sangle_yoga",
+      "name_fr": "Sangle de yoga",
+      "name_en": "Yoga strap"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "sports-de-raquette": [
+    {
+      "id": "raquette_tennis",
+      "name_fr": "Raquette de tennis",
+      "name_en": "Tennis racket"
+    },
+    {
+      "id": "raquette_badminton",
+      "name_fr": "Raquette badminton",
+      "name_en": "Badminton racket"
+    },
+    {
+      "id": "raquette_padel",
+      "name_fr": "Raquette de padel",
+      "name_en": "Padel racket"
+    },
+    {
+      "id": "balle_volant",
+      "name_fr": "Balle / Volant",
+      "name_en": "Ball / Shuttlecock"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "sports-d-hiver": [
+    {
+      "id": "ski",
+      "name_fr": "Ski",
+      "name_en": "Ski"
+    },
+    {
+      "id": "snowboard",
+      "name_fr": "Snowboard",
+      "name_en": "Snowboard"
+    },
+    {
+      "id": "veste_ski",
+      "name_fr": "Veste de ski",
+      "name_en": "Ski jacket"
+    },
+    {
+      "id": "casque_ski",
+      "name_fr": "Casque de ski",
+      "name_en": "Ski helmet"
+    },
+    {
+      "id": "chaussure_ski",
+      "name_fr": "Chaussure de ski",
+      "name_en": "Ski boot"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "randonnee-outdoor": [
+    {
+      "id": "chaussure_randonnee",
+      "name_fr": "Chaussure de randonnée",
+      "name_en": "Hiking boot"
+    },
+    {
+      "id": "sac_a_dos_rando",
+      "name_fr": "Sac à dos randonnée",
+      "name_en": "Hiking backpack"
+    },
+    {
+      "id": "batons_randonnee",
+      "name_fr": "Bâtons de randonnée",
+      "name_en": "Hiking poles"
+    },
+    {
+      "id": "tente_bivouac",
+      "name_fr": "Tente de bivouac",
+      "name_en": "Bivouac tent"
+    },
+    {
+      "id": "veste_outdoor",
+      "name_fr": "Veste outdoor",
+      "name_en": "Outdoor jacket"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "natation-aquatique": [
+    {
+      "id": "maillot_bain",
+      "name_fr": "Maillot de bain",
+      "name_en": "Swimwear"
+    },
+    {
+      "id": "lunette_natation",
+      "name_fr": "Lunettes de natation",
+      "name_en": "Swimming goggles"
+    },
+    {
+      "id": "bonnet_bain",
+      "name_fr": "Bonnet de bain",
+      "name_en": "Swimming cap"
+    },
+    {
+      "id": "planche_natation",
+      "name_fr": "Planche / Palmes",
+      "name_en": "Kickboard / Fins"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "puericulture-bebe": [
+    {
+      "id": "poussette",
+      "name_fr": "Poussette",
+      "name_en": "Pushchair / Stroller"
+    },
+    {
+      "id": "siege_auto_bebe",
+      "name_fr": "Siège auto",
+      "name_en": "Car seat"
+    },
+    {
+      "id": "baby_monitor",
+      "name_fr": "Babyphone",
+      "name_en": "Baby monitor"
+    },
+    {
+      "id": "lit_bebe",
+      "name_fr": "Lit bébé / Berceau",
+      "name_en": "Baby cot / Cradle"
+    },
+    {
+      "id": "porte_bebe",
+      "name_fr": "Porte-bébé / Écharpe",
+      "name_en": "Baby carrier"
+    },
+    {
+      "id": "chauffe_biberon",
+      "name_fr": "Chauffe-biberon",
+      "name_en": "Bottle warmer"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "jouets-jeux": [
+    {
+      "id": "jouet_eveil",
+      "name_fr": "Jouet d'éveil",
+      "name_en": "Educational toy"
+    },
+    {
+      "id": "figurine_jouet",
+      "name_fr": "Figurine / Poupée",
+      "name_en": "Action figure / Doll"
+    },
+    {
+      "id": "lego_construction",
+      "name_fr": "Lego / Construction",
+      "name_en": "Lego / Building blocks"
+    },
+    {
+      "id": "jouet_electronique",
+      "name_fr": "Jouet électronique",
+      "name_en": "Electronic toy"
+    },
+    {
+      "id": "vehicule_jouet",
+      "name_fr": "Véhicule / Voiture télécommandée",
+      "name_en": "Vehicle / RC car"
+    },
+    {
+      "id": "jeu_educatif",
+      "name_fr": "Jeu éducatif",
+      "name_en": "Educational game"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "vetements-enfant": [
+    {
+      "id": "body_bebe",
+      "name_fr": "Body bébé",
+      "name_en": "Baby bodysuit"
+    },
+    {
+      "id": "pyjama_enfant",
+      "name_fr": "Pyjama enfant",
+      "name_en": "Children's pyjamas"
+    },
+    {
+      "id": "ensemble_enfant",
+      "name_fr": "Ensemble / Manteau",
+      "name_en": "Set / Coat"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "livres-education": [
+    {
+      "id": "livre_jeunesse",
+      "name_fr": "Livre jeunesse",
+      "name_en": "Children's book"
+    },
+    {
+      "id": "livre_eveil",
+      "name_fr": "Livre éveil bébé",
+      "name_en": "Baby learning book"
+    },
+    {
+      "id": "jeu_educatif_livre",
+      "name_fr": "Jeu éducatif / Abécédaire",
+      "name_en": "Educational game / Alphabet"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "anniversaires-fetes": [
+    {
+      "id": "deco_anniversaire",
+      "name_fr": "Décoration anniversaire",
+      "name_en": "Birthday decoration"
+    },
+    {
+      "id": "ballon",
+      "name_fr": "Ballon",
+      "name_en": "Balloon"
+    },
+    {
+      "id": "cadeau_enfant",
+      "name_fr": "Idée cadeau enfant",
+      "name_en": "Children's gift"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "securite-enfant": [
+    {
+      "id": "barriere_securite",
+      "name_fr": "Barrière de sécurité",
+      "name_en": "Safety gate"
+    },
+    {
+      "id": "produit_securite_enf",
+      "name_fr": "Protège-coins / Blocage",
+      "name_en": "Corner guard / Door lock"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "activites-creatives": [
+    {
+      "id": "peinture_enfant",
+      "name_fr": "Peinture / Dessin",
+      "name_en": "Painting / Drawing"
+    },
+    {
+      "id": "pate_a_modeler",
+      "name_fr": "Pâte à modeler",
+      "name_en": "Modelling clay"
+    },
+    {
+      "id": "kit_creatif_enf",
+      "name_fr": "Kit créatif",
+      "name_en": "Creative kit"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "alimentation-bebe": [
+    {
+      "id": "lait_infantile",
+      "name_fr": "Lait infantile",
+      "name_en": "Infant formula"
+    },
+    {
+      "id": "petits_pots",
+      "name_fr": "Petits pots / Purées",
+      "name_en": "Baby food / Purees"
+    },
+    {
+      "id": "accessoire_repas_bebe",
+      "name_fr": "Accessoire repas bébé",
+      "name_en": "Baby feeding accessory"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "mobilier-chambre-enfant": [
+    {
+      "id": "lit_enfant",
+      "name_fr": "Lit enfant",
+      "name_en": "Children's bed"
+    },
+    {
+      "id": "bureau_enfant",
+      "name_fr": "Bureau enfant",
+      "name_en": "Children's desk"
+    },
+    {
+      "id": "meuble_enfant",
+      "name_fr": "Meuble chambre enfant",
+      "name_en": "Children's room furniture"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "fournitures-scolaires": [
+    {
+      "id": "cartable_sac_ecole",
+      "name_fr": "Cartable / Sac école",
+      "name_en": "School bag"
+    },
+    {
+      "id": "trousse",
+      "name_fr": "Trousse",
+      "name_en": "Pencil case"
+    },
+    {
+      "id": "papeterie",
+      "name_fr": "Papeterie / Cahiers",
+      "name_en": "Stationery / Notebooks"
+    },
+    {
+      "id": "calculatrice",
+      "name_fr": "Calculatrice",
+      "name_en": "Calculator"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "alimentation-chien": [
+    {
+      "id": "croquette_chien",
+      "name_fr": "Croquettes chien",
+      "name_en": "Dog kibble"
+    },
+    {
+      "id": "pate_chien",
+      "name_fr": "Pâtée chien",
+      "name_en": "Wet dog food"
+    },
+    {
+      "id": "friandise_chien",
+      "name_fr": "Friandise chien",
+      "name_en": "Dog treat"
+    },
+    {
+      "id": "supplement_chien",
+      "name_fr": "Complément santé chien",
+      "name_en": "Dog health supplement"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "alimentation-chat": [
+    {
+      "id": "croquette_chat",
+      "name_fr": "Croquettes chat",
+      "name_en": "Cat kibble"
+    },
+    {
+      "id": "pate_chat",
+      "name_fr": "Pâtée chat",
+      "name_en": "Wet cat food"
+    },
+    {
+      "id": "friandise_chat",
+      "name_fr": "Friandise chat",
+      "name_en": "Cat treat"
+    },
+    {
+      "id": "supplement_chat",
+      "name_fr": "Complément santé chat",
+      "name_en": "Cat health supplement"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "accessoires-chien": [
+    {
+      "id": "laisse_chien",
+      "name_fr": "Laisse",
+      "name_en": "Dog leash"
+    },
+    {
+      "id": "collier_chien",
+      "name_fr": "Collier chien",
+      "name_en": "Dog collar"
+    },
+    {
+      "id": "harnais_chien",
+      "name_fr": "Harnais",
+      "name_en": "Dog harness"
+    },
+    {
+      "id": "panier_niche",
+      "name_fr": "Panier / Niche",
+      "name_en": "Dog bed / Kennel"
+    },
+    {
+      "id": "manteau_chien",
+      "name_fr": "Manteau chien",
+      "name_en": "Dog coat"
+    },
+    {
+      "id": "sac_transport_animaux",
+      "name_fr": "Sac de transport",
+      "name_en": "Pet carrier"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "accessoires-chat": [
+    {
+      "id": "griffoir",
+      "name_fr": "Griffoir",
+      "name_en": "Cat scratching post"
+    },
+    {
+      "id": "arbre_chat",
+      "name_fr": "Arbre à chat",
+      "name_en": "Cat tree"
+    },
+    {
+      "id": "litiere",
+      "name_fr": "Litière",
+      "name_en": "Cat litter"
+    },
+    {
+      "id": "gamelle_chat",
+      "name_fr": "Gamelle / Fontaine chat",
+      "name_en": "Cat bowl / Fountain"
+    },
+    {
+      "id": "jouet_chat",
+      "name_fr": "Jouet chat",
+      "name_en": "Cat toy"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "soins-hygiene-animaux": [
+    {
+      "id": "shampoing_animal",
+      "name_fr": "Shampoing animal",
+      "name_en": "Pet shampoo"
+    },
+    {
+      "id": "brosse_animal",
+      "name_fr": "Brosse / Peigne",
+      "name_en": "Pet brush / Comb"
+    },
+    {
+      "id": "coupe_griffes",
+      "name_fr": "Coupe-griffes",
+      "name_en": "Nail clippers"
+    },
+    {
+      "id": "antiparasitaire",
+      "name_fr": "Antiparasitaire",
+      "name_en": "Flea & tick treatment"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "jouets-pour-animaux": [
+    {
+      "id": "jouet_interactif_anim",
+      "name_fr": "Jouet interactif",
+      "name_en": "Interactive pet toy"
+    },
+    {
+      "id": "balle_jouet",
+      "name_fr": "Balle",
+      "name_en": "Ball"
+    },
+    {
+      "id": "distributeur_friandise",
+      "name_fr": "Distributeur friandises",
+      "name_en": "Treat dispenser"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "aquariophilie": [
+    {
+      "id": "aquarium",
+      "name_fr": "Aquarium",
+      "name_en": "Aquarium"
+    },
+    {
+      "id": "pompe_filtre_aqua",
+      "name_fr": "Pompe / Filtre",
+      "name_en": "Pump / Filter"
+    },
+    {
+      "id": "nourriture_poisson",
+      "name_fr": "Nourriture poisson",
+      "name_en": "Fish food"
+    },
+    {
+      "id": "deco_aquarium",
+      "name_fr": "Décoration aquarium",
+      "name_en": "Aquarium decoration"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "rongeurs-lapins": [
+    {
+      "id": "cage_rongeur",
+      "name_fr": "Cage / Enclos",
+      "name_en": "Cage / Enclosure"
+    },
+    {
+      "id": "nourriture_rongeur",
+      "name_fr": "Nourriture rongeur",
+      "name_en": "Small animal food"
+    },
+    {
+      "id": "accessoire_rongeur",
+      "name_fr": "Accessoire rongeur",
+      "name_en": "Small animal accessory"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "sante-animale": [
+    {
+      "id": "medicament_animal",
+      "name_fr": "Médicament vétérinaire",
+      "name_en": "Veterinary medicine"
+    },
+    {
+      "id": "complement_sante_ani",
+      "name_fr": "Complément santé animal",
+      "name_en": "Animal health supplement"
+    },
+    {
+      "id": "pipette_soin",
+      "name_fr": "Pipette / Soin",
+      "name_en": "Pipette / Treatment"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "elevage-reproduction": [
+    {
+      "id": "incubateur",
+      "name_fr": "Incubateur",
+      "name_en": "Incubator"
+    },
+    {
+      "id": "accessoire_elevage",
+      "name_fr": "Accessoire élevage",
+      "name_en": "Breeding accessory"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "mobilier-de-jardin": [
+    {
+      "id": "salon_de_jardin",
+      "name_fr": "Salon de jardin",
+      "name_en": "Garden furniture set"
+    },
+    {
+      "id": "chaise_jardin",
+      "name_fr": "Chaise / Fauteuil jardin",
+      "name_en": "Garden chair"
+    },
+    {
+      "id": "bain_de_soleil",
+      "name_fr": "Bain de soleil",
+      "name_en": "Sunlounger"
+    },
+    {
+      "id": "hamac",
+      "name_fr": "Hamac",
+      "name_en": "Hammock"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "outillage-jardinage": [
+    {
+      "id": "tondeuse",
+      "name_fr": "Tondeuse",
+      "name_en": "Lawnmower"
+    },
+    {
+      "id": "taille_haie",
+      "name_fr": "Taille-haie",
+      "name_en": "Hedge trimmer"
+    },
+    {
+      "id": "secateur",
+      "name_fr": "Sécateur / Ciseaux",
+      "name_en": "Secateurs / Scissors"
+    },
+    {
+      "id": "outil_jardin_main",
+      "name_fr": "Outil jardin à main",
+      "name_en": "Hand garden tool"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "plantes-fleurs": [
+    {
+      "id": "plante_interieur",
+      "name_fr": "Plante intérieure",
+      "name_en": "Indoor plant"
+    },
+    {
+      "id": "plante_exterieur",
+      "name_fr": "Plante extérieure",
+      "name_en": "Outdoor plant"
+    },
+    {
+      "id": "bulbe_graine_fleur",
+      "name_fr": "Bulbe / Graine fleur",
+      "name_en": "Bulb / Flower seed"
+    },
+    {
+      "id": "pot_fleur",
+      "name_fr": "Pot / Jardinière",
+      "name_en": "Pot / Planter"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "potager-semences": [
+    {
+      "id": "graine_legume",
+      "name_fr": "Graine légume",
+      "name_en": "Vegetable seed"
+    },
+    {
+      "id": "bac_potager",
+      "name_fr": "Bac / Carré potager",
+      "name_en": "Raised garden bed"
+    },
+    {
+      "id": "composteur",
+      "name_fr": "Composteur",
+      "name_en": "Compost bin"
+    },
+    {
+      "id": "serre_mini_jardin",
+      "name_fr": "Serre / Mini-serre",
+      "name_en": "Garden greenhouse"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "piscine-spa": [
+    {
+      "id": "piscine_hors_sol",
+      "name_fr": "Piscine hors-sol",
+      "name_en": "Above-ground pool"
+    },
+    {
+      "id": "robot_piscine",
+      "name_fr": "Robot de piscine",
+      "name_en": "Pool robot"
+    },
+    {
+      "id": "produits_piscine",
+      "name_fr": "Produits d'entretien",
+      "name_en": "Pool chemicals"
+    },
+    {
+      "id": "spa_gonflable",
+      "name_fr": "Spa gonflable",
+      "name_en": "Inflatable spa"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "barbecue-plancha": [
+    {
+      "id": "barbecue_charbon",
+      "name_fr": "Barbecue charbon",
+      "name_en": "Charcoal BBQ"
+    },
+    {
+      "id": "barbecue_gaz",
+      "name_fr": "Barbecue gaz",
+      "name_en": "Gas BBQ"
+    },
+    {
+      "id": "plancha",
+      "name_fr": "Plancha",
+      "name_en": "Plancha grill"
+    },
+    {
+      "id": "accessoire_bbq",
+      "name_fr": "Accessoire barbecue",
+      "name_en": "BBQ accessory"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "eclairage-exterieur": [
+    {
+      "id": "lampe_solaire_jardin",
+      "name_fr": "Lampe solaire jardin",
+      "name_en": "Solar garden light"
+    },
+    {
+      "id": "spot_exterieur",
+      "name_fr": "Spot extérieur",
+      "name_en": "Outdoor spotlight"
+    },
+    {
+      "id": "guirlande_exterieur",
+      "name_fr": "Guirlande extérieure",
+      "name_en": "Outdoor string lights"
+    },
+    {
+      "id": "borne_jardin",
+      "name_fr": "Borne de jardin",
+      "name_en": "Garden post light"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "abris-pergolas": [
+    {
+      "id": "abri_jardin",
+      "name_fr": "Abri de jardin",
+      "name_en": "Garden shed"
+    },
+    {
+      "id": "pergola",
+      "name_fr": "Pergola",
+      "name_en": "Pergola"
+    },
+    {
+      "id": "carport_tonnelle",
+      "name_fr": "Tonnelle / Carport",
+      "name_en": "Gazebo / Carport"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "arrosage": [
+    {
+      "id": "arroseur_tuyau",
+      "name_fr": "Arroseur / Tuyau",
+      "name_en": "Sprinkler / Hose"
+    },
+    {
+      "id": "programmateur_arrosage",
+      "name_fr": "Programmateur arrosage",
+      "name_en": "Irrigation timer"
+    },
+    {
+      "id": "goutte_a_goutte",
+      "name_fr": "Goutte-à-goutte",
+      "name_en": "Drip irrigation"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "decoration-exterieure": [
+    {
+      "id": "statue_jardin",
+      "name_fr": "Statue / Ornement jardin",
+      "name_en": "Garden statue"
+    },
+    {
+      "id": "lanterne_ext",
+      "name_fr": "Lanterne extérieure",
+      "name_en": "Outdoor lantern"
+    },
+    {
+      "id": "pot_deco_ext",
+      "name_fr": "Pot décoratif extérieur",
+      "name_en": "Outdoor decorative pot"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "smartphones-accessoires": [
+    {
+      "id": "smartphone",
+      "name_fr": "Smartphone",
+      "name_en": "Smartphone"
+    },
+    {
+      "id": "coque_protection",
+      "name_fr": "Coque / Protection",
+      "name_en": "Phone case / Screen protector"
+    },
+    {
+      "id": "chargeur_rapide",
+      "name_fr": "Chargeur rapide",
+      "name_en": "Fast charger"
+    },
+    {
+      "id": "powerbank",
+      "name_fr": "Batterie externe",
+      "name_en": "Power bank"
+    },
+    {
+      "id": "support_telephone",
+      "name_fr": "Support téléphone",
+      "name_en": "Phone stand / Mount"
+    },
+    {
+      "id": "cable_adaptateur",
+      "name_fr": "Câble / Adaptateur",
+      "name_en": "Cable / Adapter"
+    },
+    {
+      "id": "cle_usb_carte_memoire",
+      "name_fr": "Clé USB / Carte mémoire",
+      "name_en": "USB key / Memory card"
+    },
+    {
+      "id": "ecouteurs_tws",
+      "name_fr": "Écouteurs sans fil",
+      "name_en": "True wireless earbuds"
+    },
+    {
+      "id": "ecouteurs_filaires",
+      "name_fr": "Écouteurs filaires",
+      "name_en": "Wired earphones"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "audio": [
+    {
+      "id": "enceinte_bluetooth",
+      "name_fr": "Enceinte Bluetooth",
+      "name_en": "Bluetooth speaker"
+    },
+    {
+      "id": "casque_audio",
+      "name_fr": "Casque audio",
+      "name_en": "Headphones"
+    },
+    {
+      "id": "ecouteurs_tws",
+      "name_fr": "Écouteurs sans fil",
+      "name_en": "True wireless earbuds"
+    },
+    {
+      "id": "ecouteurs_filaires",
+      "name_fr": "Écouteurs filaires",
+      "name_en": "Wired earphones"
+    },
+    {
+      "id": "barre_de_son",
+      "name_fr": "Barre de son",
+      "name_en": "Soundbar"
+    },
+    {
+      "id": "enceinte_hifi",
+      "name_fr": "Enceinte Hi-Fi",
+      "name_en": "Hi-Fi speaker"
+    },
+    {
+      "id": "enceinte_waterproof",
+      "name_fr": "Enceinte étanche",
+      "name_en": "Waterproof speaker"
+    },
+    {
+      "id": "microphone",
+      "name_fr": "Microphone",
+      "name_en": "Microphone"
+    },
+    {
+      "id": "ampli_hifi",
+      "name_fr": "Amplificateur Hi-Fi",
+      "name_en": "Hi-Fi amplifier"
+    },
+    {
+      "id": "platine_vinyl",
+      "name_fr": "Platine vinyle",
+      "name_en": "Record player"
+    },
+    {
+      "id": "systeme_home_cinema",
+      "name_fr": "Système home cinéma",
+      "name_en": "Home cinema system"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "maison-connectee": [
+    {
+      "id": "camera_surveillance",
+      "name_fr": "Caméra de surveillance",
+      "name_en": "Security camera"
+    },
+    {
+      "id": "sonnette_video",
+      "name_fr": "Sonnette vidéo",
+      "name_en": "Video doorbell"
+    },
+    {
+      "id": "alarme_detecteur",
+      "name_fr": "Alarme / Détecteur",
+      "name_en": "Alarm / Motion sensor"
+    },
+    {
+      "id": "serrure_connectee",
+      "name_fr": "Serrure connectée",
+      "name_en": "Smart lock"
+    },
+    {
+      "id": "ampoule_connectee",
+      "name_fr": "Ampoule connectée",
+      "name_en": "Smart bulb"
+    },
+    {
+      "id": "prise_connectee",
+      "name_fr": "Prise connectée",
+      "name_en": "Smart plug"
+    },
+    {
+      "id": "thermostat_connecte",
+      "name_fr": "Thermostat connecté",
+      "name_en": "Smart thermostat"
+    },
+    {
+      "id": "hub_domotique",
+      "name_fr": "Hub domotique",
+      "name_en": "Smart home hub"
+    },
+    {
+      "id": "robot_aspirateur",
+      "name_fr": "Robot aspirateur",
+      "name_en": "Robot vacuum"
+    },
+    {
+      "id": "store_volet_connecte",
+      "name_fr": "Store / Volet connecté",
+      "name_en": "Smart blind / Shutter"
+    },
+    {
+      "id": "thermometre_exterieur",
+      "name_fr": "Station météo",
+      "name_en": "Weather station"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "wearables-montres": [
+    {
+      "id": "smartwatch",
+      "name_fr": "Montre connectée",
+      "name_en": "Smartwatch"
+    },
+    {
+      "id": "bracelet_sport",
+      "name_fr": "Bracelet fitness",
+      "name_en": "Fitness tracker"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "photo-video": [
+    {
+      "id": "appareil_photo",
+      "name_fr": "Appareil photo",
+      "name_en": "Camera"
+    },
+    {
+      "id": "drone",
+      "name_fr": "Drone",
+      "name_en": "Drone"
+    },
+    {
+      "id": "camera_action",
+      "name_fr": "Caméra action / 360°",
+      "name_en": "Action camera / 360°"
+    },
+    {
+      "id": "trepied_stabilisateur",
+      "name_fr": "Trépied / Stabilisateur",
+      "name_en": "Tripod / Gimbal"
+    },
+    {
+      "id": "objectif",
+      "name_fr": "Objectif photo",
+      "name_en": "Camera lens"
+    },
+    {
+      "id": "flash_eclairage_photo",
+      "name_fr": "Flash / Éclairage photo",
+      "name_en": "Flash / Photo lighting"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "tablettes-pc": [
+    {
+      "id": "tablette",
+      "name_fr": "Tablette",
+      "name_en": "Tablet"
+    },
+    {
+      "id": "pc_portable",
+      "name_fr": "PC portable",
+      "name_en": "Laptop"
+    },
+    {
+      "id": "pc_fixe",
+      "name_fr": "PC fixe / Mini-PC",
+      "name_en": "Desktop / Mini PC"
+    },
+    {
+      "id": "ecran_moniteur",
+      "name_fr": "Écran / Moniteur",
+      "name_en": "Monitor"
+    },
+    {
+      "id": "disque_dur_ssd",
+      "name_fr": "SSD / Disque dur",
+      "name_en": "SSD / Hard drive"
+    },
+    {
+      "id": "souris",
+      "name_fr": "Souris",
+      "name_en": "Mouse"
+    },
+    {
+      "id": "clavier",
+      "name_fr": "Clavier",
+      "name_en": "Keyboard"
+    },
+    {
+      "id": "hub_usb",
+      "name_fr": "Hub USB / Docking",
+      "name_en": "USB hub / Docking station"
+    },
+    {
+      "id": "imprimante_scanner",
+      "name_fr": "Imprimante / Scanner",
+      "name_en": "Printer / Scanner"
+    },
+    {
+      "id": "routeur_wifi",
+      "name_fr": "Routeur WiFi / Mesh",
+      "name_en": "WiFi router / Mesh"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "gaming": [
+    {
+      "id": "casque_gaming",
+      "name_fr": "Casque gaming",
+      "name_en": "Gaming headset"
+    },
+    {
+      "id": "manette",
+      "name_fr": "Manette",
+      "name_en": "Controller"
+    },
+    {
+      "id": "souris_gaming",
+      "name_fr": "Souris gaming",
+      "name_en": "Gaming mouse"
+    },
+    {
+      "id": "clavier_gaming",
+      "name_fr": "Clavier gaming",
+      "name_en": "Gaming keyboard"
+    },
+    {
+      "id": "ecran_gaming",
+      "name_fr": "Écran gaming",
+      "name_en": "Gaming monitor"
+    },
+    {
+      "id": "siege_gaming",
+      "name_fr": "Siège gaming",
+      "name_en": "Gaming chair"
+    },
+    {
+      "id": "tapis_souris",
+      "name_fr": "Tapis de souris",
+      "name_en": "Mouse pad"
+    },
+    {
+      "id": "microphone",
+      "name_fr": "Microphone",
+      "name_en": "Microphone"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "accessoires-bureau": [
+    {
+      "id": "webcam",
+      "name_fr": "Webcam",
+      "name_en": "Webcam"
+    },
+    {
+      "id": "lampe_bureau",
+      "name_fr": "Lampe de bureau",
+      "name_en": "Desk lamp"
+    },
+    {
+      "id": "chaise_bureau_ergo",
+      "name_fr": "Chaise ergonomique",
+      "name_en": "Ergonomic chair"
+    },
+    {
+      "id": "bureau_standing",
+      "name_fr": "Bureau debout / Fixe",
+      "name_en": "Standing desk"
+    },
+    {
+      "id": "bras_support_ecran",
+      "name_fr": "Bras / Support écran",
+      "name_en": "Monitor arm"
+    },
+    {
+      "id": "multiprise_reglette",
+      "name_fr": "Multiprise / Onduleur",
+      "name_en": "Power strip / UPS"
+    },
+    {
+      "id": "hub_usb",
+      "name_fr": "Hub USB",
+      "name_en": "USB hub"
+    },
+    {
+      "id": "cable_adaptateur",
+      "name_fr": "Câble / Adaptateur",
+      "name_en": "Cable / Adapter"
+    },
+    {
+      "id": "sac_sacoche",
+      "name_fr": "Sac / Sacoche",
+      "name_en": "Bag / Case"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "chargeurs-batteries": [
+    {
+      "id": "chargeur_rapide",
+      "name_fr": "Chargeur rapide",
+      "name_en": "Fast charger"
+    },
+    {
+      "id": "powerbank",
+      "name_fr": "Batterie externe",
+      "name_en": "Power bank"
+    },
+    {
+      "id": "chargeur_solaire",
+      "name_fr": "Chargeur solaire",
+      "name_en": "Solar charger"
+    },
+    {
+      "id": "cable_adaptateur",
+      "name_fr": "Câble / Adaptateur",
+      "name_en": "Cable / Adapter"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "impression-3d-domotique": [
+    {
+      "id": "imprimante_3d",
+      "name_fr": "Imprimante 3D",
+      "name_en": "3D printer"
+    },
+    {
+      "id": "filament_resine_3d",
+      "name_fr": "Filament / Résine 3D",
+      "name_en": "3D filament / Resin"
+    },
+    {
+      "id": "hub_domotique",
+      "name_fr": "Hub domotique",
+      "name_en": "Smart home hub"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "bagages-valises": [
+    {
+      "id": "valise",
+      "name_fr": "Valise",
+      "name_en": "Suitcase"
+    },
+    {
+      "id": "sac_de_voyage",
+      "name_fr": "Sac de voyage",
+      "name_en": "Travel bag"
+    },
+    {
+      "id": "cabine_valise",
+      "name_fr": "Valise cabine",
+      "name_en": "Cabin luggage"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "accessoires-voyage": [
+    {
+      "id": "oreiller_voyage",
+      "name_fr": "Oreiller de voyage",
+      "name_en": "Travel pillow"
+    },
+    {
+      "id": "adaptateur_prise",
+      "name_fr": "Adaptateur prise",
+      "name_en": "Travel adapter"
+    },
+    {
+      "id": "cadenas_valise",
+      "name_fr": "Cadenas valise",
+      "name_en": "Luggage lock"
+    },
+    {
+      "id": "organiseur_bagage",
+      "name_fr": "Organiseur bagage",
+      "name_en": "Packing cubes"
+    },
+    {
+      "id": "masque_bouchon_oreilles",
+      "name_fr": "Masque / Bouchons",
+      "name_en": "Sleep mask / Ear plugs"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "livres-lecture": [
+    {
+      "id": "roman",
+      "name_fr": "Roman",
+      "name_en": "Novel"
+    },
+    {
+      "id": "documentaire",
+      "name_fr": "Documentaire",
+      "name_en": "Non-fiction"
+    },
+    {
+      "id": "bande_dessinee",
+      "name_fr": "BD / Manga",
+      "name_en": "Comics / Manga"
+    },
+    {
+      "id": "guide_voyage",
+      "name_fr": "Guide de voyage",
+      "name_en": "Travel guide"
+    },
+    {
+      "id": "liseuse",
+      "name_fr": "Liseuse / E-reader",
+      "name_en": "E-reader"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "jeux-de-societe": [
+    {
+      "id": "jeux_plateau",
+      "name_fr": "Jeu de plateau",
+      "name_en": "Board game"
+    },
+    {
+      "id": "jeux_cartes",
+      "name_fr": "Jeu de cartes",
+      "name_en": "Card game"
+    },
+    {
+      "id": "puzzle_adulte",
+      "name_fr": "Puzzle adulte",
+      "name_en": "Jigsaw puzzle"
+    },
+    {
+      "id": "jeux_famille",
+      "name_fr": "Jeu famille",
+      "name_en": "Family game"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "loisirs-creatifs": [
+    {
+      "id": "kit_broderie",
+      "name_fr": "Kit broderie / Couture",
+      "name_en": "Embroidery / Sewing kit"
+    },
+    {
+      "id": "peinture_par_numero",
+      "name_fr": "Peinture par numéro",
+      "name_en": "Paint by numbers"
+    },
+    {
+      "id": "tricot_crochet",
+      "name_fr": "Tricot / Crochet",
+      "name_en": "Knitting / Crochet"
+    },
+    {
+      "id": "scrapbooking",
+      "name_fr": "Scrapbooking",
+      "name_en": "Scrapbooking"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "photographie": [
+    {
+      "id": "appareil_photo",
+      "name_fr": "Appareil photo",
+      "name_en": "Camera"
+    },
+    {
+      "id": "objectif",
+      "name_fr": "Objectif",
+      "name_en": "Lens"
+    },
+    {
+      "id": "sacoche_photo",
+      "name_fr": "Sacoche / Sac photo",
+      "name_en": "Camera bag"
+    },
+    {
+      "id": "trepied_stabilisateur",
+      "name_fr": "Trépied / Stabilisateur",
+      "name_en": "Tripod / Gimbal"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "camping-bivouac": [
+    {
+      "id": "tente",
+      "name_fr": "Tente",
+      "name_en": "Tent"
+    },
+    {
+      "id": "sac_couchage",
+      "name_fr": "Sac de couchage",
+      "name_en": "Sleeping bag"
+    },
+    {
+      "id": "matelas_gonflable",
+      "name_fr": "Matelas gonflable",
+      "name_en": "Inflatable mattress"
+    },
+    {
+      "id": "lampe_frontale",
+      "name_fr": "Lampe frontale",
+      "name_en": "Headlamp"
+    },
+    {
+      "id": "gourde_camp",
+      "name_fr": "Gourde / Thermos",
+      "name_en": "Water bottle / Thermos"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "musique-instruments": [
+    {
+      "id": "guitare",
+      "name_fr": "Guitare",
+      "name_en": "Guitar"
+    },
+    {
+      "id": "piano_clavier_inst",
+      "name_fr": "Piano / Clavier",
+      "name_en": "Piano / Keyboard"
+    },
+    {
+      "id": "ukulele_autres_inst",
+      "name_fr": "Ukulélé / Autres",
+      "name_en": "Ukulele / Other"
+    },
+    {
+      "id": "accessoire_musique",
+      "name_fr": "Accessoire musique",
+      "name_en": "Music accessory"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "jeux-video": [
+    {
+      "id": "jeu_video_console",
+      "name_fr": "Jeu vidéo console",
+      "name_en": "Console video game"
+    },
+    {
+      "id": "jeu_video_pc",
+      "name_fr": "Jeu vidéo PC",
+      "name_en": "PC game"
+    },
+    {
+      "id": "console",
+      "name_fr": "Console de jeux",
+      "name_en": "Gaming console"
+    },
+    {
+      "id": "manette",
+      "name_fr": "Manette",
+      "name_en": "Controller"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "puzzles-collections": [
+    {
+      "id": "puzzle_adulte",
+      "name_fr": "Puzzle adulte",
+      "name_en": "Jigsaw puzzle"
+    },
+    {
+      "id": "figurines_collection",
+      "name_fr": "Figurine de collection",
+      "name_en": "Collectible figure"
+    },
+    {
+      "id": "tirelire_objet_coll",
+      "name_fr": "Objet de collection",
+      "name_en": "Collectible item"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "mobilite-aide-marche": [
+    {
+      "id": "canne",
+      "name_fr": "Canne / Béquille",
+      "name_en": "Walking cane / Crutch"
+    },
+    {
+      "id": "deambulateur",
+      "name_fr": "Déambulateur",
+      "name_en": "Walking frame / Rollator"
+    },
+    {
+      "id": "fauteuil_roulant",
+      "name_fr": "Fauteuil roulant",
+      "name_en": "Wheelchair"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "confort-bien-etre": [
+    {
+      "id": "coussin_confort",
+      "name_fr": "Coussin confort",
+      "name_en": "Comfort cushion"
+    },
+    {
+      "id": "chaise_senior",
+      "name_fr": "Fauteuil confort senior",
+      "name_en": "Senior comfort chair"
+    },
+    {
+      "id": "appareil_massage",
+      "name_fr": "Appareil de massage",
+      "name_en": "Massage device"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "sante-medicaments": [
+    {
+      "id": "tensiometre_sante",
+      "name_fr": "Tensiomètre",
+      "name_en": "Blood pressure monitor"
+    },
+    {
+      "id": "balance_connectee",
+      "name_fr": "Pèse-personne connecté",
+      "name_en": "Smart scale"
+    },
+    {
+      "id": "glucometre",
+      "name_fr": "Glucomètre",
+      "name_en": "Glucose meter"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "loisirs-senior": [
+    {
+      "id": "jeux_cartes_senior",
+      "name_fr": "Jeux de cartes / Société",
+      "name_en": "Card games / Board games"
+    },
+    {
+      "id": "puzzle_senior",
+      "name_fr": "Puzzle",
+      "name_en": "Jigsaw puzzle"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "maison-adaptee": [
+    {
+      "id": "barre_appui",
+      "name_fr": "Barre d'appui",
+      "name_en": "Grab bar"
+    },
+    {
+      "id": "siege_douche",
+      "name_fr": "Siège de douche",
+      "name_en": "Shower seat"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "audition-optique": [
+    {
+      "id": "lunettes_loupe_senior",
+      "name_fr": "Lunettes loupe",
+      "name_en": "Magnifying glasses"
+    },
+    {
+      "id": "aide_auditive",
+      "name_fr": "Aide auditive",
+      "name_en": "Hearing aid"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "numerique-senior": [
+    {
+      "id": "tablette_senior",
+      "name_fr": "Tablette senior",
+      "name_en": "Senior tablet"
+    },
+    {
+      "id": "telephone_senior",
+      "name_fr": "Téléphone senior",
+      "name_en": "Senior phone"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "voyage-senior": [
+    {
+      "id": "valise_legere",
+      "name_fr": "Valise légère",
+      "name_en": "Lightweight suitcase"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "garde-robe-confort": [
+    {
+      "id": "vetement_confort_senior",
+      "name_fr": "Vêtement confort",
+      "name_en": "Comfort clothing"
+    },
+    {
+      "id": "chaussure_confort",
+      "name_fr": "Chaussure confort",
+      "name_en": "Comfort shoe"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "jardinage-senior": [
+    {
+      "id": "outil_jardin_senior",
+      "name_fr": "Outil jardin ergonomique",
+      "name_en": "Ergonomic garden tool"
+    },
+    {
+      "id": "siegejardin_senior",
+      "name_fr": "Siège jardin",
+      "name_en": "Garden kneeler / seat"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "outillage-electroportatif": [
+    {
+      "id": "perceuse",
+      "name_fr": "Perceuse / Visseuse",
+      "name_en": "Drill / Screwdriver"
+    },
+    {
+      "id": "scie",
+      "name_fr": "Scie (sauteuse, circulaire, sabre)",
+      "name_en": "Saw"
+    },
+    {
+      "id": "meuleuse",
+      "name_fr": "Meuleuse",
+      "name_en": "Angle grinder"
+    },
+    {
+      "id": "ponceuse",
+      "name_fr": "Ponceuse",
+      "name_en": "Sander"
+    },
+    {
+      "id": "pistolet_thermique",
+      "name_fr": "Pistolet / Décapeur",
+      "name_en": "Heat gun"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "peinture-enduits": [
+    {
+      "id": "rouleau_pinceau",
+      "name_fr": "Rouleau / Pinceau",
+      "name_en": "Roller / Paintbrush"
+    },
+    {
+      "id": "peinture_brico",
+      "name_fr": "Peinture murale",
+      "name_en": "Wall paint"
+    },
+    {
+      "id": "enduit_reboucher",
+      "name_fr": "Enduit / Rebouchage",
+      "name_en": "Filler / Spackle"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "plomberie": [
+    {
+      "id": "robinet",
+      "name_fr": "Robinet / Mitigeur",
+      "name_en": "Tap / Mixer"
+    },
+    {
+      "id": "tuyau_raccord",
+      "name_fr": "Tuyau / Raccord",
+      "name_en": "Pipe / Fitting"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "electricite": [
+    {
+      "id": "interrupteur_prise",
+      "name_fr": "Interrupteur / Prise",
+      "name_en": "Switch / Socket"
+    },
+    {
+      "id": "cable_electrique",
+      "name_fr": "Câble électrique",
+      "name_en": "Electrical cable"
+    },
+    {
+      "id": "multiprise_brico",
+      "name_fr": "Multiprise / Bloc",
+      "name_en": "Power strip / Block"
+    },
+    {
+      "id": "detecteur_securite",
+      "name_fr": "Détecteur fumée / CO",
+      "name_en": "Smoke / CO detector"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "quincaillerie": [
+    {
+      "id": "vis_boulon",
+      "name_fr": "Vis / Boulon",
+      "name_en": "Screw / Bolt"
+    },
+    {
+      "id": "charniere_serrure",
+      "name_fr": "Charnière / Serrure",
+      "name_en": "Hinge / Lock"
+    },
+    {
+      "id": "outil_main_brico",
+      "name_fr": "Outil à main",
+      "name_en": "Hand tool"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "materiaux-construction": [
+    {
+      "id": "parquet_carrelage",
+      "name_fr": "Parquet / Carrelage",
+      "name_en": "Flooring / Tiles"
+    },
+    {
+      "id": "isolation_brico",
+      "name_fr": "Isolation",
+      "name_en": "Insulation"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "deco-diy-creatif": [
+    {
+      "id": "peinture_diy",
+      "name_fr": "Peinture DIY",
+      "name_en": "DIY paint"
+    },
+    {
+      "id": "sticker_mural",
+      "name_fr": "Sticker / Posters",
+      "name_en": "Wall sticker / Poster"
+    },
+    {
+      "id": "kit_diy_creatif",
+      "name_fr": "Kit créatif DIY",
+      "name_en": "DIY creative kit"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "isolation-energie": [
+    {
+      "id": "panneau_solaire",
+      "name_fr": "Panneau solaire",
+      "name_en": "Solar panel"
+    },
+    {
+      "id": "isolant_thermique",
+      "name_fr": "Isolant thermique",
+      "name_en": "Thermal insulation"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "menuiserie": [
+    {
+      "id": "bois_planche",
+      "name_fr": "Bois / Planche",
+      "name_en": "Wood / Plank"
+    },
+    {
+      "id": "outillage_bois",
+      "name_fr": "Outil menuiserie",
+      "name_en": "Woodworking tool"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ],
+  "alarme-securite": [
+    {
+      "id": "camera_surveillance",
+      "name_fr": "Caméra de surveillance",
+      "name_en": "Security camera"
+    },
+    {
+      "id": "alarme_maison",
+      "name_fr": "Alarme maison",
+      "name_en": "Home alarm"
+    },
+    {
+      "id": "detecteur_securite",
+      "name_fr": "Détecteur",
+      "name_en": "Detector"
+    },
+    {
+      "id": "autre",
+      "name_fr": "Autre",
+      "name_en": "Other"
+    }
+  ]
+}

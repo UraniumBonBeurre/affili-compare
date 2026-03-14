@@ -282,15 +282,15 @@ def _normalize_row_keys(rows: list[dict]) -> list[dict]:
 def _build_payload(row: dict, merchant: dict) -> dict | None:
     """Construit le dict produit depuis une ligne de flux. Retourne None si invalide."""
     ext_id = (row.get("aw_product_id") or "").strip()
-    name = (row.get("product_name") or "").strip()
+    name = (row.get("product_name") or "").strip().replace('%22', '').rstrip('"').strip()
     if not ext_id or not name:
         return None
 
-    brand = (row.get("brand_name") or "").strip()
-    # Priorité : aw_image_url (proxy Awin) > merchant_image_url (CDN direct) > aw_thumb_url
+    brand = (row.get("brand_name") or "").strip().replace('%22', '').rstrip('"').strip()
+    # Priorité : merchant_image_url (CDN direct, public) > aw_image_url (proxy Awin, 403 navigateur) > aw_thumb_url
     image = (
-        row.get("aw_image_url") or
         row.get("merchant_image_url") or
+        row.get("aw_image_url") or
         row.get("aw_thumb_url") or
         ""
     ).strip()
@@ -304,6 +304,9 @@ def _build_payload(row: dict, merchant: dict) -> dict | None:
 
     raw_desc = (row.get("description") or "").strip()
     description = raw_desc[:2000] if raw_desc else None
+
+    awin_category = (row.get("category_name") or "").strip() or None
+    product_url   = (row.get("merchant_deep_link") or "").strip() or None
 
     return {
         "name": name[:200],
@@ -319,12 +322,14 @@ def _build_payload(row: dict, merchant: dict) -> dict | None:
         "merchant_name": merchant.get("label") or merchant["key"],
         "affiliate_url": aff_url,
         "in_stock": in_stock,
+        "product_url": product_url,
+        "awin_category": awin_category,
         "last_price_update": datetime.now(timezone.utc).isoformat(),
-        "active": True,
+        "active": in_stock,  # produit hors stock = masqué sur le site
     }
 
 
-BATCH_SIZE = 500
+BATCH_SIZE = 100
 
 
 def _sb_batch_insert(payloads: list[dict], dry_run: bool = False) -> int:

@@ -1,172 +1,92 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { supabase } from "@/lib/supabase";
-import { getCategoryMeta } from "@/lib/seo";
-import { SITE_CATEGORIES } from "@/config/categories";
+import { getSiteCategories, getSiteCategory } from "@/lib/site-categories";
 import type { Locale } from "@/types/database";
 
 interface Props {
   params: { locale: Locale; category: string };
 }
 
-// ─── Data fetching ────────────────────────────────────────────────────────────
-async function getCategoryData(slug: string) {
-  // 1. Config is the source of truth for valid category slugs
-  const configCat = SITE_CATEGORIES.find((c) => c.slug === slug) ?? null;
-  if (!configCat) return null; // unknown slug → let Next.js 404
-
-  // 2. maybeSingle() never throws on empty — returns data: null instead
-  const catRes = await supabase
-    .from("categories")
-    .select("*")
-    .eq("slug", slug)
-    .maybeSingle();
-
-  const dbCategory = catRes.data ?? null;
-
-  // 3. Comparisons filtered at DB level (category_id filter) — no client-side filtering
-  const comparisons = dbCategory
-    ? (
-        await supabase
-          .from("comparisons")
-          .select("id, slug, title_fr, title_en, title_de, last_updated, subcategory")
-          .eq("category_id", dbCategory.id)
-          .eq("is_published", true)
-          .order("last_updated", { ascending: false })
-      ).data ?? []
-    : [];
-
-  return { dbCategory, configCat, comparisons };
-}
-
-// ─── Metadata ─────────────────────────────────────────────────────────────────
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { category, locale } = params;
-  const data = await getCategoryData(category);
-  if (!data) return { title: "Not found" };
-
-  // Use DB category for SEO helpers if available, else build a minimal stub
-  const cat = data.dbCategory ?? {
-    slug: data.configCat.slug,
-    name_fr: data.configCat.nameFr,
-    name_en: data.configCat.nameEn,
-    name_de: data.configCat.nameFr,
-    icon: data.configCat.icon,
-    is_active: true,
-  };
-  const meta = getCategoryMeta(cat as Parameters<typeof getCategoryMeta>[0], locale);
+  const cat = getSiteCategory(params.category);
+  if (!cat) return { title: "Not found" };
+  const isEn = params.locale === "en";
+  const name = isEn ? cat.name_en : cat.name;
   return {
-    title: meta.title,
-    description: meta.description,
-    alternates: { canonical: meta.canonical },
+    title: `${name} — MyGoodPick`,
+    description: isEn
+      ? `Explore our ${name.toLowerCase()} selections and guides.`
+      : `Explorez nos sélections et guides pour la catégorie ${name}.`,
   };
 }
 
-// ─── Static params — driven by SITE_CATEGORIES, not DB ───────────────────────
-// This ensures every known category has a pre-built route regardless of DB state
-export async function generateStaticParams() {
-  return SITE_CATEGORIES.flatMap((cat) =>
-    (["fr", "en", "de"] as Locale[]).map((locale) => ({
-      locale,
-      category: cat.slug,
-    }))
+export function generateStaticParams() {
+  const locales: Locale[] = ["fr", "en"];
+  return getSiteCategories().flatMap((cat) =>
+    locales.map((locale) => ({ locale, category: cat.id }))
   );
 }
 
-export const revalidate = 0;
+export const revalidate = 86400;
 
-// ─── Page ──────────────────────────────────────────────────────────────────────
-export default async function CategoryPage({ params }: Props) {
-  const { locale, category: categorySlug } = params;
-  const data = await getCategoryData(categorySlug);
+export default function CategoryPage({ params }: Props) {
+  const { locale, category: categoryId } = params;
+  const cat = getSiteCategory(categoryId);
+  if (!cat) notFound();
 
-  if (!data) notFound(); // slug not in SITE_CATEGORIES — truly unknown
-
-  const { dbCategory, configCat, comparisons } = data!;
-
-  const nameKey  = `name_${locale}`  as "name_fr" | "name_en" | "name_de";
-  const titleKey = `title_${locale}` as "title_fr" | "title_en" | "title_de";
-
-  // Display name: prefer DB row, fall back to config
-  const displayName = dbCategory
-    ? (dbCategory[nameKey] ?? dbCategory.name_fr)
-    : locale === "en"
-    ? configCat.nameEn
-    : configCat.nameFr;
-  const displayIcon = dbCategory?.icon ?? configCat.icon;
-
-  // Group comparisons by subcategory
-  const groups = new Map<string, typeof comparisons>();
-  for (const comp of comparisons) {
-    const sub = (comp as Record<string, string>).subcategory || "";
-    if (!groups.has(sub)) groups.set(sub, []);
-    groups.get(sub)!.push(comp);
-  }
+  const isEn = locale === "en";
+  const name = isEn ? cat.name_en : cat.name;
 
   return (
-    <div className="py-8">
-      {/* Breadcrumb + title */}
-      <div className="mb-8">
-        <p className="text-sm text-gray-400 mb-2">
-          <Link href={`/${locale}`} className="hover:underline">Accueil</Link>
-          {" / "}
-          {displayName}
-        </p>
-        <h1 className="text-3xl font-extrabold text-gray-900">
-          {displayIcon} {displayName}
-        </h1>
-      </div>
+    <>
+      {/* Full-screen gradient background that covers the locale's bg-interior.jpg */}
+      <div
+        className="fixed inset-0 -z-[9]"
+        style={{ background: `linear-gradient(145deg, ${cat.gradient_from}, ${cat.gradient_to})` }}
+      />
 
-      {/* Empty state */}
-      {comparisons.length === 0 && (
-        <div className="mt-12 text-center py-16 rounded-2xl bg-white border border-gray-100 shadow-sm">
-          <p className="text-4xl mb-4">{displayIcon}</p>
-          <h2 className="text-lg font-bold text-gray-700 mb-2">
-            Bientôt disponible
-          </h2>
-          <p className="text-sm text-gray-400 max-w-xs mx-auto">
-            Nos comparatifs pour &ldquo;{displayName}&rdquo; arrivent prochainement.
+      <div className="py-10 sm:py-16">
+        {/* Back link */}
+        <Link
+          href={`/${locale}`}
+          className="inline-flex items-center gap-1.5 text-white/60 hover:text-white text-sm mb-8 transition-colors group"
+        >
+          <span className="group-hover:-translate-x-0.5 transition-transform">←</span>
+          <span>{isEn ? "All categories" : "Toutes les catégories"}</span>
+        </Link>
+
+        {/* Hero */}
+        <div className="text-center mb-12">
+          <div className="text-6xl sm:text-7xl mb-4 drop-shadow-lg">{cat.icon}</div>
+          <h1 className="font-playfair text-3xl sm:text-5xl font-bold text-white drop-shadow mb-3">
+            {name}
+          </h1>
+          <p className="text-white/60 text-sm sm:text-base max-w-md mx-auto">
+            {isEn
+              ? `Discover our hand-picked selections in ${name.toLowerCase()}`
+              : `Découvrez nos sélections dans ${name.toLowerCase()}`}
           </p>
-          <Link
-            href={`/${locale}`}
-            className="inline-block mt-6 px-4 py-2 bg-emerald-600 text-white text-sm font-semibold rounded-lg hover:bg-emerald-700 transition-colors"
-          >
-            ← Retour à l&apos;accueil
-          </Link>
         </div>
-      )}
 
-      {/* Comparisons grid, grouped by subcategory */}
-      {Array.from(groups.entries()).map(([sub, comps]) => (
-        <section key={sub || "_"} className="mb-10">
-          {sub && (
-            <h2 className="text-lg font-bold text-gray-700 mb-4 pb-2 border-b border-gray-100">
-              {sub}
-            </h2>
-          )}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {comps.map((comp) => (
-              <Link
-                key={comp.id}
-                href={`/${locale}/${categorySlug}/${comp.slug}`}
-                className="block p-5 rounded-2xl bg-white border border-gray-100 shadow-sm hover:shadow-md hover:border-emerald-300 transition-all group"
-              >
-                <h3 className="font-bold text-gray-900 text-sm leading-snug group-hover:text-emerald-700 transition-colors">
-                  {(comp as Record<string, string>)[titleKey] ?? comp.title_fr}
-                </h3>
-                <p className="text-xs text-gray-400 mt-2">
-                  Mis à jour le{" "}
-                  {new Date(comp.last_updated).toLocaleDateString(
-                    locale === "de" ? "de-DE" : locale === "en" ? "en-GB" : "fr-FR",
-                    { day: "2-digit", month: "long", year: "numeric" }
-                  )}
-                </p>
-              </Link>
-            ))}
-          </div>
-        </section>
-      ))}
-    </div>
+        {/* Niches grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+          {cat.niches.map((niche) => (
+            <Link
+              key={niche.slug}
+              href={`/${locale}/${categoryId}/${niche.slug}`}
+              className="group bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 hover:border-white/40 rounded-2xl px-4 py-5 flex items-center gap-3 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
+            >
+              <div className="flex-1 min-w-0">
+                <span className="font-medium text-white text-sm sm:text-base leading-tight line-clamp-2 group-hover:text-white/90">
+                  {isEn ? niche.name_en : niche.name}
+                </span>
+              </div>
+              <span className="text-white/40 group-hover:text-white/70 flex-shrink-0 transition-colors text-sm">→</span>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </>
   );
 }

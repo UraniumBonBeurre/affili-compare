@@ -23,8 +23,17 @@ export interface SearchResultItem {
   explanation?: string;
 }
 
+/** Article de sélection renvoyé dans les résultats de recherche */
+export interface ArticleMatch {
+  slug: string;
+  title: string;
+  subcategory: string;
+  pinImages: string[];
+}
+
 export interface SearchApiResponse {
   results: SearchResultItem[];
+  articles?: ArticleMatch[];
   fromLLM: boolean;
   message?: string;
   /** Tri automatique détecté par le LLM selon l'intention prix de la requête */
