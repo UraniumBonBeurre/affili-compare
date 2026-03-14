@@ -4,6 +4,8 @@ Test direct: appel classification avec gpt-oss:20b-cloud via curl subprocess
 """
 
 import json, time, sys, subprocess
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent.parent))
 from settings import OLLAMA_CLOUD_API_KEY, OLLAMA_CLOUD_HOST, CLASSIFICATION_LLM
 
 SYSTEM = """Tu es un classificateur de produits e-commerce. Classe chaque produit.

@@ -115,6 +115,9 @@ export interface Database {
           title: string;
           content: Json | null;
           pin_images: Json | null;
+          ids_products_used: string[] | null;
+          niche_slug: string | null;
+          category_id: string | null;
           created_at: string;
         };
         Insert: Omit<Database["public"]["Tables"]["top_articles"]["Row"], "id" | "created_at"> & { id?: string; created_at?: string };

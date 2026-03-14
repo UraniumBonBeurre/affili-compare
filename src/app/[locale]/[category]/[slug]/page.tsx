@@ -51,12 +51,13 @@ export default async function NichePage({ params }: Props) {
     .order("price", { ascending: true })
     .limit(100);
 
-  // Fetch articles whose subcategory matches niche name (FR or EN)
+  // Fetch articles for this niche — prefers niche_slug (indexed), falls back to
+  // content->>subcategory name matching for older articles not yet backfilled.
   const { data: articlesRaw } = await supabase
     .from("top_articles")
     .select("id, slug, title, content, pin_images, created_at")
     .or(
-      `content->>subcategory.eq.${niche.name},content->>subcategory.eq.${niche.name_en}`,
+      `niche_slug.eq.${nicheSlug},content->>subcategory.eq.${niche.name},content->>subcategory.eq.${niche.name_en}`,
     )
     .order("created_at", { ascending: false })
     .limit(24);

@@ -5,6 +5,9 @@ Test script — Verify gpt-oss:20b-cloud access via Ollama Cloud
 
 import requests
 import json
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent.parent))
 from settings import OLLAMA_CLOUD_API_KEY, OLLAMA_CLOUD_HOST, CLASSIFICATION_LLM
 
 print(f"Testing gpt-oss:20b-cloud via Ollama Cloud")
