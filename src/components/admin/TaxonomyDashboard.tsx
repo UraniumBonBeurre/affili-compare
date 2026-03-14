@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
 import type { SiteCategory, SiteNiche, ProductTypeItem, NicheProductTypesMap } from "@/lib/site-categories";
 
 const fmt = (n: number) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, "\u00a0");
@@ -1167,7 +1166,6 @@ function OperationsPanel({ onDone }: { onDone: () => void }) {
 // ── TaxonomyDashboard ─────────────────────────────────────────────────────────
 
 export default function TaxonomyDashboard({ categories, nicheProductTypes, stats, total, classified }: Props) {
-  const router = useRouter();
   const [cats, setCats] = useState<SiteCategory[]>(categories);
   const [npt,  setNpt]  = useState<NicheProductTypesMap>(nicheProductTypes);
   const [addCatOpen, setAddCatOpen] = useState(false);
@@ -1182,7 +1180,6 @@ export default function TaxonomyDashboard({ categories, nicheProductTypes, stats
   }, []);
 
   function handleOpDone() {
-    router.refresh();
     setRefreshTick(t => t + 1);
   }
 
@@ -1261,9 +1258,9 @@ export default function TaxonomyDashboard({ categories, nicheProductTypes, stats
             Taxonomie des produits
           </h1>
           <div style={{ fontSize: 14, color: "#6b7280" }}>
-            <strong style={{ color: "#111827" }}>{fmt(classified)}</strong> classifiés
+            <strong style={{ color: "#111827" }}>{fmt(statsData?.classified ?? classified)}</strong> classifiés
             {" / "}
-            <strong style={{ color: "#111827" }}>{fmt(total)}</strong> actifs
+            <strong style={{ color: "#111827" }}>{fmt(statsData?.active ?? total)}</strong> actifs
             {" · "}
             {cats.length} catégories · {cats.reduce((s, c) => s + c.niches.length, 0)} niches
             {" · "}
