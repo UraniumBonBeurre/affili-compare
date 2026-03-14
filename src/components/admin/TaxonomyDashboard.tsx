@@ -972,7 +972,7 @@ type FieldDef =
   | { type: "checkbox"; key: string; label: string; defaultVal?: boolean }
   | { type: "text";     key: string; label: string; placeholder?: string }
   | { type: "number";   key: string; label: string; defaultVal?: number; min?: number; max?: number }
-  | { type: "select";   key: string; label: string; options: { val: string; label: string }[] };
+  | { type: "select";   key: string; label: string; options: { val: string; label: string }[]; required?: boolean };
 
 function RunPanel({ title, icon, script, fields, accentColor, onDone }: {
   title:       string;
@@ -1004,6 +1004,10 @@ function RunPanel({ title, icon, script, fields, accentColor, onDone }: {
   }, [logs]);
 
   function startRun() {
+    // Check required fields
+    const missing = fields.filter(f => f.type === "select" && (f as { required?: boolean }).required && !values[f.key]);
+    if (missing.length) { alert(`Champ obligatoire : ${missing.map(f => f.label.replace(" *", "")).join(", ")}`); return; }
+
     const qs = new URLSearchParams({ script });
     for (const [k, v] of Object.entries(values)) {
       if (v !== "" && v !== "0") qs.set(k, v);
@@ -1105,7 +1109,18 @@ function RunPanel({ title, icon, script, fields, accentColor, onDone }: {
 
 // ── OperationsPanel ───────────────────────────────────────────────────────────
 
-function OperationsPanel({ onDone }: { onDone: () => void }) {
+function OperationsPanel({ onDone, niches }: { onDone: () => void; niches: { slug: string; name: string }[] }) {
+  const nicheOptions = [
+    { val: "", label: "— choisir une niche —" },
+    ...niches.map(n => ({ val: n.slug, label: n.name })),
+  ];
+  const angleOptions = [
+    { val: "selection",        label: "🏆 Sélection top produits" },
+    { val: "guide_achat",      label: "📋 Guide d'achat" },
+    { val: "budget_premium",   label: "💰 Budget / Premium" },
+    { val: "profil_acheteur",  label: "👤 Profil acheteur" },
+  ];
+
   return (
     <div style={{ marginTop: 28, border: "1px solid #e5e7eb", borderRadius: 10, overflow: "hidden", background: "#fff" }}>
       <div style={{ padding: "12px 16px", background: "#f9fafb", borderBottom: "1px solid #f3f4f6" }}>
@@ -1150,10 +1165,11 @@ function OperationsPanel({ onDone }: { onDone: () => void }) {
 
         <RunPanel title="Générer des articles" icon="✍️" script="generate-articles" accentColor="#8b5cf6" onDone={onDone}
           fields={[
+            { type: "select",   key: "niche",            label: "Niche *",          options: nicheOptions, required: true },
+            { type: "select",   key: "angle",            label: "Type d'article *", options: angleOptions, required: true },
             { type: "number",   key: "count",            label: "Nb articles",    defaultVal: 1,  min: 1 },
             { type: "number",   key: "nb_produits",      label: "Produits/art.",  defaultVal: 5,  min: 3, max: 10 },
             { type: "number",   key: "nb_variantes_pins",label: "Variantes pins", defaultVal: 2,  min: 1, max: 3 },
-            { type: "text",     key: "niche",            label: "Niche (opt.)",   placeholder: "ex: gaming_setup" },
             { type: "select",   key: "publish",          label: "Destination",    options: [{ val: "local", label: "Local (output/)" }, { val: "pinterest", label: "Pinterest" }] },
           ]}
         />
@@ -1185,6 +1201,7 @@ export default function TaxonomyDashboard({ categories, nicheProductTypes, stats
 
   const totalTypes   = Object.values(npt).reduce((s, arr) => s + arr.length, 0);
   const uniqueTypeIds = new Set(Object.values(npt).flatMap(arr => arr.map(t => t.id))).size;
+  const allNiches    = cats.flatMap(c => c.niches.map(n => ({ slug: n.slug, name: n.name })));
 
   // ── Category mutations ──────────────────────────────────────────────────────
   function editCat(oldId: string, patch: Pick<SiteCategory, "id" | "name" | "name_en" | "icon">) {
@@ -1335,7 +1352,7 @@ export default function TaxonomyDashboard({ categories, nicheProductTypes, stats
       <VerifyPanel />
 
       {/* Operations panel */}
-      <OperationsPanel onDone={handleOpDone} />
+      <OperationsPanel onDone={handleOpDone} niches={allNiches} />
 
     </div>
     </div>

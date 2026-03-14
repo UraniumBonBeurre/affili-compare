@@ -73,6 +73,7 @@ const SCRIPTS: Record<string, ScriptDef> = {
       const nb    = p.get("nb_produits");      if (nb    && SAFE_INT.test(nb))    args.push("--nb_produits", nb);
       const pins  = p.get("nb_variantes_pins"); if (pins  && SAFE_INT.test(pins))  args.push("--nb_variantes_pins", pins);
       const niche = p.get("niche");            if (niche && SAFE_ID.test(niche))  args.push("--niche", niche);
+      const angle = p.get("angle");            if (angle && SAFE_ID.test(angle))  args.push("--angle", angle);
       const month = p.get("month");            if (month && SAFE_ID.test(month))  args.push("--month", month);
       const pub   = p.get("publish");
       if (pub === "local" || pub === "pinterest") args.push("--publish", pub);

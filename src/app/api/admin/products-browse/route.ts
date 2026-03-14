@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createServiceClient } from "@/lib/supabase";
+import { createSupabaseServerClient } from "@/lib/supabase";
 
 export const dynamic = "force-dynamic";
 
@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
   const unclassifiedOnly = p.get("unclassified") === "1";
   const noEmbeddingOnly  = p.get("no_embedding")  === "1";
 
-  const supabase = createServiceClient();
+  const supabase = createSupabaseServerClient();
 
   let query = supabase
     .from("products")

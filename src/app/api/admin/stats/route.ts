@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
-import { createServiceClient } from "@/lib/supabase";
+import { createSupabaseServerClient } from "@/lib/supabase";
 
 export const dynamic = "force-dynamic";
 
 const PAGE = 2000;
 
 export async function GET() {
-  const supabase = createServiceClient();
+  const supabase = createSupabaseServerClient();
 
   // ── Headline counts via head:true (no data transfer) ──────────────────────
   const [

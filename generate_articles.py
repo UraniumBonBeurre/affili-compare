@@ -397,6 +397,8 @@ def main():
                         help="Utiliser un placeholder pour le fond des pins (défaut: true)")
     parser.add_argument("--niche", default=None,
                         help="Forcer une niche spécifique (optionnel)")
+    parser.add_argument("--angle", choices=cap.ARTICLE_ANGLES, default=None,
+                        help="Angle éditorial forcé : selection, guide_achat, budget_premium, profil_acheteur")
     parser.add_argument("--month", default=None,
                         help="Mois cible YYYY-MM (défaut: mois courant)")
     parser.add_argument("--no-trends", action="store_true",
@@ -452,7 +454,7 @@ def main():
         )
         used_niches.add(niche)
         total += 1
-        angle = cap.pick_angle(niche, taxonomy)
+        angle = args.angle if args.angle else cap.pick_angle(niche, taxonomy)
 
         success = run_article(niche, taxonomy, trends, args, angle=angle)
         if success:
