@@ -35,6 +35,19 @@ type AltPath = {
   product_type: { id: string; name_fr: string };
 };
 
+type MerchantStat = { key: string; name: string; total: number; classified: number; has_embedding: number };
+type StatsData = {
+  total: number; active: number; classified: number; unclassified: number;
+  has_embedding: number; needs_embedding: number; inactive: number;
+  merchants: MerchantStat[];
+};
+
+type BrowseProduct = {
+  id: string; name: string; brand: string; merchant: string;
+  price: number | null; llm_category: string | null; llm_niche: string | null;
+  active: boolean | null; has_embedding: boolean;
+};
+
 interface PendingItem {
   product: { id: string; name: string; brand: string; description: string };
   current: { category_id: string; niche_slug: string; type_id: string };
@@ -756,6 +769,204 @@ function VerifyPanel() {
   );
 }
 
+// ── Stats live ────────────────────────────────────────────────────────────────
+
+function useStats(tick: number) {
+  const [data, setData] = useState<StatsData | null>(null);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    setLoading(true);
+    fetch("/api/admin/stats")
+      .then(r => r.json())
+      .then(setData)
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, [tick]);
+  return { data, loading };
+}
+
+function StatsPanel({ data: d, loading }: { data: StatsData | null; loading: boolean }) {
+  const [merchantsOpen, setMerchantsOpen] = useState(false);
+  const pct = (a: number, b: number) => b > 0 ? Math.round(a / b * 100) : 0;
+
+  const card = (label: string, val: number | undefined, sub: string, bg: string, color: string) => (
+    <div style={{ flex: 1, minWidth: 130, background: bg, borderRadius: 8, padding: "10px 14px", border: `1px solid ${color}22` }}>
+      <div style={{ fontSize: 22, fontWeight: 700, color }}>{fmt(val ?? 0)}</div>
+      <div style={{ fontSize: 12, fontWeight: 600, color: "#374151", marginTop: 2 }}>{label}</div>
+      {sub && <div style={{ fontSize: 11, color: "#6b7280", marginTop: 1 }}>{sub}</div>}
+    </div>
+  );
+
+  if (loading && !d) return (
+    <div style={{ padding: "12px 16px", color: "#9ca3af", fontSize: 13 }}>Chargement des stats…</div>
+  );
+
+  const active = d?.active ?? 0;
+  const classifiedPct = pct(d?.classified ?? 0, active);
+  const embPct        = pct(d?.has_embedding ?? 0, active);
+
+  return (
+    <div style={{ marginBottom: 20, border: "1px solid #e5e7eb", borderRadius: 10, overflow: "hidden", background: "#fff" }}>
+      <div style={{ padding: "10px 16px", background: "#f9fafb", borderBottom: "1px solid #f3f4f6", display: "flex", alignItems: "center", gap: 8 }}>
+        <span style={{ fontSize: 15, fontWeight: 700, color: "#111827", flex: 1 }}>Base de données produits</span>
+        {loading && <span style={{ fontSize: 11, color: "#9ca3af" }}>↺</span>}
+      </div>
+
+      {/* Metric cards */}
+      <div style={{ display: "flex", gap: 10, flexWrap: "wrap", padding: "12px 14px" }}>
+        {card("Actifs",          d?.active,          `${d?.inactive ?? 0} inactifs`,                "#eff6ff", "#1d4ed8")}
+        {card("Classifiés",      d?.classified,       `${classifiedPct}% des actifs`, classifiedPct >= 90 ? "#f0fdf4" : "#fefce8", classifiedPct >= 90 ? "#16a34a" : "#ca8a04")}
+        {card("Non-classés",     d?.unclassified,     "à classer",                    (d?.unclassified ?? 0) > 0 ? "#fef2f2" : "#f0fdf4", (d?.unclassified ?? 0) > 0 ? "#dc2626" : "#16a34a")}
+        {card("Sans embedding",  d?.needs_embedding,  `${embPct}% ont l'embedding`,   (d?.needs_embedding ?? 0) > 0 ? "#fffbeb" : "#f0fdf4", (d?.needs_embedding ?? 0) > 0 ? "#d97706" : "#16a34a")}
+      </div>
+
+      {/* Merchants table (collapsible) */}
+      <div style={{ borderTop: "1px solid #f3f4f6" }}>
+        <div onClick={() => setMerchantsOpen(v => !v)}
+          style={{ padding: "8px 16px", cursor: "pointer", userSelect: "none", display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: "#6b7280" }}>
+          <span style={{ fontWeight: 600, color: "#374151" }}>Par marchand</span>
+          <span style={{ flex: 1 }} />
+          <span>{merchantsOpen ? "▲" : "▼"}</span>
+        </div>
+        {merchantsOpen && d?.merchants && (
+          <div style={{ overflowX: "auto" }}>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+              <thead>
+                <tr style={{ background: "#f9fafb", borderBottom: "1px solid #e5e7eb" }}>
+                  {["Marchand", "Total", "Classifiés", "Embedding"].map(h => (
+                    <th key={h} style={{ padding: "6px 14px", textAlign: "left", fontWeight: 600, color: "#374151" }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {d.merchants.map((m, i) => (
+                  <tr key={m.key} style={{ background: i % 2 === 0 ? "#fff" : "#f9fafb", borderBottom: "1px solid #f3f4f6" }}>
+                    <td style={{ padding: "5px 14px", fontWeight: 500, color: "#111827" }}>{m.name}</td>
+                    <td style={{ padding: "5px 14px", color: "#374151" }}>{fmt(m.total)}</td>
+                    <td style={{ padding: "5px 14px", color: pct(m.classified, m.total) >= 90 ? "#16a34a" : "#ca8a04" }}>
+                      {fmt(m.classified)} <span style={{ color: "#9ca3af" }}>({pct(m.classified, m.total)}%)</span>
+                    </td>
+                    <td style={{ padding: "5px 14px", color: pct(m.has_embedding, m.total) >= 80 ? "#16a34a" : "#d97706" }}>
+                      {fmt(m.has_embedding)} <span style={{ color: "#9ca3af" }}>({pct(m.has_embedding, m.total)}%)</span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ── ProductsBrowser ────────────────────────────────────────────────────────────
+
+function ProductsBrowser({ tick, merchants }: { tick: number; merchants: MerchantStat[] }) {
+  const [open, setOpen]               = useState(false);
+  const [page, setPage]               = useState(0);
+  const [merchant, setMerchant]       = useState("");
+  const [unclassified, setUnclassified] = useState(false);
+  const [noEmbedding, setNoEmbedding] = useState(false);
+  const [products, setProducts]       = useState<BrowseProduct[]>([]);
+  const [hasMore, setHasMore]         = useState(false);
+  const [loading, setLoading]         = useState(false);
+  const fetchTick = `${tick}-${page}-${merchant}-${unclassified}-${noEmbedding}`;
+
+  useEffect(() => {
+    if (!open) return;
+    setLoading(true);
+    const qs = new URLSearchParams({ page: String(page) });
+    if (merchant)    qs.set("merchant", merchant);
+    if (unclassified) qs.set("unclassified", "1");
+    if (noEmbedding)  qs.set("no_embedding", "1");
+    fetch(`/api/admin/products-browse?${qs}`)
+      .then(r => r.json())
+      .then(d => { setProducts(d.products ?? []); setHasMore(d.has_more ?? false); })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fetchTick, open]);
+
+  // Reset page when filters change
+  const resetPage = () => setPage(0);
+
+  return (
+    <div style={{ marginBottom: 20, border: "1px solid #e5e7eb", borderRadius: 10, overflow: "hidden", background: "#fff" }}>
+      <div onClick={() => setOpen(v => !v)}
+        style={{ padding: "10px 16px", background: "#f9fafb", borderBottom: open ? "1px solid #f3f4f6" : "none", cursor: "pointer", userSelect: "none", display: "flex", alignItems: "center", gap: 8 }}>
+        <span style={{ fontSize: 15, fontWeight: 700, color: "#111827", flex: 1 }}>Parcourir les produits</span>
+        {loading && <span style={{ fontSize: 11, color: "#9ca3af" }}>↺</span>}
+        <span style={{ fontSize: 12, color: "#9ca3af" }}>{open ? "▲" : "▼"}</span>
+      </div>
+
+      {open && (
+        <>
+          {/* Filters */}
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap", padding: "10px 14px", borderBottom: "1px solid #f3f4f6", alignItems: "center" }}>
+            <label style={{ fontSize: 11, color: "#6b7280", fontWeight: 500, display: "flex", flexDirection: "column", gap: 3 }}>
+              Marchand
+              <select value={merchant} onChange={e => { setMerchant(e.target.value); resetPage(); }} style={{ ...inp, minWidth: 140 }}>
+                <option value="">Tous</option>
+                {merchants.map(m => <option key={m.key} value={m.key}>{m.name}</option>)}
+              </select>
+            </label>
+            <label style={{ fontSize: 11, color: "#6b7280", fontWeight: 500, display: "flex", alignItems: "center", gap: 6, marginTop: 12 }}>
+              <input type="checkbox" checked={unclassified} onChange={e => { setUnclassified(e.target.checked); resetPage(); }} />
+              Non-classés seulement
+            </label>
+            <label style={{ fontSize: 11, color: "#6b7280", fontWeight: 500, display: "flex", alignItems: "center", gap: 6, marginTop: 12 }}>
+              <input type="checkbox" checked={noEmbedding} onChange={e => { setNoEmbedding(e.target.checked); resetPage(); }} />
+              Sans embedding
+            </label>
+          </div>
+
+          {/* Table */}
+          <div style={{ overflowX: "auto" }}>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+              <thead>
+                <tr style={{ background: "#f9fafb", borderBottom: "1px solid #e5e7eb" }}>
+                  {["Nom", "Marque", "Marchand", "Prix", "Catégorie · Niche", "Emb."].map(h => (
+                    <th key={h} style={{ padding: "6px 12px", textAlign: "left", fontWeight: 600, color: "#374151", whiteSpace: "nowrap" }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {products.length === 0 && !loading && (
+                  <tr><td colSpan={6} style={{ padding: "16px", textAlign: "center", color: "#9ca3af" }}>Aucun produit</td></tr>
+                )}
+                {products.map((p, i) => (
+                  <tr key={p.id} style={{ background: i % 2 === 0 ? "#fff" : "#f9fafb", borderBottom: "1px solid #f3f4f6" }}>
+                    <td style={{ padding: "5px 12px", maxWidth: 200, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", color: "#111827" }} title={p.name}>{p.name}</td>
+                    <td style={{ padding: "5px 12px", color: "#374151" }}>{p.brand}</td>
+                    <td style={{ padding: "5px 12px", color: "#374151" }}>{p.merchant}</td>
+                    <td style={{ padding: "5px 12px", color: "#374151", whiteSpace: "nowrap" }}>{p.price != null ? `${p.price} €` : "—"}</td>
+                    <td style={{ padding: "5px 12px", color: p.llm_category ? "#374151" : "#dc2626", fontStyle: p.llm_category ? "normal" : "italic" }}>
+                      {p.llm_category ? `${p.llm_category} · ${p.llm_niche}` : "non classé"}
+                    </td>
+                    <td style={{ padding: "5px 12px", textAlign: "center" }}>
+                      <span style={{ color: p.has_embedding ? "#16a34a" : "#9ca3af" }}>{p.has_embedding ? "✓" : "·"}</span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Pagination */}
+          <div style={{ display: "flex", gap: 8, padding: "8px 14px", alignItems: "center", borderTop: "1px solid #f3f4f6" }}>
+            <button onClick={() => setPage(p => Math.max(0, p - 1))} disabled={page === 0}
+              style={{ ...inp, cursor: page === 0 ? "not-allowed" : "pointer", opacity: page === 0 ? 0.4 : 1, padding: "3px 10px" }}>← Préc.</button>
+            <span style={{ fontSize: 12, color: "#6b7280" }}>Page {page + 1}</span>
+            <button onClick={() => setPage(p => p + 1)} disabled={!hasMore}
+              style={{ ...inp, cursor: hasMore ? "pointer" : "not-allowed", opacity: hasMore ? 1 : 0.4, padding: "3px 10px" }}>Suiv. →</button>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
 // ── RunPanel ──────────────────────────────────────────────────────────────────
 
 type FieldDef =
@@ -961,6 +1172,19 @@ export default function TaxonomyDashboard({ categories, nicheProductTypes, stats
   const [npt,  setNpt]  = useState<NicheProductTypesMap>(nicheProductTypes);
   const [addCatOpen, setAddCatOpen] = useState(false);
   const [newCat, setNewCat] = useState({ id: "", name: "", name_en: "", icon: "" });
+  const [refreshTick, setRefreshTick] = useState(0);
+  const { data: statsData, loading: statsLoading } = useStats(refreshTick);
+
+  // Auto-refresh stats every 30s
+  useEffect(() => {
+    const id = setInterval(() => setRefreshTick(t => t + 1), 30_000);
+    return () => clearInterval(id);
+  }, []);
+
+  function handleOpDone() {
+    router.refresh();
+    setRefreshTick(t => t + 1);
+  }
 
   const totalTypes   = Object.values(npt).reduce((s, arr) => s + arr.length, 0);
   const uniqueTypeIds = new Set(Object.values(npt).flatMap(arr => arr.map(t => t.id))).size;
@@ -1031,19 +1255,25 @@ export default function TaxonomyDashboard({ categories, nicheProductTypes, stats
     <div style={{ maxWidth: 960, margin: "0 auto", padding: "32px 16px" }}>
 
       {/* Header */}
-      <div style={{ marginBottom: 24 }}>
-        <h1 style={{ fontSize: 24, fontWeight: 700, color: "#111827", margin: "0 0 6px" }}>
-          Taxonomie des produits
-        </h1>
-        <div style={{ fontSize: 14, color: "#6b7280" }}>
-          <strong style={{ color: "#111827" }}>{fmt(classified)}</strong> classifiés
-          {" / "}
-          <strong style={{ color: "#111827" }}>{fmt(total)}</strong> actifs
-          {" · "}
-          {cats.length} catégories · {cats.reduce((s, c) => s + c.niches.length, 0)} niches
-          {" · "}
-          {totalTypes} types ({uniqueTypeIds} uniques)
+      <div style={{ marginBottom: 24, display: "flex", alignItems: "flex-start", gap: 12 }}>
+        <div style={{ flex: 1 }}>
+          <h1 style={{ fontSize: 24, fontWeight: 700, color: "#111827", margin: "0 0 6px" }}>
+            Taxonomie des produits
+          </h1>
+          <div style={{ fontSize: 14, color: "#6b7280" }}>
+            <strong style={{ color: "#111827" }}>{fmt(classified)}</strong> classifiés
+            {" / "}
+            <strong style={{ color: "#111827" }}>{fmt(total)}</strong> actifs
+            {" · "}
+            {cats.length} catégories · {cats.reduce((s, c) => s + c.niches.length, 0)} niches
+            {" · "}
+            {totalTypes} types ({uniqueTypeIds} uniques)
+          </div>
         </div>
+        <button onClick={() => setRefreshTick(t => t + 1)}
+          style={{ fontSize: 13, padding: "6px 14px", border: "1px solid #d1d5db", borderRadius: 6, background: "#fff", cursor: "pointer", color: "#374151" }}>
+          {statsLoading ? "↺ …" : "↺ Actualiser"}
+        </button>
       </div>
 
       {/* Legend */}
@@ -1098,11 +1328,17 @@ export default function TaxonomyDashboard({ categories, nicheProductTypes, stats
         )}
       </div>
 
+      {/* Stats panel */}
+      <StatsPanel data={statsData} loading={statsLoading} />
+
+      {/* Products browser */}
+      <ProductsBrowser tick={refreshTick} merchants={statsData?.merchants ?? []} />
+
       {/* Verify panel */}
       <VerifyPanel />
 
       {/* Operations panel */}
-      <OperationsPanel onDone={() => router.refresh()} />
+      <OperationsPanel onDone={handleOpDone} />
 
     </div>
     </div>
