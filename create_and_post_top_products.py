@@ -199,6 +199,84 @@ TREND_REGIONS = ["FR", "US", "GB", "DE"]
 TREND_TYPES = ["growing", "monthly", "yearly"]
 
 
+# ── Angles éditoriaux ─────────────────────────────────────────────────────────
+
+ARTICLE_ANGLES = ["selection", "guide_achat", "budget_premium", "profil_acheteur"]
+
+_ANGLE_TITLE_HINT: dict[str, str] = {
+    "selection": (
+        "Titre accrocheur 'coup de cœur / incontournables', jamais un simple 'Top N produits pour...' "
+        "Ex: 'Les pépites qui transforment votre quotidien', 'Notre sélection coup de cœur'."
+    ),
+    "guide_achat": (
+        "Titre orienté conseil d'achat. "
+        "Ex: 'Comment bien choisir votre [type produit]', 'Ce qu'il faut savoir avant d'acheter en [niche]'."
+    ),
+    "budget_premium": (
+        "Titre comparatif par gammes de prix. "
+        "Ex: 'Budget serré ou premium : que choisir en [niche] ?', "
+        "'De l'entrée de gamme au haut de gamme : notre comparatif [niche]'."
+    ),
+    "profil_acheteur": (
+        "Titre orienté profils d'acheteurs. "
+        "Ex: 'Quel [niche] selon votre profil ?', '[niche] : trouvez le produit fait pour vous'."
+    ),
+}
+
+_ANGLE_BLURB_HINT: dict[str, str] = {
+    "selection":       "Décris l'avantage principal concret en 1 phrase, ton enthousiaste.",
+    "guide_achat":     "Explique en 1 phrase quel besoin précis ce produit couvre ou quel critère d'achat il illustre.",
+    "budget_premium":  "Justifie en 1 phrase le rapport qualité-prix pour son segment de prix.",
+    "profil_acheteur": "Décris en 1 phrase le profil d'acheteur idéal pour ce produit.",
+}
+
+_ANGLE_BODY_STRUCTURE: dict[str, str] = {
+    "selection": (
+        "Structure libre, ton 'ami expert qui recommande'. Accroche → chaque produit → conclusion + CTA."
+    ),
+    "guide_achat": (
+        "Commence par 2-3 critères d'achat clés pour cette niche (ex: autonomie, qualité sonore, robustesse). "
+        "Présente ensuite chaque produit en illustrant comment il répond à un ou plusieurs critères."
+    ),
+    "budget_premium": (
+        "Organise le texte en 3 segments prix (budget / milieu de gamme / premium). "
+        "Pour chaque produit, mentionne clairement son segment et pourquoi c'est le bon choix pour ce budget."
+    ),
+    "profil_acheteur": (
+        "Pour chaque produit, commence son paragraphe par 'Idéal si vous...' ou 'Parfait pour les...' "
+        "puis développe le cas d'usage ou profil cible en 3-4 phrases."
+    ),
+}
+
+
+def pick_angle(niche: str, taxonomy: dict) -> str:
+    """Retourne l'angle éditorial suivant pour cette niche (round-robin)."""
+    last = taxonomy.get("last_angle", {}).get(niche)
+    try:
+        idx = ARTICLE_ANGLES.index(last)
+        return ARTICLE_ANGLES[(idx + 1) % len(ARTICLE_ANGLES)]
+    except (ValueError, TypeError):
+        return ARTICLE_ANGLES[0]
+
+
+def _price_segments(products: list) -> dict[str, str]:
+    """Calcule le segment prix (budget / milieu de gamme / premium) par tiers."""
+    priced = sorted(
+        [(p["id"], float(p.get("price") or 0)) for p in products],
+        key=lambda x: x[1],
+    )
+    n = len(priced)
+    result = {}
+    for i, (pid, _) in enumerate(priced):
+        if i < n // 3:
+            result[pid] = "budget"
+        elif i < 2 * n // 3:
+            result[pid] = "milieu de gamme"
+        else:
+            result[pid] = "premium"
+    return result
+
+
 # ── Taxonomie ─────────────────────────────────────────────────────────────────
 
 def _load_taxonomy() -> dict:
@@ -594,14 +672,24 @@ Retourne UNIQUEMENT un objet JSON valide (aucun texte avant ou après) :
 
 
 def generate_content(niche: str, niche_label: str, month_fr: str, year: str,
-                     products: list, taxonomy: dict) -> dict:
+                     products: list, taxonomy: dict, angle: str = "selection") -> dict:
     """Génère titre, intro, blurbs ET un article riche (HTML) avec liens affiliés intégrés, FR et EN."""
     n = len(products)
+    angle_hint   = _ANGLE_TITLE_HINT.get(angle, _ANGLE_TITLE_HINT["selection"])
+    blurb_hint   = _ANGLE_BLURB_HINT.get(angle, _ANGLE_BLURB_HINT["selection"])
+    body_struct  = _ANGLE_BODY_STRUCTURE.get(angle, _ANGLE_BODY_STRUCTURE["selection"])
 
-    product_list = "\n".join(
-        f"{i+1}. {p.get('name','?')} ({p.get('brand','?')}, {p.get('price','?')} €)"
-        for i, p in enumerate(products)
-    )
+    # Segments prix (utiles pour budget_premium)
+    segments = _price_segments(products) if angle == "budget_premium" else {}
+
+    def _product_line(i: int, p: dict) -> str:
+        base = f"{i+1}. {p.get('name','?')} ({p.get('brand','?')}, {p.get('price','?')} €)"
+        if angle == "budget_premium":
+            seg = segments.get(p["id"], "")
+            return f"{base} — segment: {seg}" if seg else base
+        return base
+
+    product_list = "\n".join(_product_line(i, p) for i, p in enumerate(products))
 
     # Pré-calcul : mapping produit → lien affilié pour injection dans le prompt
     product_links = []
@@ -628,8 +716,8 @@ def generate_content(niche: str, niche_label: str, month_fr: str, year: str,
 
 {n} produits : {product_list}
 
-IMPORTANT: Le titre doit être accrocheur et attrayant, PAS un simple "Top {n} accessoires pour..." mais quelque chose de plus créatif et engageant.
-Exemples de bons titres : "Les pépites tech qui transforment votre quotidien", "Notre sélection coup de cœur pour un intérieur connecté", etc.
+ANGLE ÉDITORIAL : {angle}
+{angle_hint}
 
 Retourne EXACTEMENT ce format (rien d'autre) :
 FR_TITLE: [titre français percutant et accrocheur, 45-70 caractères]
@@ -674,8 +762,8 @@ EN_TITLE: [english title, 45-70 chars, catchy and engaging]
 
     # ── 2. Blurbs produits (FR) ─────────────────────────────────────────────
     blurbs_raw = _call_llm(
-        f"Génère une description courte (1 phrase, style factuel, avantage concret principal) "
-        f"pour chacun de ces {n} produits destinés à {niche_label}.\n"
+        f"Génère une courte description (1 phrase) pour chacun des {n} produits suivants destinés à {niche_label}.\n"
+        f"Consigne : {blurb_hint}\n"
         f"Réponds UNIQUEMENT en français avec {n} lignes numérotées, sans texte avant ni après.\n"
         + "\n".join(f"{i+1}. ..." for i in range(n))
         + f"\n\nProduits :\n{product_list}",
@@ -699,7 +787,8 @@ EN_TITLE: [english title, 45-70 chars, catchy and engaging]
 
     # ── 3. Article bilingue (un seul appel LLM, Markdown → HTML) ────────────
     article_html_fr, article_html_en = _generate_article_body_bilingual(
-        title_fr, title_en, products, niche_label, month_fr, year
+        title_fr, title_en, products, niche_label, month_fr, year,
+        angle_structure=body_struct,
     )
 
     return {
@@ -851,7 +940,8 @@ def _markdown_body_to_html(text: str, products: list, lang: str = "fr") -> str:
 
 def _generate_article_body_bilingual(
     title_fr: str, title_en: str,
-    products: list, niche_label: str, month_fr: str, year: str
+    products: list, niche_label: str, month_fr: str, year: str,
+    angle_structure: str = "",
 ) -> tuple:
     """Génère le corps de l'article bilingue (FR + EN) en un seul appel LLM.
     Utilise le format Markdown avec balises {{PRODUCT_IMAGE:slug}} et liens [name](url).
@@ -890,12 +980,13 @@ Thème : {niche_label} — {month_fr} {year}
 {products_block}
 
 STRUCTURE ATTENDUE (pour chaque langue) :
-1. Accroche courte (2-3 phrases) — ton direct, chaleureux, donne envie de lire.
-2. Pour CHAQUE produit, dans l'ordre :
+{angle_structure or "Structure libre, accroche → présentation de chaque produit → conclusion + CTA."}
+
+Pour CHAQUE produit (dans l'ordre) :
    a. La balise image sur sa propre ligne (copie-la exactement telle que fournie — IDENTIQUE en FR et EN)
    b. Un paragraphe de 3-5 phrases dans la langue cible.
       Dans ce paragraphe, cite le nom du produit avec le lien Markdown exact fourni.
-3. Conclusion courte (2-3 phrases) + CTA.
+Conclusion courte (2-3 phrases) + CTA.
 
 RÈGLES ABSOLUES :
 - Copie les balises {{{{PRODUCT_IMAGE:...}}}} EXACTEMENT telles qu'elles sont fournies, identiques en FR et EN.
@@ -1639,7 +1730,7 @@ def publish_visuals_pinterest(
 # ARTICLE ORCHESTRATION
 # ══════════════════════════════════════════════════════════════════════════════
 
-def run_article(niche: str, taxonomy: dict, trends: dict, args) -> bool:
+def run_article(niche: str, taxonomy: dict, trends: dict, args, angle: str = "selection") -> bool:
     year, mo = args.month.split("-")
     month_fr = MONTH_FR.get(mo, mo)
     niche_cfg = taxonomy.get("niche_config", {}).get(niche, {})
@@ -1648,7 +1739,7 @@ def run_article(niche: str, taxonomy: dict, trends: dict, args) -> bool:
     slug_prefix = niche_cfg.get("page_slug_prefix", niche.replace("_", "-"))
     slug = f"{slug_prefix}-{args.month}"
 
-    print(f"\n  🔍 Niche : {niche}  ({niche_label})")
+    print(f"\n  🔍 Niche : {niche}  ({niche_label})  — angle : {angle}")
 
     # 1. Produits
     nb_prod = args.nb_products or nb_products_per_article
@@ -1661,7 +1752,7 @@ def run_article(niche: str, taxonomy: dict, trends: dict, args) -> bool:
     category_slug = max(set(cats), key=cats.count) if cats else niche
 
     # 2. Contenu LLM article
-    content = generate_content(niche, niche_label, month_fr, year, products, taxonomy)
+    content = generate_content(niche, niche_label, month_fr, year, products, taxonomy, angle=angle)
     print(f"  📝 Titre article : {content['title']}")
 
     # 2b. Contenu Pinterest (titre pin, description+hashtags, overlay)
@@ -1929,10 +2020,12 @@ def main():
         used_niches.add(niche)
 
         total += 1
-        success = run_article(niche, taxonomy, trends, args)
+        angle = pick_angle(niche, taxonomy)
+        success = run_article(niche, taxonomy, trends, args, angle=angle)
         if success:
             ok += 1
-            taxonomy.setdefault("last_used", {})[niche] = datetime.now().isoformat()
+            taxonomy.setdefault("last_used",  {})[niche] = datetime.now().isoformat()
+            taxonomy.setdefault("last_angle", {})[niche] = angle
             if not args.dry_run:
                 _save_taxonomy(taxonomy)
 

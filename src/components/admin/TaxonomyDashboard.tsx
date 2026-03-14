@@ -900,7 +900,7 @@ function OperationsPanel({ onDone }: { onDone: () => void }) {
     <div style={{ marginTop: 28, border: "1px solid #e5e7eb", borderRadius: 10, overflow: "hidden", background: "#fff" }}>
       <div style={{ padding: "12px 16px", background: "#f9fafb", borderBottom: "1px solid #f3f4f6" }}>
         <span style={{ fontSize: 16, fontWeight: 700, color: "#111827" }}>Opérations</span>
-        <span style={{ fontSize: 12, color: "#9ca3af", marginLeft: 10 }}>Import → Classifier → Embeddings → Liens</span>
+        <span style={{ fontSize: 12, color: "#9ca3af", marginLeft: 10 }}>Import → Classifier → Embeddings → Liens → Articles</span>
       </div>
       <div style={{ padding: "10px 10px 4px" }}>
 
@@ -935,6 +935,16 @@ function OperationsPanel({ onDone }: { onDone: () => void }) {
             { type: "checkbox", key: "dry_run",  label: "Dry run" },
             { type: "number",   key: "workers",  label: "Workers", defaultVal: 20, min: 1, max: 50 },
             { type: "text",     key: "merchant", label: "Merchant", placeholder: "ex: fnac" },
+          ]}
+        />
+
+        <RunPanel title="Générer des articles" icon="✍️" script="generate-articles" accentColor="#8b5cf6" onDone={onDone}
+          fields={[
+            { type: "number",   key: "count",            label: "Nb articles",    defaultVal: 1,  min: 1 },
+            { type: "number",   key: "nb_produits",      label: "Produits/art.",  defaultVal: 5,  min: 3, max: 10 },
+            { type: "number",   key: "nb_variantes_pins",label: "Variantes pins", defaultVal: 2,  min: 1, max: 3 },
+            { type: "text",     key: "niche",            label: "Niche (opt.)",   placeholder: "ex: gaming_setup" },
+            { type: "select",   key: "publish",          label: "Destination",    options: [{ val: "local", label: "Local (output/)" }, { val: "pinterest", label: "Pinterest" }] },
           ]}
         />
 

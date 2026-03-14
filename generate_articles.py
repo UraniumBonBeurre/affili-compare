@@ -39,7 +39,7 @@ from pathlib import Path
 import create_and_post_top_products as cap
 from settings import (
     ROOT, SITE_URL,
-    nb_products_per_article,
+    nb_products_per_article, nb_pins_per_article,
     check_supabase, get_board_for_niche,
 )
 
@@ -238,6 +238,7 @@ def run_article(
         taxonomy: dict,
         trends: dict,
         args: argparse.Namespace,
+        angle: str = "selection",
 ) -> bool:
     year, mo = args.month.split("-")
     month_fr = cap.MONTH_FR.get(mo, mo)
@@ -248,7 +249,7 @@ def run_article(
     slug = f"{slug_prefix}-{args.month}"
     article_url = f"{SITE_URL}/top/{slug}"
 
-    print(f"\n  🔍 Niche : {niche}  ({niche_label})")
+    print(f"\n  🔍 Niche : {niche}  ({niche_label})  — angle : {angle}")
 
     # 1. Produits
     products = cap.fetch_diverse_products(niche, count=args.nb_produits, taxonomy=taxonomy)
@@ -257,7 +258,7 @@ def run_article(
         return False
 
     # 2. Contenu LLM
-    content = cap.generate_content(niche, niche_label, month_fr, year, products, taxonomy)
+    content = cap.generate_content(niche, niche_label, month_fr, year, products, taxonomy, angle=angle)
     print(f"  📝 Titre FR : {content['title']}")
     print(f"  📝 Titre EN : {content.get('title_en', '')}")
 
@@ -383,12 +384,12 @@ def main():
     parser = argparse.ArgumentParser(
         description="Génère des articles Top N + visuels Pinterest (sauvegarde locale ou publication)"
     )
-    parser.add_argument("--count", type=int, required=True,
-                        help="Nombre d'articles à générer")
-    parser.add_argument("--nb_produits", type=int, required=True,
-                        help="Nombre de produits par article")
-    parser.add_argument("--nb_variantes_pins", type=int, required=True,
-                        help="Nombre de variantes de pin par langue par article (max 3)")
+    parser.add_argument("--count", type=int, default=1,
+                        help="Nombre d'articles à générer (défaut: 1)")
+    parser.add_argument("--nb_produits", type=int, default=nb_products_per_article,
+                        help=f"Nombre de produits par article (défaut: {nb_products_per_article})")
+    parser.add_argument("--nb_variantes_pins", type=int, default=nb_pins_per_article,
+                        help=f"Nombre de variantes de pin par langue par article (défaut: {nb_pins_per_article}, max 3)")
     parser.add_argument("--publish", choices=["local", "pinterest"], default="local",
                         help="Destination des pins : local (défaut) ou pinterest")
     parser.add_argument("--placeholder", type=lambda v: v.lower() != "false", default=True,
@@ -451,11 +452,13 @@ def main():
         )
         used_niches.add(niche)
         total += 1
+        angle = cap.pick_angle(niche, taxonomy)
 
-        success = run_article(niche, taxonomy, trends, args)
+        success = run_article(niche, taxonomy, trends, args, angle=angle)
         if success:
             ok += 1
-            taxonomy.setdefault("last_used", {})[niche] = datetime.now().isoformat()
+            taxonomy.setdefault("last_used",  {})[niche] = datetime.now().isoformat()
+            taxonomy.setdefault("last_angle", {})[niche] = angle
             cap._save_taxonomy(taxonomy)
 
         if ok < args.count and attempt < max_attempts:

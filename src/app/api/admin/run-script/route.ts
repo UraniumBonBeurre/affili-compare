@@ -63,6 +63,22 @@ const SCRIPTS: Record<string, ScriptDef> = {
       return args;
     },
   },
+
+  "generate-articles": {
+    cmd: ["python3", "generate_articles.py"],
+    env: { PYTHONUNBUFFERED: "1" },
+    buildArgs: (p) => {
+      const args: string[] = [];
+      const count = p.get("count");            if (count && SAFE_INT.test(count)) args.push("--count", count);
+      const nb    = p.get("nb_produits");      if (nb    && SAFE_INT.test(nb))    args.push("--nb_produits", nb);
+      const pins  = p.get("nb_variantes_pins"); if (pins  && SAFE_INT.test(pins))  args.push("--nb_variantes_pins", pins);
+      const niche = p.get("niche");            if (niche && SAFE_ID.test(niche))  args.push("--niche", niche);
+      const month = p.get("month");            if (month && SAFE_ID.test(month))  args.push("--month", month);
+      const pub   = p.get("publish");
+      if (pub === "local" || pub === "pinterest") args.push("--publish", pub);
+      return args;
+    },
+  },
 };
 
 // ── Handler ───────────────────────────────────────────────────────────────────
